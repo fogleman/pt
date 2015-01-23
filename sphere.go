@@ -7,6 +7,7 @@ import (
 type Sphere struct {
 	Center Vector
 	Radius float64
+	Col Color
 }
 
 func (s *Sphere) Intersect(r Ray) float64 {
@@ -22,4 +23,8 @@ func (s *Sphere) Intersect(r Ray) float64 {
 		}
 	}
 	return INF
+}
+
+func (s *Sphere) Color() Color {
+	return s.Col
 }

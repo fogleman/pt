@@ -6,9 +6,9 @@ import (
 
 func main() {
 	scene := pt.Scene{}
-	scene.Add(&pt.Sphere{pt.Vector{0, 0, 0}, 1})
-	scene.Add(&pt.Sphere{pt.Vector{-2, 0, 2}, 1})
-	scene.Add(&pt.Sphere{pt.Vector{2, 0, 2}, 1})
+	scene.Add(&pt.Sphere{pt.Vector{0, 0, 0}, 1, pt.Color{1, 0, 0}})
+	scene.Add(&pt.Sphere{pt.Vector{-2, 0, 2}, 1, pt.Color{0, 1, 0}})
+	scene.Add(&pt.Sphere{pt.Vector{2, 0, 2}, 1, pt.Color{0, 0, 1}})
 
 	camera := pt.Camera{}
 	camera.LookAt(pt.Vector{0, 0, -5}, pt.Vector{}, pt.Vector{0, 1, 0}, 45)

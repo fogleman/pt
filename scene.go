@@ -1,21 +1,23 @@
 package pt
 
-import (
-	"math"
-)
-
 type Scene struct {
-	shapes []Shape
+	Shapes []Shape
 }
 
 func (s *Scene) Add(shape Shape) {
-	s.shapes = append(s.shapes, shape)
+	s.Shapes = append(s.Shapes, shape)
 }
 
-func (s *Scene) Intersect(r Ray) float64 {
-	t := INF
-	for _, shape := range s.shapes {
-		t = math.Min(t, shape.Intersect(r))
+func (s *Scene) Intersect(r Ray) Hit {
+	hit := Hit{}
+	hit.T = INF
+	for _, shape := range s.Shapes {
+		t := shape.Intersect(r)
+		if t < hit.T {
+			hit.T = t
+			hit.Shape = shape
+			hit.Position = r.Origin.Add(r.Direction.Mul(t))
+		}
 	}
-	return t
+	return hit
 }
