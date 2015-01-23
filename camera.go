@@ -1,14 +1,21 @@
 package pt
 
+import (
+	"math"
+)
+
 type Camera struct {
-	Position, U, V, W Vector
+	Position Vector
+	U, V, W Vector
+	Scale float64
 }
 
-func (c *Camera) LookAt(eye, look, up Vector) {
+func (c *Camera) LookAt(eye, look, up Vector, fovy float64) {
 	c.Position = eye
 	c.W = look.Sub(eye).Normalize()
 	c.U = up.Cross(c.W).Normalize()
 	c.V = c.W.Cross(c.U).Normalize()
+	c.Scale = 1 / math.Tan(fovy * math.Pi / 360)
 }
 
 func (c *Camera) CastRay(x, y, w, h int) Ray {
@@ -18,6 +25,6 @@ func (c *Camera) CastRay(x, y, w, h int) Ray {
 	d := Vector{}
 	d = d.Add(c.U.Mul(px * aspect))
 	d = d.Add(c.V.Mul(py))
-	d = d.Add(c.W.Mul(2.5))
+	d = d.Add(c.W.Mul(c.Scale))
 	return Ray{c.Position, d}
 }
