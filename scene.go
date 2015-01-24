@@ -63,3 +63,17 @@ func (s *Scene) Sample(r Ray) Color {
 	}
 	return Color{}
 }
+
+func (s *Scene) RecursiveSample(r Ray, depth int) Color {
+	if depth < 0 {
+		return Color{}
+	}
+	hit, ok := s.Intersect(r)
+	if !ok {
+		return Color{}
+	}
+	sc := hit.Shape.Color()
+	lc := s.Light(hit.Ray)
+	ic := s.RecursiveSample(hit.Ray.CosineBounce(), depth - 1)
+	return sc.MulColor(lc.Add(ic))
+}

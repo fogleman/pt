@@ -11,7 +11,7 @@ func Render(scene *Scene, camera *Camera, w, h, samples int) image.Image {
 		for x := 0; x < w; x++ {
 			c := Color{}
 			for n := 0; n < samples; n++ {
-				c = c.Add(scene.Sample(camera.CastRay(x, y, w, h)))
+				c = c.Add(scene.RecursiveSample(camera.CastRay(x, y, w, h), 8))
 			}
 			c = c.Div(float64(samples))
 			r, g, b := uint8(c.R * 255), uint8(c.G * 255), uint8(c.B * 255)
