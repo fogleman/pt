@@ -2,6 +2,8 @@ package main
 
 import (
 	"github.com/fogleman/pt"
+	"image/png"
+	"os"
 )
 
 func main() {
@@ -15,5 +17,13 @@ func main() {
 	camera := pt.Camera{}
 	camera.LookAt(pt.Vector{0, 0, -5}, pt.Vector{}, pt.Vector{0, 1, 0}, 45)
 
-	pt.Render("out.png", 800, 600, &scene, &camera, 32)
+	image := pt.Render(&scene, &camera, 800, 600, 32)
+	file, err := os.Create("out.png")
+	if err != nil {
+		return
+	}
+	err = png.Encode(file, image)
+	if err != nil {
+		return
+	}
 }
