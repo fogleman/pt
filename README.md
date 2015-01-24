@@ -7,4 +7,4 @@ I just started, so there isn't much to see yet.
 
 Here are three spheres.
 
-![Sample](http://i.imgur.com/BmtpFFP.png)
+![Sample](http://i.imgur.com/guS41L4.png)
