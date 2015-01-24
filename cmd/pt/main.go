@@ -15,7 +15,7 @@ func main() {
 	scene.AddShape(&pt.Cube{pt.Vector{-10, -2, -10}, pt.Vector{10, -1, 10}, pt.Color{1, 1, 1}})
 
 	// place lights
-	scene.AddLight(&pt.Sphere{pt.Vector{-5, 5, -5}, 0.1, pt.Color{1, 1, 1}})
+	scene.AddLight(&pt.Sphere{pt.Vector{-4, 4, -4}, 0.1, pt.Color{0.9, 0.9, 0.9}})
 	// scene.AddLight(&pt.Sphere{pt.Vector{5, 5, 0}, 0.1, pt.Color{1, 1, 1}})
 
 	// place camera
@@ -23,7 +23,7 @@ func main() {
 	camera.LookAt(pt.Vector{0, 0, -5}, pt.Vector{}, pt.Vector{0, 1, 0}, 45)
 
 	// render image
-	image := pt.Render(&scene, &camera, 800, 600, 256)
+	image := pt.Render(&scene, &camera, 800, 600, 256, 4)
 
 	// save as png
 	file, err := os.Create("out.png")

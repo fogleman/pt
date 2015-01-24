@@ -1,18 +1,21 @@
 package pt
 
 import (
+	"fmt"
 	"image"
 	"image/color"
 	"math"
 )
 
-func Render(scene *Scene, camera *Camera, w, h, samples int) image.Image {
+func Render(scene *Scene, camera *Camera, w, h, samples, bounces int) image.Image {
 	image := image.NewNRGBA(image.Rect(0, 0, w, h))
 	for y := 0; y < h; y++ {
+		pct := 100 * float64(y) / float64(h - 1)
+		fmt.Printf("\r%d / %d (%.1f%%)", y + 1, h, pct)
 		for x := 0; x < w; x++ {
 			c := Color{}
 			for n := 0; n < samples; n++ {
-				c = c.Add(scene.RecursiveSample(camera.CastRay(x, y, w, h), 8))
+				c = c.Add(scene.RecursiveSample(camera.CastRay(x, y, w, h), bounces))
 			}
 			c = c.Div(float64(samples))
 			r := uint8(math.Min(255, c.R * 255))
@@ -21,5 +24,6 @@ func Render(scene *Scene, camera *Camera, w, h, samples int) image.Image {
 			image.SetNRGBA(x, y, color.NRGBA{r, g, b, 255})
 		}
 	}
+	fmt.Println()
 	return image
 }
