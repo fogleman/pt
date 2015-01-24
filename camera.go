@@ -2,6 +2,7 @@ package pt
 
 import (
 	"math"
+	"math/rand"
 )
 
 type Camera struct {
@@ -20,8 +21,8 @@ func (c *Camera) LookAt(eye, look, up Vector, fovy float64) {
 
 func (c *Camera) CastRay(x, y, w, h int) Ray {
 	aspect := float64(w) / float64(h)
-	px := (float64(x) / (float64(w) - 1)) * 2 - 1
-	py := (float64(y) / (float64(h) - 1)) * 2 - 1
+	px := ((float64(x) + rand.Float64() - 0.5) / (float64(w) - 1)) * 2 - 1
+	py := ((float64(y) + rand.Float64() - 0.5) / (float64(h) - 1)) * 2 - 1
 	d := Vector{}
 	d = d.Add(c.U.Mul(px * aspect))
 	d = d.Add(c.V.Mul(-py))
