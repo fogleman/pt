@@ -2,6 +2,7 @@ package pt
 
 import (
 	"math"
+	"math/rand"
 )
 
 type Sphere struct {
@@ -27,4 +28,20 @@ func (s *Sphere) Intersect(r Ray) float64 {
 
 func (s *Sphere) Color() Color {
 	return s.Col
+}
+
+func (s *Sphere) Normal(position Vector) Vector {
+	return position.Sub(s.Center).Normalize()
+}
+
+func (s *Sphere) RandomPoint() Vector {
+	for {
+		x := rand.Float64() * 2 - 1
+		y := rand.Float64() * 2 - 1
+		z := rand.Float64() * 2 - 1
+		v := Vector{x, y, z}
+		if v.Length() <= 1 {
+			return v.Mul(s.Radius).Add(s.Center)
+		}
+	}
 }

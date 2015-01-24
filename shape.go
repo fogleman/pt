@@ -1,6 +1,8 @@
 package pt
 
 type Shape interface {
-	Intersect(r Ray) float64
+	Intersect(Ray) float64
 	Color() Color
+	Normal(Vector) Vector
+	RandomPoint() Vector
 }
