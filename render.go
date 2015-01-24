@@ -3,6 +3,7 @@ package pt
 import (
 	"image"
 	"image/color"
+	"math"
 )
 
 func Render(scene *Scene, camera *Camera, w, h, samples int) image.Image {
@@ -14,7 +15,9 @@ func Render(scene *Scene, camera *Camera, w, h, samples int) image.Image {
 				c = c.Add(scene.RecursiveSample(camera.CastRay(x, y, w, h), 8))
 			}
 			c = c.Div(float64(samples))
-			r, g, b := uint8(c.R * 255), uint8(c.G * 255), uint8(c.B * 255)
+			r := uint8(math.Min(255, c.R * 255))
+			g := uint8(math.Min(255, c.G * 255))
+			b := uint8(math.Min(255, c.B * 255))
 			image.SetNRGBA(x, y, color.NRGBA{r, g, b, 255})
 		}
 	}
