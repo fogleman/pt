@@ -22,14 +22,13 @@ func main() {
 
 	// place lights
 	scene.AddLight(&pt.Sphere{pt.Vector{-1, 4, -1}, 0.25, pt.Color{0.8, 0.8, 0.8}})
-	// scene.AddLight(&pt.Sphere{pt.Vector{5, 5, 0}, 0.1, pt.Color{1, 1, 1}})
 
 	// place camera
 	camera := pt.Camera{}
 	camera.LookAt(pt.Vector{0, 6, -8}, pt.Vector{0, 0, -1}, pt.Vector{0, 1, 0}, 45)
 
 	// render image
-	image := pt.Render(&scene, &camera, 2560, 1440, 16, 4)
+	image := pt.Render(&scene, &camera, 2560, 1440, 16, 16, 4)
 
 	// save as png
 	file, err := os.Create("out.png")

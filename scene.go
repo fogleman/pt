@@ -58,13 +58,6 @@ func (s *Scene) Light(r Ray, rnd *rand.Rand) Color {
 	return color
 }
 
-func (s *Scene) Sample(r Ray, rnd *rand.Rand) Color {
-	if hit, ok := s.Intersect(r); ok {
-		return hit.Shape.Color().MulColor(s.Light(hit.Ray, rnd))
-	}
-	return Color{}
-}
-
 func (s *Scene) RecursiveSample(r Ray, depth int, rnd *rand.Rand) Color {
 	if depth < 0 {
 		return Color{}
@@ -75,6 +68,30 @@ func (s *Scene) RecursiveSample(r Ray, depth int, rnd *rand.Rand) Color {
 	}
 	color := hit.Shape.Color()
 	direct := s.Light(hit.Ray, rnd)
-	indirect := s.RecursiveSample(hit.Ray.WeightedBounce(rnd), depth - 1, rnd)
+	u, v := rnd.Float64(), rnd.Float64()
+	indirect := s.RecursiveSample(hit.Ray.WeightedBounce(u, v), depth - 1, rnd)
 	return color.MulColor(direct.Add(indirect))
+}
+
+func (s *Scene) Sample(r Ray, samples, depth int, rnd *rand.Rand) Color {
+	if depth < 0 {
+		return Color{}
+	}
+	hit, ok := s.Intersect(r)
+	if !ok {
+		return Color{}
+	}
+	result := Color{}
+	color := hit.Shape.Color()
+	n := int(math.Sqrt(float64(samples)))
+	for u := 0; u < n; u++ {
+		for v := 0; v < n; v++ {
+			direct := s.Light(hit.Ray, rnd)
+			fu := (float64(u) + rnd.Float64()) * (1 / float64(n))
+			fv := (float64(v) + rnd.Float64()) * (1 / float64(n))
+			indirect := s.RecursiveSample(hit.Ray.WeightedBounce(fu, fv), depth - 1, rnd)
+			result = result.Add(color.MulColor(direct.Add(indirect)))
+		}
+	}
+	return result.Div(float64(n * n))
 }

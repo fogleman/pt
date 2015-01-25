@@ -9,8 +9,6 @@ I just started, so there isn't much to see yet.
 
 Here are things that I'm planning, or at least hoping, to do.
 
-* stratified sampling
-* multiple bounces on first hit
 * material properties
 * more shapes
 * more example scenes
