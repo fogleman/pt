@@ -2,6 +2,7 @@ package pt
 
 import (
 	"math"
+	"math/rand"
 )
 
 type Scene struct {
@@ -44,10 +45,10 @@ func (s *Scene) Shadow(r Ray) bool {
 	return false
 }
 
-func (s *Scene) Light(r Ray) Color {
+func (s *Scene) Light(r Ray, rnd *rand.Rand) Color {
 	color := Color{}
 	for _, light := range s.Lights {
-		lr := Ray{r.Origin, light.RandomPoint().Sub(r.Origin).Normalize()}
+		lr := Ray{r.Origin, light.RandomPoint(rnd).Sub(r.Origin).Normalize()}
 		if (s.Shadow(lr)) {
 			continue
 		}
@@ -57,14 +58,14 @@ func (s *Scene) Light(r Ray) Color {
 	return color
 }
 
-func (s *Scene) Sample(r Ray) Color {
+func (s *Scene) Sample(r Ray, rnd *rand.Rand) Color {
 	if hit, ok := s.Intersect(r); ok {
-		return hit.Shape.Color().MulColor(s.Light(hit.Ray))
+		return hit.Shape.Color().MulColor(s.Light(hit.Ray, rnd))
 	}
 	return Color{}
 }
 
-func (s *Scene) RecursiveSample(r Ray, depth int) Color {
+func (s *Scene) RecursiveSample(r Ray, depth int, rnd *rand.Rand) Color {
 	if depth < 0 {
 		return Color{}
 	}
@@ -73,7 +74,7 @@ func (s *Scene) RecursiveSample(r Ray, depth int) Color {
 		return Color{}
 	}
 	color := hit.Shape.Color()
-	direct := s.Light(hit.Ray)
-	indirect := s.RecursiveSample(hit.Ray.WeightedBounce(), depth - 1)
+	direct := s.Light(hit.Ray, rnd)
+	indirect := s.RecursiveSample(hit.Ray.WeightedBounce(rnd), depth - 1, rnd)
 	return color.MulColor(direct.Add(indirect))
 }

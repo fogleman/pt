@@ -34,11 +34,11 @@ func (s *Sphere) Normal(position Vector) Vector {
 	return position.Sub(s.Center).Normalize()
 }
 
-func (s *Sphere) RandomPoint() Vector {
+func (s *Sphere) RandomPoint(rnd *rand.Rand) Vector {
 	for {
-		x := rand.Float64() * 2 - 1
-		y := rand.Float64() * 2 - 1
-		z := rand.Float64() * 2 - 1
+		x := rnd.Float64() * 2 - 1
+		y := rnd.Float64() * 2 - 1
+		z := rnd.Float64() * 2 - 1
 		v := Vector{x, y, z}
 		if v.Length() <= 1 {
 			return v.Mul(s.Radius).Add(s.Center)

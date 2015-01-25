@@ -19,10 +19,10 @@ func (c *Camera) LookAt(eye, look, up Vector, fovy float64) {
 	c.Scale = 1 / math.Tan(fovy * math.Pi / 360)
 }
 
-func (c *Camera) CastRay(x, y, w, h int) Ray {
+func (c *Camera) CastRay(x, y, w, h int, rnd *rand.Rand) Ray {
 	aspect := float64(w) / float64(h)
-	px := ((float64(x) + rand.Float64() - 0.5) / (float64(w) - 1)) * 2 - 1
-	py := ((float64(y) + rand.Float64() - 0.5) / (float64(h) - 1)) * 2 - 1
+	px := ((float64(x) + rnd.Float64() - 0.5) / (float64(w) - 1)) * 2 - 1
+	py := ((float64(y) + rnd.Float64() - 0.5) / (float64(h) - 1)) * 2 - 1
 	d := Vector{}
 	d = d.Add(c.U.Mul(px * aspect))
 	d = d.Add(c.V.Mul(-py))

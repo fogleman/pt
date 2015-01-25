@@ -4,9 +4,13 @@ import (
 	"github.com/fogleman/pt"
 	"image/png"
 	"os"
+	"runtime"
 )
 
 func main() {
+	// use all cores
+	runtime.GOMAXPROCS(runtime.NumCPU())
+
 	// place objects
 	scene := pt.Scene{}
 	scene.AddShape(&pt.Sphere{pt.Vector{0, 0, 0}, 1, pt.HexColor(0x334D5C)})

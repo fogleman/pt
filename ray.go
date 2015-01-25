@@ -9,9 +9,9 @@ type Ray struct {
 	Origin, Direction Vector
 }
 
-func (r Ray) UniformBounce() Ray {
-	rx := rand.Float64() * 2 * math.Pi
-	ry := rand.Float64() * 2 * math.Pi
+func (r Ray) UniformBounce(rnd *rand.Rand) Ray {
+	rx := rnd.Float64() * 2 * math.Pi
+	ry := rnd.Float64() * 2 * math.Pi
 	x := math.Sin(rx) * math.Sin(ry)
 	y := math.Sin(rx) * math.Cos(ry)
 	z := math.Cos(rx)
@@ -22,10 +22,10 @@ func (r Ray) UniformBounce() Ray {
 	return Ray{r.Origin, v}
 }
 
-func (r Ray) WeightedBounce() Ray {
-	u := rand.Float64()
+func (r Ray) WeightedBounce(rnd *rand.Rand) Ray {
+	u := rnd.Float64()
 	m := math.Sqrt(u)
-	a := 2 * math.Pi * rand.Float64()
+	a := 2 * math.Pi * rnd.Float64()
 	s := r.Direction.Cross(Vector{0, 1, 0})
 	if math.Abs(r.Direction.X) < 0.5 {
 		s = r.Direction.Cross(Vector{1, 0, 0})
