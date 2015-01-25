@@ -17,7 +17,6 @@ Here are things that I'm planning, or at least hoping, to do.
 * OBJ / STL models
 * textured objects
 * constructive solid geometry
-* parallel processing
 
 ### Links
 
