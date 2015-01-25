@@ -1,5 +1,9 @@
 package pt
 
+import (
+	"math"
+)
+
 type Color struct {
 	R, G, B float64
 }
@@ -29,4 +33,8 @@ func (a Color) MulColor(b Color) Color {
 
 func (a Color) Div(b float64) Color {
 	return Color{a.R / b, a.G / b, a.B / b}
+}
+
+func (a Color) Pow(b float64) Color {
+	return Color{math.Pow(a.R, b), math.Pow(a.G, b), math.Pow(a.B, b)}
 }
