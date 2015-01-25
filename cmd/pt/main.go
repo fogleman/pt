@@ -29,7 +29,7 @@ func main() {
 	camera.LookAt(pt.Vector{0, 6, -8}, pt.Vector{0, 0, -1}, pt.Vector{0, 1, 0}, 45)
 
 	// render image
-	image := pt.Render(&scene, &camera, 2560, 1440, 512, 4)
+	image := pt.Render(&scene, &camera, 2560, 1440, 16, 4)
 
 	// save as png
 	file, err := os.Create("out.png")
