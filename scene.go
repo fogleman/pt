@@ -74,6 +74,6 @@ func (s *Scene) RecursiveSample(r Ray, depth int) Color {
 	}
 	sc := hit.Shape.Color()
 	lc := s.Light(hit.Ray)
-	ic := s.RecursiveSample(hit.Ray.CosineBounce(), depth - 1)
+	ic := s.RecursiveSample(hit.Ray.WeightedBounce(), depth - 1)
 	return sc.MulColor(lc.Add(ic))
 }
