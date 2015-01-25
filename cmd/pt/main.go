@@ -16,7 +16,10 @@ func scene1() (pt.Scene, pt.Camera) {
 	scene.AddShape(&pt.Sphere{pt.Vector{2, 0, -2}, 1, pt.HexColor(0xE27A3F)})
 	scene.AddShape(&pt.Sphere{pt.Vector{2, 0, 2}, 1, pt.HexColor(0xDF5A49)})
 	scene.AddShape(&pt.Cube{pt.Vector{-10, -2, -10}, pt.Vector{10, -1, 10}, pt.Color{1, 1, 1}})
-	scene.AddLight(&pt.Sphere{pt.Vector{-1, 4, -1}, 0.25, pt.Color{0.8, 0.8, 0.8}})
+	scene.AddLight(&pt.Sphere{pt.Vector{-1, 4, -1}, 0.25, pt.Color{0.25, 0.25, 0.25}})
+	scene.AddLight(&pt.Sphere{pt.Vector{1, 4, -1}, 0.25, pt.Color{0.25, 0.25, 0.25}})
+	scene.AddLight(&pt.Sphere{pt.Vector{-1, 4, 1}, 0.25, pt.Color{0.25, 0.25, 0.25}})
+	scene.AddLight(&pt.Sphere{pt.Vector{1, 4, 1}, 0.25, pt.Color{0.25, 0.25, 0.25}})
 	camera.LookAt(pt.Vector{0, 6, -8}, pt.Vector{0, 0, -1}, pt.Vector{0, 1, 0}, 45)
 	return scene, camera
 }
