@@ -51,8 +51,8 @@ func (s *Scene) Light(r Ray) Color {
 		if (s.Shadow(lr)) {
 			continue
 		}
-		n := math.Max(0, lr.Direction.Dot(r.Direction))
-		color = color.Add(light.Color().Mul(n))
+		diffuse := math.Max(0, lr.Direction.Dot(r.Direction))
+		color = color.Add(light.Color().Mul(diffuse))
 	}
 	return color
 }
@@ -72,8 +72,8 @@ func (s *Scene) RecursiveSample(r Ray, depth int) Color {
 	if !ok {
 		return Color{}
 	}
-	sc := hit.Shape.Color()
-	lc := s.Light(hit.Ray)
-	ic := s.RecursiveSample(hit.Ray.WeightedBounce(), depth - 1)
-	return sc.MulColor(lc.Add(ic))
+	color := hit.Shape.Color()
+	direct := s.Light(hit.Ray)
+	indirect := s.RecursiveSample(hit.Ray.WeightedBounce(), depth - 1)
+	return color.MulColor(direct.Add(indirect))
 }
