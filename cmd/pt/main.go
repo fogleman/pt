@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/fogleman/pt"
+	"image"
 	"image/png"
 	"os"
 	"runtime"
@@ -33,24 +34,21 @@ func scene2() (pt.Scene, pt.Camera) {
 	return scene, camera
 }
 
-func main() {
-	// use all cores
-	runtime.GOMAXPROCS(runtime.NumCPU())
-
-	// pick a scene
-	scene, camera := scene1()
-
-	// render image
-	image := pt.Render(&scene, &camera, 2560/4, 1440/4, 16, 16, 4)
-
-	// save as png
-	file, err := os.Create("out.png")
+func save(path string, im image.Image) {
+	file, err := os.Create(path)
 	if err != nil {
 		panic(err)
 	}
 	defer file.Close()
-	err = png.Encode(file, image)
+	err = png.Encode(file, im)
 	if err != nil {
 		panic(err)
 	}
+}
+
+func main() {
+	runtime.GOMAXPROCS(runtime.NumCPU())
+	scene, camera := scene1()
+	im := pt.Render(&scene, &camera, 2560, 1440, 16, 64, 4)
+	save("out.png", im)
 }
