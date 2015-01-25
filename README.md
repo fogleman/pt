@@ -5,6 +5,6 @@ I just started, so there isn't much to see yet.
 
 ### Sample Output
 
-Here are three spheres.
+![Sample](http://i.imgur.com/qQuUKMA.png)
 
-![Sample](http://i.imgur.com/j59dQM1.png)
+![Sample](http://i.imgur.com/1VilmGp.png)
