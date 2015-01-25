@@ -1,7 +1,6 @@
 package pt
 
 import (
-	// "fmt"
 	"math"
 	"math/rand"
 )
@@ -20,7 +19,6 @@ func (c *Cube) Intersect(r Ray) float64 {
 	n := math.Max(math.Max(t1.X, t1.Y), t1.Z)
 	f := math.Min(math.Min(t2.X, t2.Y), t2.Z)
 	if n > 0 && n < f {
-		// fmt.Println(n)
 		return n
 	}
 	return INF

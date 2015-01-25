@@ -9,7 +9,7 @@ type Ray struct {
 	Origin, Direction Vector
 }
 
-func (r Ray) CosineBounce() Ray {
+func (r Ray) UniformBounce() Ray {
 	rx := rand.Float64() * 2 * math.Pi
 	ry := rand.Float64() * 2 * math.Pi
 	x := math.Sin(rx) * math.Sin(ry)
