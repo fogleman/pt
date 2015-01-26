@@ -10,7 +10,7 @@ import (
 
 func scene1() (pt.Scene, pt.Camera) {
 	scene, camera := pt.Scene{}, pt.Camera{}
-	scene.AddShape(&pt.Sphere{pt.Vector{0, 0, 0}, 1, pt.HexColor(0xFFFFFF), pt.Material{}})
+	scene.AddShape(&pt.Sphere{pt.Vector{0, 0, 0}, 1, pt.HexColor(0x334D5C), pt.Material{}})
 	scene.AddShape(&pt.Sphere{pt.Vector{-2, 0, -2}, 1, pt.HexColor(0x45B29D), pt.Material{}})
 	scene.AddShape(&pt.Sphere{pt.Vector{-2, 0, 2}, 1, pt.HexColor(0xEFC94C), pt.Material{}})
 	scene.AddShape(&pt.Sphere{pt.Vector{2, 0, -2}, 1, pt.HexColor(0xE27A3F), pt.Material{}})
@@ -39,6 +39,6 @@ func save(path string, im image.Image) {
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	scene, camera := scene1()
-	im := pt.Render(&scene, &camera, 2560/2, 1440/2, 16, 64, 4)
+	im := pt.Render(&scene, &camera, 2560/4, 1440/4, 16, 16, 4)
 	save("out.png", im)
 }
