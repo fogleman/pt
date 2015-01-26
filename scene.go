@@ -55,7 +55,7 @@ func (s *Scene) Light(r Ray, rnd *rand.Rand) Color {
 		diffuse := math.Max(0, lr.Direction.Dot(r.Direction))
 		color = color.Add(light.Color().Mul(diffuse))
 	}
-	return color
+	return color.Div(float64(len(s.Lights)))
 }
 
 func (s *Scene) RecursiveSample(r Ray, depth int, rnd *rand.Rand) Color {
