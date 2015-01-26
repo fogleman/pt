@@ -59,3 +59,7 @@ func (a Vector) Min(b Vector) Vector {
 func (a Vector) Max(b Vector) Vector {
 	return Vector{math.Max(a.X, b.X), math.Max(a.Y, b.Y), math.Max(a.Z, b.Z)}
 }
+
+func (i Vector) Reflect(n Vector) Vector {
+	return i.Sub(n.Mul(2 * n.Dot(i)))
+}

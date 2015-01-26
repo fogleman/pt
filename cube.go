@@ -9,6 +9,7 @@ type Cube struct {
 	Min Vector
 	Max Vector
 	Col Color
+	Mat Material
 }
 
 func (c *Cube) Intersect(r Ray) float64 {
@@ -26,6 +27,10 @@ func (c *Cube) Intersect(r Ray) float64 {
 
 func (c *Cube) Color() Color {
 	return c.Col
+}
+
+func (c *Cube) Material() Material {
+	return c.Mat
 }
 
 func (c *Cube) Normal(p Vector) Vector {

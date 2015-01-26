@@ -9,6 +9,7 @@ type Sphere struct {
 	Center Vector
 	Radius float64
 	Col Color
+	Mat Material
 }
 
 func (s *Sphere) Intersect(r Ray) float64 {
@@ -28,6 +29,10 @@ func (s *Sphere) Intersect(r Ray) float64 {
 
 func (s *Sphere) Color() Color {
 	return s.Col
+}
+
+func (s *Sphere) Material() Material {
+	return s.Mat
 }
 
 func (s *Sphere) Normal(position Vector) Vector {
