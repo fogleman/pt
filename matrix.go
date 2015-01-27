@@ -41,22 +41,10 @@ func Rotate(v Vector, a float64) Matrix {
 	c := math.Cos(a)
 	m := 1 - c
 	return Matrix{
-		m * v.X * v.X + c,
-		m * v.X * v.Y + v.Z * s,
-		m * v.Z * v.X - v.Y * s,
-		0,
-		m * v.X * v.Y - v.Z * s,
-		m * v.Y * v.Y + c,
-		m * v.Y * v.Z + v.X * s,
-		0,
-		m * v.Z * v.X + v.Y * s,
-		m * v.Y * v.Z - v.X * s,
-		m * v.Z * v.Z + c,
-		0,
-		0,
-		0,
-		0,
-		1}
+		m * v.X * v.X + c, m * v.X * v.Y + v.Z * s, m * v.Z * v.X - v.Y * s, 0,
+		m * v.X * v.Y - v.Z * s, m * v.Y * v.Y + c, m * v.Y * v.Z + v.X * s, 0,
+		m * v.Z * v.X + v.Y * s, m * v.Y * v.Z - v.X * s, m * v.Z * v.Z + c, 0,
+		0, 0, 0, 1}
 }
 
 func Frustum(l, r, b, t, n, f float64) Matrix {
@@ -65,22 +53,18 @@ func Frustum(l, r, b, t, n, f float64) Matrix {
 	t3 := t - b
 	t4 := f - n
 	return Matrix{
-		t1 / t2,
-		0,
-		(r + l) / t2,
-		0,
-		0,
-		t1 / t3,
-		(t + b) / t3,
-		0,
-		0,
-		0,
-		(-f - n) / t4,
-		(-t1 * f) / t4,
-		0,
-		0,
-		-1,
-		0}
+		t1 / t2, 0, (r + l) / t2, 0,
+		0, t1 / t3, (t + b) / t3, 0,
+		0, 0, (-f - n) / t4, (-t1 * f) / t4,
+		0, 0, -1, 0}
+}
+
+func Orthographic(l, r, b, t, n, f float64) Matrix {
+	return Matrix{
+		2 / (r - l), 0, 0, -(r + l) / (r - l),
+		0, 2 / (t - b), 0, -(t + b) / (t - b),
+		0, 0, -2 / (f - n), -(f + n) / (f - n),
+		0, 0, 0, 1}
 }
 
 func Perspective(fovy, aspect, near, far float64) Matrix {
@@ -103,6 +87,10 @@ func (m Matrix) Rotate(v Vector, a float64) Matrix {
 
 func (m Matrix) Frustum(l, r, b, t, n, f float64) Matrix {
 	return Frustum(l, r, b, t, n, f).Mul(m)
+}
+
+func (m Matrix) Orthographic(l, r, b, t, n, f float64) Matrix {
+	return Orthographic(l, r, b, t, n, f).Mul(m)
 }
 
 func (m Matrix) Perspective(fovy, aspect, near, far float64) Matrix {
