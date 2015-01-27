@@ -11,11 +11,12 @@ import (
 )
 
 func Render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, depth int) image.Image {
-	start := time.Now()
-	fmt.Printf("%d x %d pixels, %d x %d samples, %d bounces\n", w, h, cameraSamples, hitSamples, depth)
 	image := image.NewNRGBA(image.Rect(0, 0, w, h))
 	ncpu := runtime.GOMAXPROCS(0)
 	ch := make(chan int, h)
+	fmt.Printf("%d x %d pixels, %d x %d = %d samples, %d bounces, %d cores\n",
+		w, h, cameraSamples, hitSamples, cameraSamples * hitSamples, depth, ncpu)
+	start := time.Now()
 	for i := 0; i < ncpu; i++ {
 		go func (i int) {
 		    rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
