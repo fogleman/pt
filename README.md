@@ -32,4 +32,6 @@ Here are some resources that I have found useful.
 
 ### Samples
 
+![Sample](http://i.imgur.com/zCPDKbt.png)
+
 ![Sample](http://i.imgur.com/7nJieKd.png)
