@@ -35,25 +35,25 @@ func (c *Cube) Material() Material {
 
 func (c *Cube) Normal(p Vector) Vector {
 	switch {
-	case p.X < c.Min.X + EPS:
+	case p.X < c.Min.X+EPS:
 		return Vector{-1, 0, 0}
-	case p.X > c.Max.X - EPS:
+	case p.X > c.Max.X-EPS:
 		return Vector{1, 0, 0}
-	case p.Y < c.Min.Y + EPS:
+	case p.Y < c.Min.Y+EPS:
 		return Vector{0, -1, 0}
-	case p.Y > c.Max.Y - EPS:
+	case p.Y > c.Max.Y-EPS:
 		return Vector{0, 1, 0}
-	case p.Z < c.Min.Z + EPS:
+	case p.Z < c.Min.Z+EPS:
 		return Vector{0, 0, -1}
-	case p.Z > c.Max.Z - EPS:
+	case p.Z > c.Max.Z-EPS:
 		return Vector{0, 0, 1}
 	}
 	return Vector{0, 1, 0}
 }
 
 func (c *Cube) RandomPoint(rnd *rand.Rand) Vector {
-	x := c.Min.X + rnd.Float64() * (c.Max.X - c.Min.X)
-	y := c.Min.Y + rnd.Float64() * (c.Max.Y - c.Min.Y)
-	z := c.Min.Z + rnd.Float64() * (c.Max.Z - c.Min.Z)
+	x := c.Min.X + rnd.Float64()*(c.Max.X-c.Min.X)
+	y := c.Min.Y + rnd.Float64()*(c.Max.Y-c.Min.Y)
+	z := c.Min.Z + rnd.Float64()*(c.Max.Z-c.Min.Z)
 	return Vector{x, y, z}
 }

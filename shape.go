@@ -13,8 +13,8 @@ type Shape interface {
 }
 
 type TransformedShape struct {
-	Shape Shape
-	Matrix Matrix
+	Shape   Shape
+	Matrix  Matrix
 	Inverse Matrix
 }
 

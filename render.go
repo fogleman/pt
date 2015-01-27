@@ -15,11 +15,11 @@ func Render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, depth
 	ncpu := runtime.GOMAXPROCS(0)
 	ch := make(chan int, h)
 	fmt.Printf("%d x %d pixels, %d x %d = %d samples, %d bounces, %d cores\n",
-		w, h, cameraSamples, hitSamples, cameraSamples * hitSamples, depth, ncpu)
+		w, h, cameraSamples, hitSamples, cameraSamples*hitSamples, depth, ncpu)
 	start := time.Now()
 	for i := 0; i < ncpu; i++ {
-		go func (i int) {
-		    rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
+		go func(i int) {
+			rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
 			for y := i; y < h; y += ncpu {
 				for x := 0; x < w; x++ {
 					c := Color{}
@@ -33,9 +33,9 @@ func Render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, depth
 						}
 					}
 					c = c.Div(float64(n * n))
-					r := uint8(math.Min(255, c.R * 255))
-					g := uint8(math.Min(255, c.G * 255))
-					b := uint8(math.Min(255, c.B * 255))
+					r := uint8(math.Min(255, c.R*255))
+					g := uint8(math.Min(255, c.G*255))
+					b := uint8(math.Min(255, c.B*255))
 					image.SetNRGBA(x, y, color.NRGBA{r, g, b, 255})
 				}
 				ch <- 1
@@ -43,13 +43,13 @@ func Render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, depth
 		}(i)
 	}
 	for i := 0; i < h; i++ {
-		<- ch
-		pct := int(100 * float64(i) / float64(h - 1))
+		<-ch
+		pct := int(100 * float64(i) / float64(h-1))
 		elapsed := time.Since(start)
 		hr := int(elapsed.Hours())
 		min := int(elapsed.Minutes()) % 60
 		sec := int(elapsed.Seconds()) % 60
-		fmt.Printf("\r%4d / %d (%3d%%) [", i + 1, h, pct)
+		fmt.Printf("\r%4d / %d (%3d%%) [", i+1, h, pct)
 		for p := 0; p < 100; p += 2 {
 			if pct >= p {
 				fmt.Printf("=")

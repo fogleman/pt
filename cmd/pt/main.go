@@ -29,12 +29,12 @@ func scene2() (pt.Scene, pt.Camera) {
 	scene, camera := pt.Scene{}, pt.Camera{}
 	for x := 0.; x < 3; x++ {
 		for z := 0.; z < 3; z++ {
-			scene.AddShape(&pt.Sphere{pt.Vector{x * 2 - 2, 0, z * 2 - 2}, 1, pt.HexColor(0xEFC94C), pt.Material{}})
+			scene.AddShape(&pt.Sphere{pt.Vector{x*2 - 2, 0, z*2 - 2}, 1, pt.HexColor(0xEFC94C), pt.Material{}})
 		}
 	}
 	for x := 0.; x < 2; x++ {
 		for z := 0.; z < 2; z++ {
-			scene.AddShape(&pt.Sphere{pt.Vector{x * 2 - 1, 1.414, z * 2 - 1}, 1, pt.HexColor(0xE27A3F), pt.Material{}})
+			scene.AddShape(&pt.Sphere{pt.Vector{x*2 - 1, 1.414, z*2 - 1}, 1, pt.HexColor(0xE27A3F), pt.Material{}})
 		}
 	}
 	scene.AddShape(&pt.Sphere{pt.Vector{0, 1.414 * 2, 0}, 1, pt.HexColor(0xDF5A49), pt.Material{}})
@@ -79,7 +79,7 @@ func save(path string, im image.Image) {
 
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
-	scene, camera := scene1()
-	im := pt.Render(&scene, &camera, 2560/2, 1440/2, 16, 16, 4)
+	scene, camera := scene2()
+	im := pt.Render(&scene, &camera, 2560/2, 1440/2, 16, 36, 4)
 	save("out.png", im)
 }

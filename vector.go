@@ -9,17 +9,17 @@ type Vector struct {
 }
 
 func (a Vector) Length() float64 {
-	return math.Sqrt(a.X * a.X + a.Y * a.Y + a.Z * a.Z)
+	return math.Sqrt(a.X*a.X + a.Y*a.Y + a.Z*a.Z)
 }
 
 func (a Vector) Dot(b Vector) float64 {
-	return a.X * b.X + a.Y * b.Y + a.Z * b.Z;
+	return a.X*b.X + a.Y*b.Y + a.Z*b.Z
 }
 
 func (a Vector) Cross(b Vector) Vector {
-	x := a.Y * b.Z - a.Z * b.Y;
-	y := a.Z * b.X - a.X * b.Z;
-	z := a.X * b.Y - a.Y * b.X;
+	x := a.Y*b.Z - a.Z*b.Y
+	y := a.Z*b.X - a.X*b.Z
+	z := a.X*b.Y - a.Y*b.X
 	return Vector{x, y, z}
 }
 

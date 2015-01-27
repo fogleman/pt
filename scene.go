@@ -49,7 +49,7 @@ func (s *Scene) Light(r Ray, rnd *rand.Rand) Color {
 	color := Color{}
 	for _, light := range s.Lights {
 		lr := Ray{r.Origin, light.RandomPoint(rnd).Sub(r.Origin).Normalize()}
-		if (s.Shadow(lr)) {
+		if s.Shadow(lr) {
 			continue
 		}
 		diffuse := math.Max(0, lr.Direction.Dot(r.Direction))
@@ -70,7 +70,7 @@ func (s *Scene) RecursiveSample(r Ray, depth int, rnd *rand.Rand) Color {
 	direct := s.Light(hit.Ray, rnd).Mul(1 - hit.Shape.Material().Gloss)
 	p, u, v := rnd.Float64(), rnd.Float64(), rnd.Float64()
 	ray := hit.Ray.Bounce(r, hit.Shape.Material(), p, u, v)
-	indirect := s.RecursiveSample(ray, depth - 1, rnd)
+	indirect := s.RecursiveSample(ray, depth-1, rnd)
 	return color.MulColor(direct.Add(indirect))
 }
 
@@ -92,7 +92,7 @@ func (s *Scene) Sample(r Ray, samples, depth int, rnd *rand.Rand) Color {
 			fu := (float64(u) + rnd.Float64()) * (1 / float64(n))
 			fv := (float64(v) + rnd.Float64()) * (1 / float64(n))
 			ray := hit.Ray.Bounce(r, hit.Shape.Material(), p, fu, fv)
-			indirect := s.RecursiveSample(ray, depth - 1, rnd)
+			indirect := s.RecursiveSample(ray, depth-1, rnd)
 			result = result.Add(color.MulColor(direct.Add(indirect)))
 		}
 	}

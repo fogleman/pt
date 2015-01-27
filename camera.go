@@ -6,8 +6,8 @@ import (
 
 type Camera struct {
 	Position Vector
-	U, V, W Vector
-	Scale float64
+	U, V, W  Vector
+	Scale    float64
 }
 
 func (c *Camera) LookAt(eye, look, up Vector, fovy float64) {
@@ -15,13 +15,13 @@ func (c *Camera) LookAt(eye, look, up Vector, fovy float64) {
 	c.W = look.Sub(eye).Normalize()
 	c.U = up.Cross(c.W).Normalize()
 	c.V = c.W.Cross(c.U).Normalize()
-	c.Scale = 1 / math.Tan(fovy * math.Pi / 360)
+	c.Scale = 1 / math.Tan(fovy*math.Pi/360)
 }
 
 func (c *Camera) CastRay(x, y, w, h int, u, v float64) Ray {
 	aspect := float64(w) / float64(h)
-	px := ((float64(x) + u - 0.5) / (float64(w) - 1)) * 2 - 1
-	py := ((float64(y) + v - 0.5) / (float64(h) - 1)) * 2 - 1
+	px := ((float64(x)+u-0.5)/(float64(w)-1))*2 - 1
+	py := ((float64(y)+v-0.5)/(float64(h)-1))*2 - 1
 	d := Vector{}
 	d = d.Add(c.U.Mul(px * aspect))
 	d = d.Add(c.V.Mul(-py))
