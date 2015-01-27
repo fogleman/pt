@@ -80,6 +80,6 @@ func save(path string, im image.Image) {
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	scene, camera := scene2()
-	im := pt.Render(&scene, &camera, 2560/2, 1440/2, 16, 36, 4)
+	im := pt.Render(&scene, &camera, 2560/4, 1440/4, 1, 16, 4)
 	save("out.png", im)
 }

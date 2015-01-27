@@ -19,12 +19,12 @@ func showProgress(start time.Time, i, h int) {
 	fmt.Printf("\r%4d / %d (%3d%%) [", i+1, h, pct)
 	for p := 0; p < 100; p += 2 {
 		if pct > p {
-			fmt.Printf("=")
+			fmt.Print("=")
 		} else {
-			fmt.Printf(" ")
+			fmt.Print(" ")
 		}
 	}
-	fmt.Printf("] %d:%02d:%02d", hr, min, sec)
+	fmt.Printf("] %d:%02d:%02d ", hr, min, sec)
 }
 
 func Render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, depth int) image.Image {
