@@ -11,17 +11,15 @@ import (
 )
 
 func Render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, depth int) image.Image {
+	start := time.Now()
+	fmt.Printf("%d x %d pixels, %d x %d samples, %d bounces\n", w, h, cameraSamples, hitSamples, depth)
 	image := image.NewNRGBA(image.Rect(0, 0, w, h))
 	ncpu := runtime.GOMAXPROCS(0)
-	ch := make(chan int, ncpu)
+	ch := make(chan int, h)
 	for i := 0; i < ncpu; i++ {
 		go func (i int) {
 		    rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
 			for y := i; y < h; y += ncpu {
-				if i == 0 {
-					pct := 100 * float64(y) / float64(h - 1)
-					fmt.Printf("\r%d / %d (%.1f%%)", y + 1, h, pct)
-				}
 				for x := 0; x < w; x++ {
 					c := Color{}
 					n := int(math.Sqrt(float64(cameraSamples)))
@@ -39,12 +37,15 @@ func Render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, depth
 					b := uint8(math.Min(255, c.B * 255))
 					image.SetNRGBA(x, y, color.NRGBA{r, g, b, 255})
 				}
+				ch <- 1
 			}
-			ch <- 1
 		}(i)
 	}
-	for i := 0; i < ncpu; i++ {
+	for i := 0; i < h; i++ {
 		<- ch
+		pct := 100 * float64(i) / float64(h - 1)
+		elapsed := time.Since(start)
+		fmt.Printf("\r%d / %d (%.1f%%) %s", i + 1, h, pct, elapsed)
 	}
 	fmt.Println()
 	return image

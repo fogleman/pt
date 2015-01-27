@@ -60,6 +60,17 @@ func (a Vector) Max(b Vector) Vector {
 	return Vector{math.Max(a.X, b.X), math.Max(a.Y, b.Y), math.Max(a.Z, b.Z)}
 }
 
-func (i Vector) Reflect(n Vector) Vector {
+func (n Vector) Reflect(i Vector) Vector {
 	return i.Sub(n.Mul(2 * n.Dot(i)))
+}
+
+func (a Vector) MinAxis() Vector {
+	x, y, z := math.Abs(a.X), math.Abs(a.Y), math.Abs(a.Z)
+	switch {
+	case x <= y && x <= z:
+		return Vector{1, 0, 0}
+	case y <= x && y <= z:
+		return Vector{0, 1, 0}
+	}
+	return Vector{0, 0, 1}
 }

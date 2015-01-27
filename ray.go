@@ -9,7 +9,7 @@ type Ray struct {
 }
 
 func (n Ray) Reflect(i Ray) Ray {
-	d := i.Direction.Reflect(n.Direction)
+	d := n.Direction.Reflect(i.Direction)
 	return Ray{n.Origin, d}
 }
 
@@ -30,10 +30,7 @@ func (r Ray) WeightedBounce(u, v float64) Ray {
 	m1 := math.Sqrt(u)
 	m2 := math.Sqrt(1 - u)
 	a := v * 2 * math.Pi
-	s := r.Direction.Cross(Vector{0, 1, 0})
-	if math.Abs(r.Direction.X) < 0.5 {
-		s = r.Direction.Cross(Vector{1, 0, 0})
-	}
+	s := r.Direction.Cross(r.Direction.MinAxis())
 	t := r.Direction.Cross(s)
 	d := Vector{}
 	d = d.Add(s.Mul(m1 * math.Cos(a)))
@@ -48,10 +45,7 @@ func (r Ray) ConeBounce(theta, u, v float64) Ray {
 	m1 := math.Sin(theta)
 	m2 := math.Cos(theta)
 	a := v * 2 * math.Pi
-	s := r.Direction.Cross(Vector{0, 1, 0})
-	if math.Abs(r.Direction.X) < 0.5 {
-		s = r.Direction.Cross(Vector{1, 0, 0})
-	}
+	s := r.Direction.Cross(r.Direction.MinAxis())
 	t := r.Direction.Cross(s)
 	d := Vector{}
 	d = d.Add(s.Mul(m1 * math.Cos(a)))
