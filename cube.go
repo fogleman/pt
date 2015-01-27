@@ -25,7 +25,7 @@ func (c *Cube) Intersect(r Ray) float64 {
 	return INF
 }
 
-func (c *Cube) Color() Color {
+func (c *Cube) Color(p Vector) Color {
 	return c.Col
 }
 

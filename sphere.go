@@ -1,15 +1,17 @@
 package pt
 
 import (
+	"image"
 	"math"
 	"math/rand"
 )
 
 type Sphere struct {
-	Center Vector
-	Radius float64
-	Col    Color
-	Mat    Material
+	Center  Vector
+	Radius  float64
+	Col     Color
+	Mat     Material
+	Texture image.Image
 }
 
 func (s *Sphere) Intersect(r Ray) float64 {
@@ -27,16 +29,27 @@ func (s *Sphere) Intersect(r Ray) float64 {
 	return INF
 }
 
-func (s *Sphere) Color() Color {
-	return s.Col
+func (s *Sphere) Color(p Vector) Color {
+	if s.Texture == nil {
+		return s.Col
+	}
+	size := s.Texture.Bounds().Max
+	u := math.Atan2(p.Z, p.X)
+	v := math.Atan2(p.Y, Vector{p.X, 0, p.Z}.Length())
+	u = (u + math.Pi) / (2 * math.Pi)
+	v = 1 - (v+math.Pi/2)/math.Pi
+	x := int(u * float64(size.X))
+	y := int(v * float64(size.Y))
+	r, g, b, _ := s.Texture.At(x, y).RGBA()
+	return Color{float64(r) / 65535, float64(g) / 65535, float64(b) / 65535}
 }
 
 func (s *Sphere) Material() Material {
 	return s.Mat
 }
 
-func (s *Sphere) Normal(position Vector) Vector {
-	return position.Sub(s.Center).Normalize()
+func (s *Sphere) Normal(p Vector) Vector {
+	return p.Sub(s.Center).Normalize()
 }
 
 func (s *Sphere) RandomPoint(rnd *rand.Rand) Vector {

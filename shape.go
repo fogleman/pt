@@ -6,7 +6,7 @@ import (
 
 type Shape interface {
 	Intersect(Ray) float64
-	Color() Color
+	Color(Vector) Color
 	Material() Material
 	Normal(Vector) Vector
 	RandomPoint(*rand.Rand) Vector
@@ -26,16 +26,16 @@ func (s *TransformedShape) Intersect(r Ray) float64 {
 	return s.Shape.Intersect(s.Inverse.MulRay(r))
 }
 
-func (s *TransformedShape) Color() Color {
-	return s.Shape.Color()
+func (s *TransformedShape) Color(p Vector) Color {
+	return s.Shape.Color(p)
 }
 
 func (s *TransformedShape) Material() Material {
 	return s.Shape.Material()
 }
 
-func (s *TransformedShape) Normal(v Vector) Vector {
-	return s.Matrix.MulVector(s.Shape.Normal(s.Inverse.MulVector(v)))
+func (s *TransformedShape) Normal(p Vector) Vector {
+	return s.Matrix.MulVector(s.Shape.Normal(s.Inverse.MulVector(p)))
 }
 
 func (s *TransformedShape) RandomPoint(rnd *rand.Rand) Vector {
