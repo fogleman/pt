@@ -15,6 +15,9 @@ Here are things that I'm planning, or at least hoping, to do.
 * OBJ / STL models
 * textured objects
 * constructive solid geometry
+* depth of field
+* input files to define scene
+* animation support
 
 ### Links
 
