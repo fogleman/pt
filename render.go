@@ -19,11 +19,11 @@ func Render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, depth
 	start := time.Now()
 	for i := 0; i < ncpu; i++ {
 		go func(i int) {
+			n := int(math.Sqrt(float64(cameraSamples)))
 			rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
 			for y := i; y < h; y += ncpu {
 				for x := 0; x < w; x++ {
 					c := Color{}
-					n := int(math.Sqrt(float64(cameraSamples)))
 					for u := 0; u < n; u++ {
 						for v := 0; v < n; v++ {
 							fu := (float64(u) + 0.5) * (1 / float64(n))
