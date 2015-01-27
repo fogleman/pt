@@ -43,9 +43,20 @@ func Render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, depth
 	}
 	for i := 0; i < h; i++ {
 		<- ch
-		pct := 100 * float64(i) / float64(h - 1)
+		pct := int(100 * float64(i) / float64(h - 1))
 		elapsed := time.Since(start)
-		fmt.Printf("\r%d / %d (%.1f%%) %s", i + 1, h, pct, elapsed)
+		hr := int(elapsed.Hours())
+		min := int(elapsed.Minutes()) % 60
+		sec := int(elapsed.Seconds()) % 60
+		fmt.Printf("\r%4d / %d (%3d%%) [", i + 1, h, pct)
+		for p := 0; p < 100; p += 2 {
+			if pct >= p {
+				fmt.Printf("=")
+			} else {
+				fmt.Printf(" ")
+			}
+		}
+		fmt.Printf("] %d:%02d:%02d", hr, min, sec)
 	}
 	fmt.Println()
 	return image
