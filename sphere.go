@@ -48,7 +48,7 @@ func (s *Sphere) Color(p Vector) Color {
 	return Color{float64(r) / 65535, float64(g) / 65535, float64(b) / 65535}
 }
 
-func (s *Sphere) Material() Material {
+func (s *Sphere) Material(p Vector) Material {
 	return s.material
 }
 

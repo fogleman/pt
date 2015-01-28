@@ -14,8 +14,8 @@ func (s *Scene) AddShape(shape Shape) {
 	s.shapes = append(s.shapes, shape)
 }
 
-func (s *Scene) AddLight(light Shape) {
-	s.lights = append(s.lights, light)
+func (s *Scene) AddLight(shape Shape) {
+	s.lights = append(s.lights, shape)
 }
 
 func (s *Scene) Intersect(r Ray) (Hit, bool) {
@@ -45,7 +45,7 @@ func (s *Scene) Shadow(r Ray) bool {
 	return false
 }
 
-func (s *Scene) Light(r Ray, rnd *rand.Rand) Color {
+func (s *Scene) DirectLight(r Ray, rnd *rand.Rand) Color {
 	color := Color{}
 	for _, light := range s.lights {
 		p := light.RandomPoint(rnd)
@@ -67,10 +67,12 @@ func (s *Scene) RecursiveSample(r Ray, depth int, rnd *rand.Rand) Color {
 	if !ok {
 		return Color{}
 	}
-	color := hit.Shape.Color(hit.Ray.Origin)
-	direct := s.Light(hit.Ray, rnd).Mul(1 - hit.Shape.Material().Gloss)
+	shape := hit.Shape
+	color := shape.Color(hit.Ray.Origin)
+	material := shape.Material(hit.Ray.Origin)
+	direct := s.DirectLight(hit.Ray, rnd).Mul(1 - material.Gloss)
 	p, u, v := rnd.Float64(), rnd.Float64(), rnd.Float64()
-	ray := hit.Ray.Bounce(r, hit.Shape.Material(), p, u, v)
+	ray := hit.Ray.Bounce(r, material, p, u, v)
 	indirect := s.RecursiveSample(ray, depth-1, rnd)
 	return color.MulColor(direct.Add(indirect))
 }
@@ -83,16 +85,18 @@ func (s *Scene) Sample(r Ray, samples, depth int, rnd *rand.Rand) Color {
 	if !ok {
 		return Color{}
 	}
+	shape := hit.Shape
+	color := shape.Color(hit.Ray.Origin)
+	material := shape.Material(hit.Ray.Origin)
 	result := Color{}
-	color := hit.Shape.Color(hit.Ray.Origin)
 	n := int(math.Sqrt(float64(samples)))
 	for u := 0; u < n; u++ {
 		for v := 0; v < n; v++ {
-			direct := s.Light(hit.Ray, rnd).Mul(1 - hit.Shape.Material().Gloss)
+			direct := s.DirectLight(hit.Ray, rnd).Mul(1 - material.Gloss)
 			p := rnd.Float64()
 			fu := (float64(u) + rnd.Float64()) * (1 / float64(n))
 			fv := (float64(v) + rnd.Float64()) * (1 / float64(n))
-			ray := hit.Ray.Bounce(r, hit.Shape.Material(), p, fu, fv)
+			ray := hit.Ray.Bounce(r, material, p, fu, fv)
 			indirect := s.RecursiveSample(ray, depth-1, rnd)
 			result = result.Add(color.MulColor(direct.Add(indirect)))
 		}

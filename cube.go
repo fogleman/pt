@@ -33,7 +33,7 @@ func (c *Cube) Color(p Vector) Color {
 	return c.color
 }
 
-func (c *Cube) Material() Material {
+func (c *Cube) Material(p Vector) Material {
 	return c.material
 }
 

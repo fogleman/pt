@@ -7,13 +7,13 @@ import (
 type Shape interface {
 	Intersect(Ray) float64
 	Color(Vector) Color
-	Material() Material
+	Material(Vector) Material
 	Normal(Vector) Vector
 	RandomPoint(*rand.Rand) Vector
 }
 
 type TransformedShape struct {
-	Shape   Shape
+	Shape
 	Matrix  Matrix
 	Inverse Matrix
 }
@@ -27,11 +27,11 @@ func (s *TransformedShape) Intersect(r Ray) float64 {
 }
 
 func (s *TransformedShape) Color(p Vector) Color {
-	return s.Shape.Color(p)
+	return s.Shape.Color(s.Inverse.MulVector(p))
 }
 
-func (s *TransformedShape) Material() Material {
-	return s.Shape.Material()
+func (s *TransformedShape) Material(p Vector) Material {
+	return s.Shape.Material(s.Inverse.MulVector(p))
 }
 
 func (s *TransformedShape) Normal(p Vector) Vector {
