@@ -5,6 +5,9 @@ I just started, so there isn't much to see yet.
 
 ![Sample](http://i.imgur.com/J17Py6l.png)
 
+2560 x 1440 pixels, 16 x 64 = 1024 samples per pixel, 8 bounces max
+Render time: 32m42s on 3.4 GHz Intel Core i5 (4 cores)
+
 ### TODO
 
 Here are things that I'm planning, or at least hoping, to do.
@@ -29,6 +32,7 @@ Here are some resources that I have found useful.
 * http://web.cs.wpi.edu/~emmanuel/courses/cs563/write_ups/zackw/realistic_raytracing.html
 * http://www.rorydriscoll.com/2009/01/07/better-sampling/
 * https://www.youtube.com/playlist?list=PLslgisHe5tBPckSYyKoU3jEA4bqiFmNBJ
+* http://www.amazon.com/Physically-Based-Rendering-Second-Edition/dp/0123750792
 
 ### Samples
 
