@@ -45,18 +45,22 @@ func (s *Scene) Shadow(r Ray) bool {
 	return false
 }
 
-func (s *Scene) DirectLight(r Ray, rnd *rand.Rand) Color {
-	color := Color{}
+func (s *Scene) DirectLight(i, n Ray, rnd *rand.Rand) (Color, Color) {
+	dc, sc := Color{}, Color{}
 	for _, light := range s.lights {
 		p := light.RandomPoint(rnd)
-		lr := Ray{r.Origin, p.Sub(r.Origin).Normalize()}
+		lr := Ray{n.Origin, p.Sub(n.Origin).Normalize()}
 		if s.Shadow(lr) {
 			continue
 		}
-		diffuse := math.Max(0, lr.Direction.Dot(r.Direction))
-		color = color.Add(light.Color(p).Mul(diffuse))
+		diffuse := math.Max(0, lr.Direction.Dot(n.Direction))
+		dc = dc.Add(light.Color(p).Mul(diffuse))
+		specular := math.Max(0, i.Direction.Dot(n.Reflect(lr).Direction))
+		sc = sc.Add(light.Color(p).Mul(math.Pow(specular, 20)))
 	}
-	return color.Div(float64(len(s.lights)))
+	dc = dc.Div(float64(len(s.lights)))
+	sc = sc.Div(float64(len(s.lights)))
+	return dc, sc
 }
 
 func (s *Scene) RecursiveSample(r Ray, depth int, rnd *rand.Rand) Color {
@@ -70,11 +74,13 @@ func (s *Scene) RecursiveSample(r Ray, depth int, rnd *rand.Rand) Color {
 	shape := hit.Shape
 	color := shape.Color(hit.Ray.Origin)
 	material := shape.Material(hit.Ray.Origin)
-	direct := s.DirectLight(hit.Ray, rnd).Mul(1 - material.Gloss)
+	direct, specular := s.DirectLight(r, hit.Ray, rnd)
+	direct = direct.Mul(1 - material.Gloss)
+	specular = specular.Mul(0.5)
 	p, u, v := rnd.Float64(), rnd.Float64(), rnd.Float64()
 	ray := hit.Ray.Bounce(r, material, p, u, v)
 	indirect := s.RecursiveSample(ray, depth-1, rnd)
-	return color.MulColor(direct.Add(indirect))
+	return color.MulColor(direct.Add(indirect)).Add(specular)
 }
 
 func (s *Scene) Sample(r Ray, samples, depth int, rnd *rand.Rand) Color {
@@ -92,13 +98,16 @@ func (s *Scene) Sample(r Ray, samples, depth int, rnd *rand.Rand) Color {
 	n := int(math.Sqrt(float64(samples)))
 	for u := 0; u < n; u++ {
 		for v := 0; v < n; v++ {
-			direct := s.DirectLight(hit.Ray, rnd).Mul(1 - material.Gloss)
+			direct, specular := s.DirectLight(r, hit.Ray, rnd)
+			direct = direct.Mul(1 - material.Gloss)
+			specular = specular.Mul(0.5)
 			p := rnd.Float64()
 			fu := (float64(u) + rnd.Float64()) * (1 / float64(n))
 			fv := (float64(v) + rnd.Float64()) * (1 / float64(n))
 			ray := hit.Ray.Bounce(r, material, p, fu, fv)
 			indirect := s.RecursiveSample(ray, depth-1, rnd)
 			result = result.Add(color.MulColor(direct.Add(indirect)))
+			result = result.Add(specular)
 		}
 	}
 	return result.Div(float64(n * n))

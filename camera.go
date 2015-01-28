@@ -27,5 +27,6 @@ func (c *Camera) CastRay(x, y, w, h int, u, v float64) Ray {
 	d = d.Add(c.u.Mul(px * aspect))
 	d = d.Add(c.v.Mul(-py))
 	d = d.Add(c.w.Mul(c.m))
+	d = d.Normalize()
 	return Ray{c.p, d}
 }

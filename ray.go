@@ -9,8 +9,7 @@ type Ray struct {
 }
 
 func (n Ray) Reflect(i Ray) Ray {
-	d := n.Direction.Reflect(i.Direction)
-	return Ray{n.Origin, d}
+	return Ray{n.Origin, n.Direction.Reflect(i.Direction)}
 }
 
 func (r Ray) UniformBounce(u, v float64) Ray {
