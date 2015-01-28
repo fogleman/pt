@@ -11,12 +11,12 @@ import (
 )
 
 func showProgress(start time.Time, i, h int) {
-	pct := int(100 * float64(i+1) / float64(h))
+	pct := int(100 * float64(i) / float64(h))
 	elapsed := time.Since(start)
 	hr := int(elapsed.Hours())
 	min := int(elapsed.Minutes()) % 60
 	sec := int(elapsed.Seconds()) % 60
-	fmt.Printf("\r%4d / %d (%3d%%) [", i+1, h, pct)
+	fmt.Printf("\r%4d / %d (%3d%%) [", i, h, pct)
 	for p := 0; p < 100; p += 2 {
 		if pct > p {
 			fmt.Print("=")
@@ -59,10 +59,10 @@ func Render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, depth
 			}
 		}(i)
 	}
-	showProgress(start, -1, h)
+	showProgress(start, 0, h)
 	for i := 0; i < h; i++ {
 		<-ch
-		showProgress(start, i, h)
+		showProgress(start, i+1, h)
 	}
 	fmt.Println()
 	return image
