@@ -6,22 +6,22 @@ import (
 )
 
 type Scene struct {
-	Shapes []Shape
-	Lights []Shape
+	shapes []Shape
+	lights []Shape
 }
 
 func (s *Scene) AddShape(shape Shape) {
-	s.Shapes = append(s.Shapes, shape)
+	s.shapes = append(s.shapes, shape)
 }
 
 func (s *Scene) AddLight(light Shape) {
-	s.Lights = append(s.Lights, light)
+	s.lights = append(s.lights, light)
 }
 
 func (s *Scene) Intersect(r Ray) (Hit, bool) {
 	hit := Hit{}
 	u := INF
-	for _, shape := range s.Shapes {
+	for _, shape := range s.shapes {
 		t := shape.Intersect(r)
 		if t < u {
 			u = t
@@ -36,7 +36,7 @@ func (s *Scene) Intersect(r Ray) (Hit, bool) {
 
 func (s *Scene) Shadow(r Ray) bool {
 	// TODO: ignore objects behind the light source
-	for _, shape := range s.Shapes {
+	for _, shape := range s.shapes {
 		t := shape.Intersect(r)
 		if t < INF {
 			return true
@@ -47,7 +47,7 @@ func (s *Scene) Shadow(r Ray) bool {
 
 func (s *Scene) Light(r Ray, rnd *rand.Rand) Color {
 	color := Color{}
-	for _, light := range s.Lights {
+	for _, light := range s.lights {
 		p := light.RandomPoint(rnd)
 		lr := Ray{r.Origin, p.Sub(r.Origin).Normalize()}
 		if s.Shadow(lr) {
@@ -56,7 +56,7 @@ func (s *Scene) Light(r Ray, rnd *rand.Rand) Color {
 		diffuse := math.Max(0, lr.Direction.Dot(r.Direction))
 		color = color.Add(light.Color(p).Mul(diffuse))
 	}
-	return color.Div(float64(len(s.Lights)))
+	return color.Div(float64(len(s.lights)))
 }
 
 func (s *Scene) RecursiveSample(r Ray, depth int, rnd *rand.Rand) Color {
