@@ -24,13 +24,13 @@ func scene1() (pt.Scene, pt.Camera) {
 	scene.AddShape(&pt.Sphere{pt.Vector{-2, 0, 2}, 1, pt.HexColor(0xEFC94C), pt.Material{}, nil})
 	scene.AddShape(&pt.Sphere{pt.Vector{2, 0, -2}, 1, pt.HexColor(0xE27A3F), pt.Material{}, nil})
 	scene.AddShape(&pt.Sphere{pt.Vector{2, 0, 2}, 1, pt.HexColor(0xDF5A49), pt.Material{}, nil})
-	scene.AddShape(&pt.Cube{pt.Vector{-10, -2, -10}, pt.Vector{10, -1, 10}, pt.Color{1, 1, 1}, pt.Material{}})
-	scene.AddLight(&pt.Sphere{pt.Vector{-1, 4, -1}, 0.25, pt.Color{1, 1, 1}, pt.Material{}, nil})
-	scene.AddLight(&pt.Sphere{pt.Vector{1, 4, -1}, 0.25, pt.Color{1, 1, 1}, pt.Material{}, nil})
-	scene.AddLight(&pt.Sphere{pt.Vector{-1, 4, 1}, 0.25, pt.Color{1, 1, 1}, pt.Material{}, nil})
-	scene.AddLight(&pt.Sphere{pt.Vector{1, 4, 1}, 0.25, pt.Color{1, 1, 1}, pt.Material{}, nil})
+	scene.AddShape(&pt.Cube{pt.Vector{-100, -2, -100}, pt.Vector{100, -1, 100}, pt.Color{1, 1, 1}, pt.Material{}})
+	scene.AddLight(&pt.Sphere{pt.Vector{-1, 3, -1}, 0.25, pt.Color{1, 1, 1}, pt.Material{}, nil})
+	scene.AddLight(&pt.Sphere{pt.Vector{1, 3, -1}, 0.25, pt.Color{1, 1, 1}, pt.Material{}, nil})
+	scene.AddLight(&pt.Sphere{pt.Vector{-1, 3, 1}, 0.25, pt.Color{1, 1, 1}, pt.Material{}, nil})
+	scene.AddLight(&pt.Sphere{pt.Vector{1, 3, 1}, 0.25, pt.Color{1, 1, 1}, pt.Material{}, nil})
 	// scene.AddLight(&pt.Cube{pt.Vector{-5, 8, -5}, pt.Vector{5, 9, 5}, pt.Color{1, 1, 1}, pt.Material{}})
-	camera.LookAt(pt.Vector{0, 6, -8}, pt.Vector{0, 0, -1}, pt.Vector{0, 1, 0}, 45)
+	camera.LookAt(pt.Vector{0, 6, -8}, pt.Vector{0, 0, -1.5}, pt.Vector{0, 1, 0}, 40)
 	return scene, camera
 }
 
@@ -88,7 +88,7 @@ func save(path string, im image.Image) {
 
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
-	scene, camera := scene2()
-	im := pt.Render(&scene, &camera, 2560/4, 1440/4, 1, 16, 4)
+	scene, camera := scene1()
+	im := pt.Render(&scene, &camera, 2560/4, 1440/4, 4, 16, 8)
 	save("out.png", im)
 }
