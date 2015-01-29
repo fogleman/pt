@@ -14,30 +14,30 @@ type Shape interface {
 
 type TransformedShape struct {
 	Shape
-	Matrix  Matrix
-	Inverse Matrix
+	matrix  Matrix
+	inverse Matrix
 }
 
-func NewTransformedShape(s Shape, m Matrix) *TransformedShape {
+func NewTransformedShape(s Shape, m Matrix) Shape {
 	return &TransformedShape{s, m, m.Inverse()}
 }
 
 func (s *TransformedShape) Intersect(r Ray) float64 {
-	return s.Shape.Intersect(s.Inverse.MulRay(r))
+	return s.Shape.Intersect(s.inverse.MulRay(r))
 }
 
 func (s *TransformedShape) Color(p Vector) Color {
-	return s.Shape.Color(s.Inverse.MulVector(p))
+	return s.Shape.Color(s.inverse.MulVector(p))
 }
 
 func (s *TransformedShape) Material(p Vector) Material {
-	return s.Shape.Material(s.Inverse.MulVector(p))
+	return s.Shape.Material(s.inverse.MulVector(p))
 }
 
 func (s *TransformedShape) Normal(p Vector) Vector {
-	return s.Matrix.MulVector(s.Shape.Normal(s.Inverse.MulVector(p)))
+	return s.matrix.MulVector(s.Shape.Normal(s.inverse.MulVector(p)))
 }
 
 func (s *TransformedShape) RandomPoint(rnd *rand.Rand) Vector {
-	return s.Matrix.MulVector(s.Shape.RandomPoint(rnd))
+	return s.matrix.MulVector(s.Shape.RandomPoint(rnd))
 }
