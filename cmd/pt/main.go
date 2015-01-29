@@ -24,7 +24,7 @@ func scene1() (pt.Scene, pt.Camera) {
 	scene.AddShape(pt.NewSphere(pt.Vector{-2, 0, 2}, 1, pt.HexColor(0xEFC94C), pt.Material{}, nil))
 	scene.AddShape(pt.NewSphere(pt.Vector{2, 0, -2}, 1, pt.HexColor(0xE27A3F), pt.Material{}, nil))
 	scene.AddShape(pt.NewSphere(pt.Vector{2, 0, 2}, 1, pt.HexColor(0xDF5A49), pt.Material{}, nil))
-	scene.AddShape(pt.NewCube(pt.Vector{-100, -2, -100}, pt.Vector{100, -1, 100}, pt.Color{1, 1, 1}, pt.Material{}))
+	scene.AddShape(pt.NewPlane(pt.Vector{0, -1, 0}, pt.Vector{0, 1, 0}, pt.Color{1, 1, 1}, pt.Material{}))
 	scene.AddLight(pt.NewSphere(pt.Vector{-1, 3, -1}, 0.25, pt.Color{1, 1, 1}, pt.Material{}, nil))
 	scene.AddLight(pt.NewSphere(pt.Vector{1, 3, -1}, 0.25, pt.Color{1, 1, 1}, pt.Material{}, nil))
 	scene.AddLight(pt.NewSphere(pt.Vector{-1, 3, 1}, 0.25, pt.Color{1, 1, 1}, pt.Material{}, nil))
@@ -51,7 +51,7 @@ func scene2() (pt.Scene, pt.Camera) {
 	scene.AddShape(pt.NewCube(pt.Vector{-8, -1, -8}, pt.Vector{-7, 10, 8}, pt.Color{1, 1, 1}, pt.Material{}))
 	scene.AddShape(pt.NewCube(pt.Vector{-8, -1, 7}, pt.Vector{8, 10, 8}, pt.HexColor(0xE27A3F), pt.Material{}))
 	scene.AddShape(pt.NewCube(pt.Vector{-8, -1, -8}, pt.Vector{8, 10, -7}, pt.HexColor(0xE27A3F), pt.Material{}))
-	scene.AddShape(pt.NewCube(pt.Vector{-100, -2, -100}, pt.Vector{100, -1, 100}, pt.Color{1, 1, 1}, pt.Material{}))
+	scene.AddShape(pt.NewPlane(pt.Vector{0, -1, 0}, pt.Vector{0, 1, 0}, pt.Color{1, 1, 1}, pt.Material{}))
 	scene.AddLight(pt.NewSphere(pt.Vector{-1, 8, -1}, 0.25, pt.Color{0.6, 0.6, 0.6}, pt.Material{}, nil))
 	scene.AddLight(pt.NewSphere(pt.Vector{1, 8, -1}, 0.25, pt.Color{0.6, 0.6, 0.6}, pt.Material{}, nil))
 	scene.AddLight(pt.NewSphere(pt.Vector{-1, 8, 1}, 0.25, pt.Color{0.6, 0.6, 0.6}, pt.Material{}, nil))
@@ -67,7 +67,7 @@ func scene3() (pt.Scene, pt.Camera) {
 			scene.AddShape(pt.NewSphere(pt.Vector{float64(x) - 4.5, 0, float64(z) - 4.5}, 0.45, pt.HexColor(0xEFC94C), pt.Material{}, nil))
 		}
 	}
-	scene.AddShape(pt.NewCube(pt.Vector{-100, -2, -100}, pt.Vector{100, 0, 100}, pt.Color{1, 1, 1}, pt.Material{}))
+	scene.AddShape(pt.NewPlane(pt.Vector{}, pt.Vector{0, 1, 0}, pt.Color{1, 1, 1}, pt.Material{}))
 	// scene.AddLight(pt.NewCube(pt.Vector{-5, 8, -5}, pt.Vector{5, 9, 5}, pt.Color{1, 1, 1}, pt.Material{}))
 	scene.AddLight(pt.NewSphere(pt.Vector{0, 2, 0}, 0.25, pt.Color{1, 1, 1}, pt.Material{}, nil))
 	camera := pt.LookAt(pt.Vector{0, 5, -8}, pt.Vector{0, 0, -2}, pt.Vector{0, 1, 0}, 45)
