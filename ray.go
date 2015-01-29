@@ -8,6 +8,10 @@ type Ray struct {
 	Origin, Direction Vector
 }
 
+func (r Ray) Position(t float64) Vector {
+	return r.Origin.Add(r.Direction.Mul(t))
+}
+
 func (n Ray) Reflect(i Ray) Ray {
 	return Ray{n.Origin, n.Direction.Reflect(i.Direction)}
 }

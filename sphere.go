@@ -20,12 +20,11 @@ func NewSphere(center Vector, radius float64, color Color, material Material, te
 
 func (s *Sphere) Intersect(r Ray) float64 {
 	to := r.Origin.Sub(s.center)
-	a := r.Direction.Dot(r.Direction)
-	b := 2 * to.Dot(r.Direction)
+	b := to.Dot(r.Direction)
 	c := to.Dot(to) - s.radius*s.radius
-	d := b*b - 4*a*c
+	d := b*b - c
 	if d > 0 {
-		t := (-b - math.Sqrt(d)) / (2 * a)
+		t := -b - math.Sqrt(d)
 		if t > 0 {
 			return t
 		}

@@ -25,7 +25,7 @@ func (s *Scene) Intersect(r Ray) (Hit, bool) {
 		t := shape.Intersect(r)
 		if t < u {
 			u = t
-			p := r.Origin.Add(r.Direction.Mul(t))
+			p := r.Position(t)
 			n := shape.Normal(p)
 			hit = Hit{shape, Ray{p, n}}
 		}
