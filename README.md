@@ -5,9 +5,9 @@ I just started, so there isn't much to see yet.
 
 ![Sample](http://i.imgur.com/zHRmmeP.png)
 
-    2560 x 1440 pixels, 16 x 64 = 1024 samples per pixel, 8 bounces max
-    6 shapes, 4 lights
-    Render time: 32m42s on 3.4 GHz Intel Core i5 (4 cores)
+    1280 x 720 pixels, 25 x 64 = 1600 samples per pixel, 8 bounces max
+    3 shapes, 1 light
+    Render time: 3m52s on 3.4 GHz Intel Core i5 (4 cores)
 
 ### TODO
 
