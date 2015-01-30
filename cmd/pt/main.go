@@ -2,22 +2,10 @@ package main
 
 import (
 	"github.com/fogleman/pt"
-	"image"
-	"image/png"
-	// "image/jpeg"
-	"os"
 	"runtime"
 )
 
 func scene1() (pt.Scene, pt.Camera) {
-	// file, err := os.Open("texture.jpg")
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// im, err := jpeg.Decode(file)
-	// if err != nil {
-	// 	panic(err)
-	// }
 	scene := pt.Scene{}
 	scene.AddShape(pt.NewSphere(pt.Vector{0, 0, 0}, 1, pt.HexColor(0x334D5C), pt.DiffuseMaterial(), nil))
 	scene.AddShape(pt.NewSphere(pt.Vector{-2, 0, -2}, 1, pt.HexColor(0x45B29D), pt.DiffuseMaterial(), nil))
@@ -29,7 +17,6 @@ func scene1() (pt.Scene, pt.Camera) {
 	scene.AddLight(pt.NewSphere(pt.Vector{1, 3, -1}, 0.25, pt.Color{1, 1, 1}, pt.DiffuseMaterial(), nil))
 	scene.AddLight(pt.NewSphere(pt.Vector{-1, 3, 1}, 0.25, pt.Color{1, 1, 1}, pt.DiffuseMaterial(), nil))
 	scene.AddLight(pt.NewSphere(pt.Vector{1, 3, 1}, 0.25, pt.Color{1, 1, 1}, pt.DiffuseMaterial(), nil))
-	// scene.AddLight(pt.NewCube(pt.Vector{-5, 8, -5}, pt.Vector{5, 9, 5}, pt.Color{1, 1, 1}, pt.DiffuseMaterial()))
 	camera := pt.LookAt(pt.Vector{0, 6, -8}, pt.Vector{0, 0, -1.5}, pt.Vector{0, 1, 0}, 40)
 	return scene, camera
 }
@@ -68,7 +55,6 @@ func scene3() (pt.Scene, pt.Camera) {
 		}
 	}
 	scene.AddShape(pt.NewPlane(pt.Vector{}, pt.Vector{0, 1, 0}, pt.Color{1, 1, 1}, pt.DiffuseMaterial()))
-	// scene.AddLight(pt.NewCube(pt.Vector{-5, 8, -5}, pt.Vector{5, 9, 5}, pt.Color{1, 1, 1}, pt.DiffuseMaterial()))
 	scene.AddLight(pt.NewSphere(pt.Vector{0, 2, 0}, 0.25, pt.Color{1, 1, 1}, pt.DiffuseMaterial(), nil))
 	camera := pt.LookAt(pt.Vector{0, 5, -8}, pt.Vector{0, 0, -2}, pt.Vector{0, 1, 0}, 45)
 	return scene, camera
@@ -84,22 +70,11 @@ func scene4() (pt.Scene, pt.Camera) {
 	return scene, camera
 }
 
-
-func save(path string, im image.Image) {
-	file, err := os.Create(path)
-	if err != nil {
-		panic(err)
-	}
-	defer file.Close()
-	err = png.Encode(file, im)
-	if err != nil {
-		panic(err)
-	}
-}
-
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	scene, camera := scene4()
 	im := pt.Render(&scene, &camera, 2560/4, 1440/4, 4, 16, 8)
-	save("out.png", im)
+	if err := pt.Save("out.png", im); err != nil {
+		panic(err)
+	}
 }
