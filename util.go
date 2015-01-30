@@ -30,6 +30,7 @@ func LoadJPG(path string) (image.Image, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer file.Close()
 	return jpeg.Decode(file)
 }
 
@@ -38,5 +39,6 @@ func LoadPNG(path string) (image.Image, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer file.Close()
 	return png.Decode(file)
 }
