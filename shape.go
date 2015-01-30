@@ -35,7 +35,7 @@ func (s *TransformedShape) Material(p Vector) Material {
 }
 
 func (s *TransformedShape) Normal(p Vector) Vector {
-	return s.matrix.MulVector(s.Shape.Normal(s.inverse.MulVector(p)))
+	return s.matrix.MulDirection(s.Shape.Normal(s.inverse.MulVector(p)))
 }
 
 func (s *TransformedShape) RandomPoint(rnd *rand.Rand) Vector {

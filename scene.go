@@ -34,11 +34,10 @@ func (s *Scene) Intersect(r Ray, shapes []Shape) (Hit, bool) {
 	return hit, ok
 }
 
-func (s *Scene) Shadow(r Ray) bool {
-	// TODO: ignore objects behind the light source
+func (s *Scene) Shadow(r Ray, max float64) bool {
 	for _, shape := range s.shapes {
 		t := shape.Intersect(r)
-		if t < INF {
+		if t < max {
 			return true
 		}
 	}
@@ -49,8 +48,9 @@ func (s *Scene) DirectLight(i, n Ray, rnd *rand.Rand) Color {
 	color := Color{}
 	for _, light := range s.lights {
 		p := light.RandomPoint(rnd)
-		lr := Ray{n.Origin, p.Sub(n.Origin).Normalize()}
-		if s.Shadow(lr) {
+		d := p.Sub(n.Origin)
+		lr := Ray{n.Origin, d.Normalize()}
+		if s.Shadow(lr, d.Length()) {
 			continue
 		}
 		diffuse := math.Max(0, lr.Direction.Dot(n.Direction))

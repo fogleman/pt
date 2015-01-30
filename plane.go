@@ -1,7 +1,6 @@
 package pt
 
 import (
-	"math"
 	"math/rand"
 )
 
@@ -17,7 +16,7 @@ func NewPlane(center, normal Vector, color Color, material Material) Shape {
 
 func (p *Plane) Intersect(r Ray) float64 {
 	k := r.Direction.Dot(p.normal)
-	if math.Abs(k) < EPS {
+	if k > EPS {
 		return INF
 	}
 	t := p.center.Sub(r.Origin).Dot(p.normal) / k
