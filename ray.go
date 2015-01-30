@@ -71,9 +71,9 @@ func (r Ray) ConeBounce(theta, u, v float64) Ray {
 }
 
 func (r Ray) Bounce(i Ray, material Material, p, u, v float64) (Ray, bool) {
-	if p < r.Reflectance(i, 1, 2) {
+	if p < r.Reflectance(i, 1, material.Index) {
 		reflected := r.Reflect(i)
-		return reflected.ConeBounce(Radians(0), u, v), true
+		return reflected.ConeBounce(material.Gloss, u, v), true
 	} else {
 		return r.WeightedBounce(u, v), false
 	}
