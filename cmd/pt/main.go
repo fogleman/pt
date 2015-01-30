@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/fogleman/pt"
-	"runtime"
 )
 
 func scene1() (pt.Scene, pt.Camera) {
@@ -71,7 +70,6 @@ func scene4() (pt.Scene, pt.Camera) {
 }
 
 func main() {
-	runtime.GOMAXPROCS(runtime.NumCPU())
 	scene, camera := scene4()
 	im := pt.Render(&scene, &camera, 2560/4, 1440/4, 4, 16, 8)
 	if err := pt.Save("out.png", im); err != nil {
