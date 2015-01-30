@@ -3,7 +3,7 @@
 I am writing a [path tracer](http://en.wikipedia.org/wiki/Path_tracing) in Go.
 I just started, so there isn't much to see yet.
 
-![Sample](http://i.imgur.com/J17Py6l.png)
+![Sample](http://i.imgur.com/zHRmmeP.png)
 
     2560 x 1440 pixels, 16 x 64 = 1024 samples per pixel, 8 bounces max
     6 shapes, 4 lights
@@ -37,6 +37,8 @@ Here are some resources that I have found useful.
 * http://www.amazon.com/Physically-Based-Rendering-Second-Edition/dp/0123750792
 
 ### Samples
+
+![Sample](http://i.imgur.com/J17Py6l.png)
 
 ![Sample](http://i.imgur.com/zCPDKbt.png)
 
