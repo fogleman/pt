@@ -74,6 +74,17 @@ func scene3() (pt.Scene, pt.Camera) {
 	return scene, camera
 }
 
+func scene4() (pt.Scene, pt.Camera) {
+	scene := pt.Scene{}
+	scene.AddShape(pt.NewSphere(pt.Vector{1.5, 1, 0}, 1, pt.HexColor(0x334D5C), pt.Material{}, nil))
+	scene.AddShape(pt.NewSphere(pt.Vector{-1, 1, 2}, 1, pt.HexColor(0xEFC94C), pt.Material{}, nil))
+	scene.AddShape(pt.NewPlane(pt.Vector{0, 0, 0}, pt.Vector{0, 1, 0}, pt.Color{1, 1, 1}, pt.Material{}))
+	scene.AddLight(pt.NewSphere(pt.Vector{-1, 3, -1}, 0.5, pt.Color{1, 1, 1}, pt.Material{}, nil))
+	camera := pt.LookAt(pt.Vector{0, 2, -5}, pt.Vector{0, 0, 3}, pt.Vector{0, 1, 0}, 45)
+	return scene, camera
+}
+
+
 func save(path string, im image.Image) {
 	file, err := os.Create(path)
 	if err != nil {
@@ -88,7 +99,7 @@ func save(path string, im image.Image) {
 
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
-	scene, camera := scene1()
+	scene, camera := scene4()
 	im := pt.Render(&scene, &camera, 2560/4, 1440/4, 4, 16, 8)
 	save("out.png", im)
 }
