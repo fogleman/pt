@@ -56,11 +56,10 @@ func (r Ray) WeightedBounce(u, v float64) Ray {
 }
 
 func (r Ray) ConeBounce(theta, u, v float64) Ray {
-	// TODO: make weighted
 	if theta < EPS {
 		return r
 	}
-	theta = math.Acos(math.Cos(theta) + (1-math.Cos(theta))*u)
+	theta = math.Acos(u) * theta
 	m1 := math.Sin(theta)
 	m2 := math.Cos(theta)
 	a := v * 2 * math.Pi
