@@ -39,7 +39,7 @@ func (me *Triangle) Intersect(r Ray) float64 {
 	}
 	q := s.Cross(e1)
 	v := f * r.Direction.Dot(q)
-	if v < 0 || u + v > 1 {
+	if v < 0 || u+v > 1 {
 		return INF
 	}
 	t := f * e2.Dot(q)
