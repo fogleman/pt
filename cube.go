@@ -10,21 +10,26 @@ type Cube struct {
 	max      Vector
 	color    Color
 	material Material
+	box      Box
 }
 
 func NewCube(min, max Vector, color Color, material Material) Shape {
-	return &Cube{min, max, color, material}
+	box := Box{min, max}
+	return &Cube{min, max, color, material, box}
+}
+
+func (c *Cube) Box() Box {
+	return c.box
 }
 
 func (c *Cube) Intersect(r Ray) float64 {
-	a := c.min.Sub(r.Origin).DivVector(r.Direction)
-	b := c.max.Sub(r.Origin).DivVector(r.Direction)
-	t1 := a.Min(b)
-	t2 := a.Max(b)
-	n := math.Max(math.Max(t1.X, t1.Y), t1.Z)
-	f := math.Min(math.Min(t2.X, t2.Y), t2.Z)
-	if n > 0 && n < f {
-		return n
+	n := c.min.Sub(r.Origin).DivVector(r.Direction)
+	f := c.max.Sub(r.Origin).DivVector(r.Direction)
+	n, f = n.Min(f), n.Max(f)
+	t0 := math.Max(math.Max(n.X, n.Y), n.Z)
+	t1 := math.Min(math.Min(f.X, f.Y), f.Z)
+	if t0 > 0 && t0 < t1 {
+		return t0
 	}
 	return INF
 }

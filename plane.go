@@ -14,6 +14,10 @@ func NewPlane(center, normal Vector, color Color, material Material) Shape {
 	return &Plane{center, normal, color, material}
 }
 
+func (p *Plane) Box() Box {
+	return Box{} // TODO: fix
+}
+
 func (p *Plane) Intersect(r Ray) float64 {
 	k := r.Direction.Dot(p.normal)
 	if k > EPS {

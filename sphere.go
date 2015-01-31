@@ -12,10 +12,18 @@ type Sphere struct {
 	color    Color
 	material Material
 	texture  image.Image
+	box      Box
 }
 
 func NewSphere(center Vector, radius float64, color Color, material Material, texture image.Image) Shape {
-	return &Sphere{center, radius, color, material, texture}
+	min := Vector{center.X - radius, center.Y - radius, center.Z - radius}
+	max := Vector{center.X + radius, center.Y + radius, center.Z + radius}
+	box := Box{min, max}
+	return &Sphere{center, radius, color, material, texture, box}
+}
+
+func (s *Sphere) Box() Box {
+	return s.box
 }
 
 func (s *Sphere) Intersect(r Ray) float64 {

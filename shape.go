@@ -5,6 +5,7 @@ import (
 )
 
 type Shape interface {
+	Box() Box
 	Intersect(Ray) float64
 	Color(Vector) Color
 	Material(Vector) Material
