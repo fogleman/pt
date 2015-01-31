@@ -59,7 +59,7 @@ func (r Ray) ConeBounce(theta, u, v float64) Ray {
 	if theta < EPS {
 		return r
 	}
-	theta = math.Acos(u) * theta
+	theta = theta * (1 - (2 * math.Acos(u) / math.Pi))
 	m1 := math.Sin(theta)
 	m2 := math.Cos(theta)
 	a := v * 2 * math.Pi
