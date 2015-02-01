@@ -10,17 +10,19 @@ type Triangle struct {
 	color      Color
 	material   Material
 	normal     Vector
+	box        Box
 }
 
 func NewTriangle(v1, v2, v3 Vector, color Color, material Material) Shape {
 	normal := v1.Sub(v2).Cross(v2.Sub(v3))
-	return &Triangle{v1, v2, v3, color, material, normal}
+	min := v1.Min(v2).Min(v3)
+	max := v1.Max(v2).Max(v3)
+	box := Box{min, max}
+	return &Triangle{v1, v2, v3, color, material, normal, box}
 }
 
 func (t *Triangle) Box() Box {
-	min := t.v1.Min(t.v2).Min(t.v3)
-	max := t.v1.Max(t.v2).Max(t.v3)
-	return Box{min, max}
+	return t.box
 }
 
 func (me *Triangle) Intersect(r Ray) float64 {
