@@ -13,9 +13,42 @@ type Node struct {
 	right  *Node
 }
 
+func NewTree(shapes []Shape) *Node {
+	node := NodeForShapes(shapes)
+	node.Split(0)
+	return node
+}
+
 func NodeForShapes(shapes []Shape) *Node {
 	box := BoxForShapes(shapes)
 	return &Node{AxisNone, 0, box, shapes, nil, nil}
+}
+
+func (node *Node) Intersect(r Ray) (hit Hit) {
+	hit.T = INF
+	n, f := node.box.Intersect(r)
+	if n < 0 || f < n {
+		return
+	}
+	if node.axis == AxisNone {
+		for _, shape := range node.shapes {
+			t := shape.Intersect(r)
+			if t < hit.T {
+				p := r.Position(t)
+				n := shape.Normal(p)
+				hit = Hit{shape, Ray{p, n}, t}
+			}
+		}
+		return
+	}
+	// TODO: only check children if needed and in appropriate order
+	h1 := node.left.Intersect(r)
+	h2 := node.right.Intersect(r)
+	if h1.T < h2.T {
+		return h1
+	} else {
+		return h2
+	}
 }
 
 func (node *Node) PartitionCount(axis Axis, point float64) (left, right int) {
@@ -67,8 +100,8 @@ func (node *Node) Split(depth int) {
 	best := len(node.shapes) + 1
 	bestAxis := AxisNone
 	bestPoint := 0.0
-	for i := 0; i < len(xs) - 1; i++ {
-		x := (xs[i] + xs[i + 1]) / 2
+	for i := 0; i < len(xs)-1; i++ {
+		x := (xs[i] + xs[i+1]) / 2
 		l, r := node.PartitionCount(AxisX, x)
 		n := int(math.Max(float64(l), float64(r)))
 		if n < best {
@@ -77,8 +110,8 @@ func (node *Node) Split(depth int) {
 			bestPoint = x
 		}
 	}
-	for i := 0; i < len(ys) - 1; i++ {
-		y := (ys[i] + ys[i + 1]) / 2
+	for i := 0; i < len(ys)-1; i++ {
+		y := (ys[i] + ys[i+1]) / 2
 		l, r := node.PartitionCount(AxisY, y)
 		n := int(math.Max(float64(l), float64(r)))
 		if n < best {
@@ -87,8 +120,8 @@ func (node *Node) Split(depth int) {
 			bestPoint = y
 		}
 	}
-	for i := 0; i < len(zs) - 1; i++ {
-		z := (zs[i] + zs[i + 1]) / 2
+	for i := 0; i < len(zs)-1; i++ {
+		z := (zs[i] + zs[i+1]) / 2
 		l, r := node.PartitionCount(AxisZ, z)
 		n := int(math.Max(float64(l), float64(r)))
 		if n < best {
