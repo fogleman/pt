@@ -6,8 +6,15 @@ import (
 )
 
 type Scene struct {
-	shapes []Shape
-	lights []Shape
+	shapes    []Shape
+	lights    []Shape
+	shapeTree *Node
+	lightTree *Node
+}
+
+func (s *Scene) Compile() {
+	s.shapeTree = NewTree(s.shapes)
+	s.lightTree = NewTree(s.lights)
 }
 
 func (s *Scene) AddShape(shape Shape) {
@@ -18,30 +25,21 @@ func (s *Scene) AddLight(shape Shape) {
 	s.lights = append(s.lights, shape)
 }
 
-func (s *Scene) Intersect(r Ray, shapes []Shape) (Hit, bool) {
-	hit := Hit{}
-	u := INF
-	for _, shape := range shapes {
-		t := shape.Intersect(r)
-		if t < u {
-			u = t
-			p := r.Position(t)
-			n := shape.Normal(p)
-			hit = Hit{shape, Ray{p, n}}
-		}
-	}
-	ok := u < INF
+func (s *Scene) IntersectShapes(r Ray) (Hit, bool) {
+	hit := s.shapeTree.Intersect(r)
+	ok := hit.T < INF
+	return hit, ok
+}
+
+func (s *Scene) IntersectLights(r Ray) (Hit, bool) {
+	hit := s.lightTree.Intersect(r)
+	ok := hit.T < INF
 	return hit, ok
 }
 
 func (s *Scene) Shadow(r Ray, max float64) bool {
-	for _, shape := range s.shapes {
-		t := shape.Intersect(r)
-		if t < max {
-			return true
-		}
-	}
-	return false
+	hit := s.shapeTree.Intersect(r)
+	return hit.T < max
 }
 
 func (s *Scene) DirectLight(i, n Ray, rnd *rand.Rand) Color {
@@ -64,12 +62,12 @@ func (s *Scene) RecursiveSample(r Ray, reflected bool, depth int, rnd *rand.Rand
 		return Color{}
 	}
 	if reflected {
-		hit, ok := s.Intersect(r, s.lights)
+		hit, ok := s.IntersectLights(r)
 		if ok {
 			return hit.Shape.Color(hit.Ray.Origin)
 		}
 	}
-	hit, ok := s.Intersect(r, s.shapes)
+	hit, ok := s.IntersectShapes(r)
 	if !ok {
 		return Color{}
 	}
@@ -97,7 +95,7 @@ func (s *Scene) Sample(r Ray, samples, depth int, rnd *rand.Rand) Color {
 	if depth < 0 {
 		return Color{}
 	}
-	hit, ok := s.Intersect(r, s.shapes)
+	hit, ok := s.IntersectShapes(r)
 	if !ok {
 		return Color{}
 	}

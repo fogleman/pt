@@ -30,6 +30,7 @@ func showProgress(start time.Time, i, h int) {
 func Render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, depth int) image.Image {
 	ncpu := runtime.NumCPU()
 	runtime.GOMAXPROCS(ncpu)
+	scene.Compile()
 	image := image.NewNRGBA(image.Rect(0, 0, w, h))
 	ch := make(chan int, h)
 	fmt.Printf("%d x %d pixels, %d x %d = %d samples, %d bounces, %d cores\n",
