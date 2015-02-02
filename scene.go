@@ -26,19 +26,16 @@ func (s *Scene) AddLight(shape Shape) {
 }
 
 func (s *Scene) IntersectShapes(r Ray) (Hit, bool) {
-	hit := s.shapeTree.Intersect(r)
-	ok := hit.T < INF
-	return hit, ok
+	return s.shapeTree.Intersect(r)
 }
 
 func (s *Scene) IntersectLights(r Ray) (Hit, bool) {
-	hit := s.lightTree.Intersect(r)
-	ok := hit.T < INF
-	return hit, ok
+	return s.lightTree.Intersect(r)
 }
 
 func (s *Scene) Shadow(r Ray, max float64) bool {
-	hit := s.shapeTree.Intersect(r)
+	// TODO: more efficient?
+	hit, _ := s.shapeTree.Intersect(r)
 	return hit.T < max
 }
 

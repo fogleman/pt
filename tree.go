@@ -24,31 +24,76 @@ func NodeForShapes(shapes []Shape) *Node {
 	return &Node{AxisNone, 0, box, shapes, nil, nil}
 }
 
-func (node *Node) Intersect(r Ray) (hit Hit) {
-	hit.T = INF
-	n, f := node.box.Intersect(r)
-	if n < 0 || f < n {
+func (node *Node) Intersect(r Ray) (hit Hit, ok bool) {
+	tmin, tmax := node.box.Intersect(r)
+	if tmax < tmin || tmax < 0 {
 		return
 	}
+	hit = node.RecursiveIntersect(r, tmin, tmax)
+	ok = hit.T < INF
+	return
+}
+
+func (node *Node) RecursiveIntersect(r Ray, tmin, tmax float64) (hit Hit) {
 	if node.axis == AxisNone {
-		for _, shape := range node.shapes {
-			t := shape.Intersect(r)
-			if t < hit.T {
-				p := r.Position(t)
-				n := shape.Normal(p)
-				hit = Hit{shape, Ray{p, n}, t}
-			}
-		}
-		return
+		return node.IntersectShapes(r)
 	}
+	var tsplit float64
+	var swap bool
+	switch node.axis {
+	case AxisX:
+		tsplit = (node.point - r.Origin.X) / r.Direction.X
+		swap = r.Origin.X > node.point
+	case AxisY:
+		tsplit = (node.point - r.Origin.Y) / r.Direction.Y
+		swap = r.Origin.Y > node.point
+	case AxisZ:
+		tsplit = (node.point - r.Origin.Z) / r.Direction.Z
+		swap = r.Origin.Z > node.point
+	}
+	var left, right bool
+	if tsplit < tmin {
+		right = true
+	} else if tsplit > tmax {
+		left = true
+	} else {
+		right = true
+		left = true
+	}
+	if swap {
+		left, right = right, left
+	}
+	// tsplit tmin tmax - right
+	// tmin tsplit tmax - both
+	// tmin tmax split - left
 	// TODO: only check children if needed and in appropriate order
-	h1 := node.left.Intersect(r)
-	h2 := node.right.Intersect(r)
+	h1, h2 := Hit{}, Hit{}
+	h1.T = INF
+	h2.T = INF
+	if left {
+		h1 = node.left.RecursiveIntersect(r, tmin, tmax)
+	}
+	if right {
+		h2 = node.right.RecursiveIntersect(r, tmin, tmax)
+	}
 	if h1.T < h2.T {
 		return h1
 	} else {
 		return h2
 	}
+}
+
+func (node *Node) IntersectShapes(r Ray) (hit Hit) {
+	hit.T = INF
+	for _, shape := range node.shapes {
+		t := shape.Intersect(r)
+		if t < hit.T {
+			p := r.Position(t)
+			n := shape.Normal(p)
+			hit = Hit{shape, Ray{p, n}, t}
+		}
+	}
+	return
 }
 
 func (node *Node) PartitionCount(axis Axis, point float64) (left, right int) {
@@ -137,4 +182,5 @@ func (node *Node) Split(depth int) {
 	node.right = NodeForShapes(r)
 	node.left.Split(depth + 1)
 	node.right.Split(depth + 1)
+	// node.shapes = nil
 }
