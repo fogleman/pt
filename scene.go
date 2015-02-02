@@ -34,9 +34,8 @@ func (s *Scene) IntersectLights(r Ray) (Hit, bool) {
 }
 
 func (s *Scene) Shadow(r Ray, max float64) bool {
-	// TODO: more efficient?
-	hit, _ := s.shapeTree.Intersect(r)
-	return hit.T < max
+	t := s.shapeTree.Shadow(r)
+	return t < max
 }
 
 func (s *Scene) DirectLight(i, n Ray, rnd *rand.Rand) Color {

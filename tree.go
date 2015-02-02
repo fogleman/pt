@@ -21,9 +21,23 @@ func (tree *Tree) Intersect(r Ray) (hit Hit, ok bool) {
 	if tmax < tmin || tmax <= 0 {
 		return
 	}
-	hit = tree.root.Intersect(r, tmin, tmax)
-	ok = hit.T < INF
+	s, t := tree.root.Intersect(r, tmin, tmax)
+	if s != nil {
+		p := r.Position(t)
+		n := s.Normal(p)
+		hit = Hit{s, Ray{p, n}, t}
+	}
+	ok = t < INF
 	return
+}
+
+func (tree *Tree) Shadow(r Ray) float64 {
+	tmin, tmax := tree.box.Intersect(r)
+	if tmax < tmin || tmax <= 0 {
+		return INF
+	}
+	_, t := tree.root.Intersect(r, tmin, tmax)
+	return t
 }
 
 type Node struct {
@@ -38,7 +52,7 @@ func NewNode(shapes []Shape) *Node {
 	return &Node{AxisNone, 0, shapes, nil, nil}
 }
 
-func (node *Node) Intersect(r Ray, tmin, tmax float64) (hit Hit) {
+func (node *Node) Intersect(r Ray, tmin, tmax float64) (s Shape, t float64) {
 	if node.axis == AxisNone {
 		return node.IntersectShapes(r)
 	}
@@ -68,24 +82,23 @@ func (node *Node) Intersect(r Ray, tmin, tmax float64) (hit Hit) {
 	} else if tsplit < tmin {
 		return second.Intersect(r, tmin, tmax)
 	} else {
-		h1 := first.Intersect(r, tmin, tsplit)
-		h2 := second.Intersect(r, tsplit, tmax)
-		if h1.T < h2.T {
-			return h1
+		s1, t1 := first.Intersect(r, tmin, tsplit)
+		s2, t2 := second.Intersect(r, tsplit, tmax)
+		if t1 <= t2 {
+			return s1, t1
 		} else {
-			return h2
+			return s2, t2
 		}
 	}
 }
 
-func (node *Node) IntersectShapes(r Ray) (hit Hit) {
-	hit.T = INF
+func (node *Node) IntersectShapes(r Ray) (s Shape, t float64) {
+	t = INF
 	for _, shape := range node.shapes {
-		t := shape.Intersect(r)
-		if t < hit.T {
-			p := r.Position(t)
-			n := shape.Normal(p)
-			hit = Hit{shape, Ray{p, n}, t}
+		u := shape.Intersect(r)
+		if u < t {
+			s = shape
+			t = u
 		}
 	}
 	return
