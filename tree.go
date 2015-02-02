@@ -4,51 +4,91 @@ import (
 	"math"
 )
 
+type Tree struct {
+	box  Box
+	root *Node
+}
+
+func NewTree(shapes []Shape) *Tree {
+	box := BoxForShapes(shapes)
+	node := NewNode(shapes)
+	node.Split(0)
+	return &Tree{box, node}
+}
+
+func (tree *Tree) Intersect(r Ray) (hit Hit, ok bool) {
+	tmin, tmax := tree.box.Intersect(r)
+	if tmax < tmin || tmax <= 0 {
+		return
+	}
+	hit = tree.root.Intersect(r, tmin, tmax)
+	ok = hit.T < INF
+	return
+}
+
 type Node struct {
 	axis   Axis
 	point  float64
-	box    Box
 	shapes []Shape
 	left   *Node
 	right  *Node
 }
 
-func NewTree(shapes []Shape) *Node {
-	node := NodeForShapes(shapes)
-	node.Split(0)
-	return node
+func NewNode(shapes []Shape) *Node {
+	return &Node{AxisNone, 0, shapes, nil, nil}
 }
 
-func NodeForShapes(shapes []Shape) *Node {
-	box := BoxForShapes(shapes)
-	return &Node{AxisNone, 0, box, shapes, nil, nil}
-}
-
-func (node *Node) Intersect(r Ray) (hit Hit) {
-	hit.T = INF
-	n, f := node.box.Intersect(r)
-	if n < 0 || f < n {
-		return
-	}
+func (node *Node) Intersect(r Ray, tmin, tmax float64) (hit Hit) {
 	if node.axis == AxisNone {
-		for _, shape := range node.shapes {
-			t := shape.Intersect(r)
-			if t < hit.T {
-				p := r.Position(t)
-				n := shape.Normal(p)
-				hit = Hit{shape, Ray{p, n}, t}
-			}
-		}
-		return
+		return node.IntersectShapes(r)
 	}
-	// TODO: only check children if needed and in appropriate order
-	h1 := node.left.Intersect(r)
-	h2 := node.right.Intersect(r)
-	if h1.T < h2.T {
-		return h1
+	var tsplit float64
+	var leftFirst bool
+	switch node.axis {
+	case AxisX:
+		tsplit = (node.point - r.Origin.X) / r.Direction.X
+		leftFirst = (r.Origin.X < node.point) || (r.Origin.X == node.point && r.Direction.X <= 0)
+	case AxisY:
+		tsplit = (node.point - r.Origin.Y) / r.Direction.Y
+		leftFirst = (r.Origin.Y < node.point) || (r.Origin.Y == node.point && r.Direction.Y <= 0)
+	case AxisZ:
+		tsplit = (node.point - r.Origin.Z) / r.Direction.Z
+		leftFirst = (r.Origin.Z < node.point) || (r.Origin.Z == node.point && r.Direction.Z <= 0)
+	}
+	var first, second *Node
+	if leftFirst {
+		first = node.left
+		second = node.right
 	} else {
-		return h2
+		first = node.right
+		second = node.left
 	}
+	if tsplit > tmax || tsplit <= 0 {
+		return first.Intersect(r, tmin, tmax)
+	} else if tsplit < tmin {
+		return second.Intersect(r, tmin, tmax)
+	} else {
+		h1 := first.Intersect(r, tmin, tsplit)
+		h2 := second.Intersect(r, tsplit, tmax)
+		if h1.T < h2.T {
+			return h1
+		} else {
+			return h2
+		}
+	}
+}
+
+func (node *Node) IntersectShapes(r Ray) (hit Hit) {
+	hit.T = INF
+	for _, shape := range node.shapes {
+		t := shape.Intersect(r)
+		if t < hit.T {
+			p := r.Position(t)
+			n := shape.Normal(p)
+			hit = Hit{shape, Ray{p, n}, t}
+		}
+	}
+	return
 }
 
 func (node *Node) PartitionCount(axis Axis, point float64) (left, right int) {
@@ -81,7 +121,7 @@ func (node *Node) Partition(axis Axis, point float64) (left, right []Shape) {
 
 func (node *Node) Split(depth int) {
 	// TODO: max depth?
-	if len(node.shapes) < 10 {
+	if len(node.shapes) < 16 {
 		return
 	}
 	var xs, ys, zs []float64
@@ -132,9 +172,12 @@ func (node *Node) Split(depth int) {
 	}
 	// TODO: check pct?
 	// pct := float64(best) / float64(len(node.shapes))
+	node.axis = bestAxis
+	node.point = bestPoint
 	l, r := node.Partition(bestAxis, bestPoint)
-	node.left = NodeForShapes(l)
-	node.right = NodeForShapes(r)
+	node.left = NewNode(l)
+	node.right = NewNode(r)
 	node.left.Split(depth + 1)
 	node.right.Split(depth + 1)
+	node.shapes = nil
 }
