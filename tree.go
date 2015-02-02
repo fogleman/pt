@@ -4,37 +4,42 @@ import (
 	"math"
 )
 
+type Tree struct {
+	box  Box
+	root *Node
+}
+
+func NewTree(shapes []Shape) *Tree {
+	box := BoxForShapes(shapes)
+	node := NodeForShapes(shapes)
+	node.Split(0)
+	return &Tree{box, node}
+}
+
+func (tree *Tree) Intersect(r Ray) (hit Hit, ok bool) {
+	tmin, tmax := tree.box.Intersect(r)
+	if tmax < tmin || tmax <= 0 {
+		return
+	}
+	hit = tree.root.Intersect(r, tmin, tmax)
+	ok = hit.T < INF
+	return
+}
+
 type Node struct {
 	axis   Axis
 	point  float64
-	box    Box
 	shapes []Shape
 	left   *Node
 	right  *Node
 }
 
-func NewTree(shapes []Shape) *Node {
-	node := NodeForShapes(shapes)
-	node.Split(0)
-	return node
-}
-
 func NodeForShapes(shapes []Shape) *Node {
-	box := BoxForShapes(shapes)
-	return &Node{AxisNone, 0, box, shapes, nil, nil}
+	// box := BoxForShapes(shapes)
+	return &Node{AxisNone, 0, shapes, nil, nil}
 }
 
-func (node *Node) Intersect(r Ray) (hit Hit, ok bool) {
-	tmin, tmax := node.box.Intersect(r)
-	if tmax < tmin || tmax < 0 {
-		return
-	}
-	hit = node.RecursiveIntersect(r, tmin, tmax)
-	ok = hit.T < INF
-	return
-}
-
-func (node *Node) RecursiveIntersect(r Ray, tmin, tmax float64) (hit Hit) {
+func (node *Node) Intersect(r Ray, tmin, tmax float64) (hit Hit) {
 	if node.axis == AxisNone {
 		return node.IntersectShapes(r)
 	}
@@ -59,21 +64,18 @@ func (node *Node) RecursiveIntersect(r Ray, tmin, tmax float64) (hit Hit) {
 		first = node.right
 		second = node.left
 	}
-	h1, h2 := Hit{}, Hit{}
-	h1.T = INF
-	h2.T = INF
 	if tsplit > tmax || tsplit <= 0 {
-		h1 = first.RecursiveIntersect(r, tmin, tmax)
+		return first.Intersect(r, tmin, tmax)
 	} else if tsplit < tmin {
-		h1 = second.RecursiveIntersect(r, tmin, tmax)
+		return second.Intersect(r, tmin, tmax)
 	} else {
-		h1 = first.RecursiveIntersect(r, tmin, tsplit)
-		h2 = second.RecursiveIntersect(r, tsplit, tmax)
-	}
-	if h1.T < h2.T {
-		return h1
-	} else {
-		return h2
+		h1 := first.Intersect(r, tmin, tsplit)
+		h2 := second.Intersect(r, tsplit, tmax)
+		if h1.T < h2.T {
+			return h1
+		} else {
+			return h2
+		}
 	}
 }
 

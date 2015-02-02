@@ -8,8 +8,8 @@ import (
 type Scene struct {
 	shapes    []Shape
 	lights    []Shape
-	shapeTree *Node
-	lightTree *Node
+	shapeTree *Tree
+	lightTree *Tree
 }
 
 func (s *Scene) Compile() {
