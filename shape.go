@@ -23,6 +23,8 @@ func NewTransformedShape(s Shape, m Matrix) Shape {
 	return &TransformedShape{s, m, m.Inverse()}
 }
 
+// TODO: transformed Box()
+
 func (s *TransformedShape) Intersect(r Ray) float64 {
 	return s.Shape.Intersect(s.inverse.MulRay(r))
 }
