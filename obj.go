@@ -16,10 +16,21 @@ func parseFloats(items []string) []float64 {
 	return result
 }
 
-func LoadOBJ(path string) error {
+func parseInts(items []string) []int {
+	var result []int
+	for _, item := range items {
+		f, _ := strconv.ParseInt(item, 0, 0)
+		result = append(result, int(f))
+	}
+	return result
+}
+
+func LoadOBJ(path string) (shapes []Shape, err error) {
+	color := HexColor(0xEFC94C)
+	material := Material{2, 0, 0}
 	file, err := os.Open(path)
 	if err != nil {
-		return err
+		return
 	}
 	defer file.Close()
 	var vs []Vector
@@ -37,9 +48,17 @@ func LoadOBJ(path string) error {
 			v := Vector{f[0], f[1], f[2]}
 			vs = append(vs, v)
 		}
+		if keyword == "f" {
+			indexes := parseInts(args)
+			for i := 1; i < len(indexes) - 1; i++ {
+				a, b, c := indexes[0], indexes[i], indexes[i+1]
+				shape := NewTriangle(vs[a-1], vs[b-1], vs[c-1], color, material)
+				shapes = append(shapes, shape)
+			}
+		}
 	}
-	if err := scanner.Err(); err != nil {
-		return err
+	if err = scanner.Err(); err != nil {
+		return
 	}
-	return nil
+	return
 }

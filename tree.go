@@ -134,7 +134,7 @@ func (node *Node) Partition(axis Axis, point float64) (left, right []Shape) {
 
 func (node *Node) Split(depth int) {
 	// TODO: max depth?
-	if len(node.shapes) < 16 {
+	if len(node.shapes) < 10 {
 		return
 	}
 	var xs, ys, zs []float64
@@ -150,7 +150,7 @@ func (node *Node) Split(depth int) {
 	xs = Distinct(xs)
 	ys = Distinct(ys)
 	zs = Distinct(zs)
-	best := len(node.shapes) + 1
+	best := len(node.shapes)
 	bestAxis := AxisNone
 	bestPoint := 0.0
 	for i := 0; i < len(xs)-1; i++ {
@@ -182,6 +182,9 @@ func (node *Node) Split(depth int) {
 			bestAxis = AxisZ
 			bestPoint = z
 		}
+	}
+	if bestAxis == AxisNone {
+		return
 	}
 	// TODO: check pct?
 	// pct := float64(best) / float64(len(node.shapes))
