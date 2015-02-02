@@ -50,7 +50,7 @@ func LoadOBJ(path string) (shapes []Shape, err error) {
 		}
 		if keyword == "f" {
 			indexes := parseInts(args)
-			for i := 1; i < len(indexes) - 1; i++ {
+			for i := 1; i < len(indexes)-1; i++ {
 				a, b, c := indexes[0], indexes[i], indexes[i+1]
 				shape := NewTriangle(vs[a-1], vs[b-1], vs[c-1], color, material)
 				shapes = append(shapes, shape)

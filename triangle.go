@@ -41,7 +41,7 @@ func (me *Triangle) Intersect(r Ray) float64 {
 	}
 	qvec := tvec.Cross(edge1)
 	v := r.Direction.Dot(qvec) * inv
-	if v < 0 || u + v > 1 {
+	if v < 0 || u+v > 1 {
 		return INF
 	}
 	t := edge2.Dot(qvec) * inv
