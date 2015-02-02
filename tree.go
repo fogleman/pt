@@ -63,10 +63,6 @@ func (node *Node) RecursiveIntersect(r Ray, tmin, tmax float64) (hit Hit) {
 	if swap {
 		left, right = right, left
 	}
-	// tsplit tmin tmax - right
-	// tmin tsplit tmax - both
-	// tmin tmax split - left
-	// TODO: only check children if needed and in appropriate order
 	h1, h2 := Hit{}, Hit{}
 	h1.T = INF
 	h2.T = INF
@@ -177,6 +173,8 @@ func (node *Node) Split(depth int) {
 	}
 	// TODO: check pct?
 	// pct := float64(best) / float64(len(node.shapes))
+	node.axis = bestAxis
+	node.point = bestPoint
 	l, r := node.Partition(bestAxis, bestPoint)
 	node.left = NodeForShapes(l)
 	node.right = NodeForShapes(r)
