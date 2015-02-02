@@ -11,7 +11,7 @@ type Tree struct {
 
 func NewTree(shapes []Shape) *Tree {
 	box := BoxForShapes(shapes)
-	node := NodeForShapes(shapes)
+	node := NewNode(shapes)
 	node.Split(0)
 	return &Tree{box, node}
 }
@@ -34,8 +34,7 @@ type Node struct {
 	right  *Node
 }
 
-func NodeForShapes(shapes []Shape) *Node {
-	// box := BoxForShapes(shapes)
+func NewNode(shapes []Shape) *Node {
 	return &Node{AxisNone, 0, shapes, nil, nil}
 }
 
@@ -176,8 +175,8 @@ func (node *Node) Split(depth int) {
 	node.axis = bestAxis
 	node.point = bestPoint
 	l, r := node.Partition(bestAxis, bestPoint)
-	node.left = NodeForShapes(l)
-	node.right = NodeForShapes(r)
+	node.left = NewNode(l)
+	node.right = NewNode(r)
 	node.left.Split(depth + 1)
 	node.right.Split(depth + 1)
 	node.shapes = nil
