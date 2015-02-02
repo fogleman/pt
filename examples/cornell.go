@@ -22,7 +22,7 @@ func main() {
 	scene.AddLight(pt.NewCube(pt.Vector{-2, 9.8, -2}, pt.Vector{2, 10, 2}, light, pt.DiffuseMaterial()))
 	camera := pt.LookAt(pt.Vector{0, 0, -20}, pt.Vector{0, 0, 1}, pt.Vector{0, 1, 0}, 65)
 	im := pt.Render(&scene, &camera, 512, 512, 1, 16, 4)
-	if err := pt.Save("out.png", im); err != nil {
+	if err := pt.SavePNG("out.png", im); err != nil {
 		panic(err)
 	}
 }
