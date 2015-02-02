@@ -6,9 +6,6 @@ func main() {
 	scene := pt.Scene{}
 	material := pt.DiffuseMaterial()
 	scene.AddLight(pt.NewSphere(pt.Vector{0.5, 1, 3}, 0.5, pt.Color{1, 1, 1}, pt.DiffuseMaterial(), nil))
-	// scene.AddLight(pt.NewSphere(pt.Vector{4, 2, 3}, 0.5, pt.Color{1, 1, 1}, pt.DiffuseMaterial(), nil))
-	// scene.AddLight(pt.NewSphere(pt.Vector{-2, 2, 3}, 0.5, pt.Color{1, 1, 1}, pt.DiffuseMaterial(), nil))
-	// scene.AddLight(pt.NewSphere(pt.Vector{4, -2, 3}, 0.5, pt.Color{1, 1, 1}, pt.DiffuseMaterial(), nil))
 	scene.AddShape(pt.NewCube(pt.Vector{-100, -100, -2}, pt.Vector{100, 100, -1}, pt.HexColor(0x334D5C), material))
 	shapes, _ := pt.LoadOBJ("examples/suzanne.obj")
 	for _, shape := range shapes {

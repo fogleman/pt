@@ -27,7 +27,7 @@ func parseInts(items []string) []int {
 
 func LoadOBJ(path string) (shapes []Shape, err error) {
 	color := HexColor(0xEFC94C)
-	material := Material{2, 0, 0}
+	material := DiffuseMaterial()
 	file, err := os.Open(path)
 	if err != nil {
 		return
