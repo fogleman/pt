@@ -1,12 +1,14 @@
 package pt
 
 import (
+	"fmt"
 	"image"
 	"image/jpeg"
 	"image/png"
 	"math"
 	"os"
 	"sort"
+	"time"
 )
 
 func Radians(degrees float64) float64 {
@@ -55,4 +57,11 @@ func Distinct(items []float64) []float64 {
 	}
 	sort.Float64s(result)
 	return result
+}
+
+func DurationString(d time.Duration) string {
+	h := int(d.Hours())
+	m := int(d.Minutes()) % 60
+	s := int(d.Seconds()) % 60
+	return fmt.Sprintf("%d:%02d:%02d", h, m, s)
 }
