@@ -50,7 +50,12 @@ func LoadOBJ(path string) (shapes []Shape, err error) {
 			vs = append(vs, v)
 		}
 		if keyword == "f" {
-			indexes := parseInts(args)
+			var fvs []string
+			for _, arg := range args {
+				vertex := strings.Split(arg + "//", "/")
+				fvs = append(fvs, vertex[0])
+			}
+			indexes := parseInts(fvs)
 			for i := 1; i < len(indexes)-1; i++ {
 				a, b, c := indexes[0], indexes[i], indexes[i+1]
 				shape := NewTriangle(vs[a], vs[b], vs[c], color, material)
