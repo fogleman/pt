@@ -1,6 +1,6 @@
 package main
 
-import "github.com/fogleman/pt"
+import "github.com/fogleman/pt/pt"
 
 func main() {
 	white := pt.Color{0.740, 0.742, 0.734}

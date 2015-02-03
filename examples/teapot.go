@@ -1,7 +1,6 @@
 package main
 
-import "fmt"
-import "github.com/fogleman/pt"
+import "github.com/fogleman/pt/pt"
 
 func main() {
 	scene := pt.Scene{}
@@ -9,7 +8,6 @@ func main() {
 	// scene.AddLight(pt.NewSphere(pt.Vector{5, 5, -3}, 0.5, pt.Color{1, 1, 1}, pt.DiffuseMaterial(), nil))
 	scene.AddShape(pt.NewCube(pt.Vector{-30, -1, -30}, pt.Vector{30, 0, 30}, pt.HexColor(0x334D5C), pt.DiffuseMaterial()))
 	shapes, _ := pt.LoadOBJ("examples/teapot.obj")
-	fmt.Println(len(shapes))
 	for _, shape := range shapes {
 		scene.AddShape(shape)
 	}
