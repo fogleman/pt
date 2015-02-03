@@ -38,7 +38,7 @@ Here are some resources that I have found useful.
 
 ### Samples
 
-![Sample](http://i.imgur.com/JMucaiC.png)
+![Sample](http://i.imgur.com/6QaX2DJ.png)
 
 ![Sample](http://i.imgur.com/J17Py6l.png)
 
