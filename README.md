@@ -13,11 +13,11 @@ I just started, so there isn't much to see yet.
 
 Here are things that I'm planning, or at least hoping, to do.
 
-* material properties
+* material properties *(partially done)*
 * more shapes
 * more example scenes
-* OBJ / STL models
-* textured objects
+* OBJ / STL models *(partially done)*
+* textured objects *(partially done)*
 * constructive solid geometry
 * depth of field
 * input files to define scene
