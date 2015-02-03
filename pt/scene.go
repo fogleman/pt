@@ -30,7 +30,15 @@ func (s *Scene) IntersectShapes(r Ray) (Hit, bool) {
 }
 
 func (s *Scene) IntersectLights(r Ray) (Hit, bool) {
-	return s.lightTree.Intersect(r)
+	hit1, ok1 := s.lightTree.Intersect(r)
+	if ok1 {
+		// TODO: clean this up
+		hit2, ok2 := s.shapeTree.Intersect(r)
+		if ok2 {
+			ok1 = hit1.T < hit2.T
+		}
+	}
+	return hit1, ok1
 }
 
 func (s *Scene) Shadow(r Ray, max float64) bool {
