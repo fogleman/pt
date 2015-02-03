@@ -38,9 +38,9 @@ Here are some resources that I have found useful.
 
 ### Samples
 
-![Sample](http://i.imgur.com/6QaX2DJ.png)
+![Sample](http://i.imgur.com/eI5yLu7.png)
 
-![Sample](http://i.imgur.com/J17Py6l.png)
+![Sample](http://i.imgur.com/2PNvTgE.png)
 
 ![Sample](http://i.imgur.com/zCPDKbt.png)
 
