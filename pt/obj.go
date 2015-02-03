@@ -52,7 +52,7 @@ func LoadOBJ(path string) (shapes []Shape, err error) {
 		if keyword == "f" {
 			var fvs []string
 			for _, arg := range args {
-				vertex := strings.Split(arg + "//", "/")
+				vertex := strings.Split(arg+"//", "/")
 				fvs = append(fvs, vertex[0])
 			}
 			indexes := parseInts(fvs)
