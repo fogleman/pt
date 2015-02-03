@@ -186,8 +186,6 @@ func (node *Node) Split(depth int) {
 	if bestAxis == AxisNone {
 		return
 	}
-	// TODO: check pct?
-	// pct := float64(best) / float64(len(node.shapes))
 	node.axis = bestAxis
 	node.point = bestPoint
 	l, r := node.Partition(bestAxis, bestPoint)

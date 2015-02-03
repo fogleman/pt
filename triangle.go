@@ -14,7 +14,7 @@ type Triangle struct {
 }
 
 func NewTriangle(v1, v2, v3 Vector, color Color, material Material) Shape {
-	normal := v2.Sub(v1).Normalize().Cross(v3.Sub(v1).Normalize())
+	normal := v2.Sub(v1).Cross(v3.Sub(v1)).Normalize()
 	min := v1.Min(v2).Min(v3)
 	max := v1.Max(v2).Max(v3)
 	box := Box{min, max}

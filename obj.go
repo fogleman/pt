@@ -27,13 +27,14 @@ func parseInts(items []string) []int {
 
 func LoadOBJ(path string) (shapes []Shape, err error) {
 	color := HexColor(0xEFC94C)
-	material := DiffuseMaterial()
+	material := Material{2, 0, 0}
 	file, err := os.Open(path)
 	if err != nil {
 		return
 	}
 	defer file.Close()
 	var vs []Vector
+	vs = append(vs, Vector{}) // 1-based indexing
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		line := scanner.Text()
@@ -52,7 +53,7 @@ func LoadOBJ(path string) (shapes []Shape, err error) {
 			indexes := parseInts(args)
 			for i := 1; i < len(indexes)-1; i++ {
 				a, b, c := indexes[0], indexes[i], indexes[i+1]
-				shape := NewTriangle(vs[a-1], vs[b-1], vs[c-1], color, material)
+				shape := NewTriangle(vs[a], vs[b], vs[c], color, material)
 				shapes = append(shapes, shape)
 			}
 		}
