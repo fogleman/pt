@@ -42,8 +42,8 @@ func Render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, depth
 					c := Color{}
 					for u := 0; u < n; u++ {
 						for v := 0; v < n; v++ {
-							fu := (float64(u) + 0.5) * (1 / float64(n))
-							fv := (float64(v) + 0.5) * (1 / float64(n))
+							fu := (float64(u) + 0.5) / float64(n)
+							fv := (float64(v) + 0.5) / float64(n)
 							ray := camera.CastRay(x, y, w, h, fu, fv)
 							c = c.Add(scene.Sample(ray, hitSamples, depth, rnd))
 						}

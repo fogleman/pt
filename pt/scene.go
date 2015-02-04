@@ -106,8 +106,8 @@ func (s *Scene) Sample(r Ray, samples, depth int, rnd *rand.Rand) Color {
 	for u := 0; u < n; u++ {
 		for v := 0; v < n; v++ {
 			p := rnd.Float64()
-			fu := (float64(u) + rnd.Float64()) * (1 / float64(n))
-			fv := (float64(v) + rnd.Float64()) * (1 / float64(n))
+			fu := (float64(u) + rnd.Float64()) / float64(n)
+			fv := (float64(v) + rnd.Float64()) / float64(n)
 			ray, reflected := hit.Ray.Bounce(r, material, p, fu, fv)
 			indirect := s.RecursiveSample(ray, reflected, depth-1, rnd)
 			if reflected {

@@ -7,7 +7,7 @@ import (
 
 type poissonGrid struct {
 	r, size float64
-	cells map[Vector]Vector
+	cells   map[Vector]Vector
 }
 
 func newPoissonGrid(r float64) *poissonGrid {
@@ -23,10 +23,10 @@ func (grid *poissonGrid) normalize(v Vector) Vector {
 
 func (grid *poissonGrid) insert(v Vector) bool {
 	n := grid.normalize(v)
-	for i := n.X - 2; i < n.X + 3; i++ {
-		for j := n.Y - 2; j < n.Y + 3; j++ {
+	for i := n.X - 2; i < n.X+3; i++ {
+		for j := n.Y - 2; j < n.Y+3; j++ {
 			if m, ok := grid.cells[Vector{i, j, 0}]; ok {
-				if math.Hypot(m.X - v.X, m.Y - v.Y) < grid.r {
+				if math.Hypot(m.X-v.X, m.Y-v.Y) < grid.r {
 					return false
 				}
 			}
@@ -38,8 +38,8 @@ func (grid *poissonGrid) insert(v Vector) bool {
 
 func PoissonDisc(x1, y1, x2, y2, r float64, n int) []Vector {
 	var result []Vector
-	x := x1 + (x2 - x1) / 2
-	y := y1 + (y2 - y1) / 2
+	x := x1 + (x2-x1)/2
+	y := y1 + (y2-y1)/2
 	v := Vector{x, y, 0}
 	active := []Vector{v}
 	grid := newPoissonGrid(r)
@@ -51,9 +51,9 @@ func PoissonDisc(x1, y1, x2, y2, r float64, n int) []Vector {
 		ok := false
 		for i := 0; i < n; i++ {
 			a := rand.Float64() * 2 * math.Pi
-			d := rand.Float64() * r + r
-			x := point.X + math.Cos(a) * d
-			y := point.Y + math.Sin(a) * d
+			d := rand.Float64()*r + r
+			x := point.X + math.Cos(a)*d
+			y := point.Y + math.Sin(a)*d
 			if x < x1 || y < y1 || x > x2 || y > y2 {
 				continue
 			}

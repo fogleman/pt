@@ -29,19 +29,6 @@ func (n Ray) Reflectance(i Ray, n1, n2 float64) float64 {
 	return (rOrth*rOrth + rPar*rPar) / 2
 }
 
-func (r Ray) UniformBounce(u, v float64) Ray {
-	rx := u * 2 * math.Pi
-	ry := v * 2 * math.Pi
-	x := math.Sin(rx) * math.Sin(ry)
-	y := math.Sin(rx) * math.Cos(ry)
-	z := math.Cos(rx)
-	d := Vector{x, y, z}
-	if d.Dot(r.Direction) < 0 {
-		d = d.Mul(-1)
-	}
-	return Ray{r.Origin, d}
-}
-
 func (r Ray) WeightedBounce(u, v float64) Ray {
 	m1 := math.Sqrt(u)
 	m2 := math.Sqrt(1 - u)
