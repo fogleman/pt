@@ -82,13 +82,8 @@ func (s *Scene) RecursiveSample(r Ray, reflected bool, depth int, rnd *rand.Rand
 	ray, reflected := hit.Ray.Bounce(r, material, p, u, v)
 	indirect := s.RecursiveSample(ray, reflected, depth-1, rnd)
 	if reflected {
-		if material.Tint > 0 {
-			a := color.MulColor(indirect.Mul(material.Tint))
-			b := indirect.Mul(1 - material.Tint)
-			return a.Add(b)
-		} else {
-			return indirect
-		}
+		tinted := indirect.Mix(color.MulColor(indirect), material.Tint)
+		return tinted
 	} else {
 		direct := s.DirectLight(r, hit.Ray, rnd)
 		return color.MulColor(direct.Add(indirect))
@@ -116,13 +111,8 @@ func (s *Scene) Sample(r Ray, samples, depth int, rnd *rand.Rand) Color {
 			ray, reflected := hit.Ray.Bounce(r, material, p, fu, fv)
 			indirect := s.RecursiveSample(ray, reflected, depth-1, rnd)
 			if reflected {
-				if material.Tint > 0 {
-					a := color.MulColor(indirect.Mul(material.Tint))
-					b := indirect.Mul(1 - material.Tint)
-					result = result.Add(a.Add(b))
-				} else {
-					result = result.Add(indirect)
-				}
+				tinted := indirect.Mix(color.MulColor(indirect), material.Tint)
+				result = result.Add(tinted)
 			} else {
 				direct := s.DirectLight(r, hit.Ray, rnd)
 				result = result.Add(color.MulColor(direct.Add(indirect)))

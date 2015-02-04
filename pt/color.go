@@ -38,3 +38,9 @@ func (a Color) Div(b float64) Color {
 func (a Color) Pow(b float64) Color {
 	return Color{math.Pow(a.R, b), math.Pow(a.G, b), math.Pow(a.B, b)}
 }
+
+func (a Color) Mix(b Color, pct float64) Color {
+	a = a.Mul(1 - pct)
+	b = b.Mul(pct)
+	return a.Add(b)
+}
