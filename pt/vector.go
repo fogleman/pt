@@ -8,6 +8,10 @@ type Vector struct {
 	X, Y, Z float64
 }
 
+func (a Vector) IsZero() bool {
+	return a.X == 0 && a.Y == 0 && a.Z == 0
+}
+
 func (a Vector) Length() float64 {
 	return math.Sqrt(a.X*a.X + a.Y*a.Y + a.Z*a.Z)
 }

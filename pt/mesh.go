@@ -28,6 +28,7 @@ func (m *Mesh) SetShapes(shapes []Shape) {
 	for _, shape := range shapes {
 		if triangle, ok := shape.(*Triangle); ok {
 			triangle.mesh = m
+			triangle.FixNormals()
 		}
 	}
 	m.box = BoxForShapes(shapes)

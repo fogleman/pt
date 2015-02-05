@@ -7,15 +7,14 @@ import (
 
 type Triangle struct {
 	mesh       *Mesh
+	box        Box
 	v1, v2, v3 Vector
 	n1, n2, n3 Vector
 	t1, t2, t3 Vector
 }
 
 func (t *Triangle) Box() Box {
-	min := t.v1.Min(t.v2).Min(t.v3)
-	max := t.v1.Max(t.v2).Max(t.v3)
-	return Box{min, max}
+	return t.box
 }
 
 func (t *Triangle) Intersect(r Ray) Hit {
@@ -80,4 +79,19 @@ func (t *Triangle) Barycentric(p Vector) (u, v, w float64) {
 	w = (d00*d21 - d01*d20) / d
 	u = 1 - v - w
 	return
+}
+
+func (t *Triangle) FixNormals() {
+	e1 := t.v2.Sub(t.v1)
+	e2 := t.v3.Sub(t.v1)
+	n := e1.Cross(e2).Normalize()
+	if t.n1.IsZero() {
+		t.n1 = n
+	}
+	if t.n2.IsZero() {
+		t.n2 = n
+	}
+	if t.n3.IsZero() {
+		t.n3 = n
+	}
 }
