@@ -25,13 +25,12 @@ func parseInts(items []string) []int {
 	return result
 }
 
-func LoadOBJ(path string) (mesh *Mesh, err error) {
+func LoadOBJ(path string) (shapes []Shape, err error) {
 	file, err := os.Open(path)
 	if err != nil {
 		return
 	}
 	defer file.Close()
-	var shapes []Shape
 	var vs, vts, vns []Vector
 	vs = append(vs, Vector{})   // 1-based indexing
 	vts = append(vts, Vector{}) // 1-based indexing
@@ -77,19 +76,16 @@ func LoadOBJ(path string) (mesh *Mesh, err error) {
 				t.v1 = vs[ivs[i1]]
 				t.v2 = vs[ivs[i2]]
 				t.v3 = vs[ivs[i3]]
-				t.t1 = vs[ivts[i1]]
-				t.t2 = vs[ivts[i2]]
-				t.t3 = vs[ivts[i3]]
-				t.n1 = vs[ivns[i1]]
-				t.n2 = vs[ivns[i2]]
-				t.n3 = vs[ivns[i3]]
+				t.t1 = vts[ivts[i1]]
+				t.t2 = vts[ivts[i2]]
+				t.t3 = vts[ivts[i3]]
+				t.n1 = vns[ivns[i1]]
+				t.n2 = vns[ivns[i2]]
+				t.n3 = vns[ivns[i3]]
 				shapes = append(shapes, &t)
 			}
 		}
 	}
-	if err = scanner.Err(); err != nil {
-		return
-	}
-	mesh = NewMesh(shapes)
+	err = scanner.Err()
 	return
 }

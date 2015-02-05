@@ -5,35 +5,37 @@ import (
 )
 
 type Mesh struct {
-	shapes    []Shape
-	shapeTree *Tree
 	color     Color
 	material  Material
+	box       Box
+	shapeTree *Tree
 }
 
-func NewMesh(shapes []Shape) *Mesh {
-	mesh := &Mesh{}
+func NewMesh(color Color, material Material) *Mesh {
+	return &Mesh{color, material, Box{}, nil}
+}
+
+func (m *Mesh) LoadOBJ(path string) error {
+	shapes, err := LoadOBJ(path)
+	if err != nil {
+		return err
+	}
+	m.SetShapes(shapes)
+	return nil
+}
+
+func (m *Mesh) SetShapes(shapes []Shape) {
 	for _, shape := range shapes {
-		triangle, ok := shape.(*Triangle)
-		if ok {
-			triangle.mesh = mesh
+		if triangle, ok := shape.(*Triangle); ok {
+			triangle.mesh = m
 		}
 	}
-	mesh.shapes = shapes
-	mesh.shapeTree = NewTree(shapes)
-	return mesh
-}
-
-func (m *Mesh) SetColor(color Color) {
-	m.color = color
-}
-
-func (m *Mesh) SetMaterial(material Material) {
-	m.material = material
+	m.box = BoxForShapes(shapes)
+	m.shapeTree = NewTree(shapes)
 }
 
 func (m *Mesh) Box() Box {
-	return BoxForShapes(m.shapes)
+	return m.box
 }
 
 func (m *Mesh) Intersect(r Ray) Hit {
