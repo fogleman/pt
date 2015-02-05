@@ -85,13 +85,14 @@ func (t *Triangle) FixNormals() {
 	e1 := t.v2.Sub(t.v1)
 	e2 := t.v3.Sub(t.v1)
 	n := e1.Cross(e2).Normalize()
-	if t.n1.IsZero() {
+	zero := Vector{}
+	if t.n1 == zero {
 		t.n1 = n
 	}
-	if t.n2.IsZero() {
+	if t.n2 == zero {
 		t.n2 = n
 	}
-	if t.n3.IsZero() {
+	if t.n3 == zero {
 		t.n3 = n
 	}
 }
