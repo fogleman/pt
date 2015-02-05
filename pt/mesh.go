@@ -7,12 +7,11 @@ import (
 type Mesh struct {
 	color     Color
 	material  Material
-	box       Box
 	shapeTree *Tree
 }
 
 func NewMesh(color Color, material Material) *Mesh {
-	return &Mesh{color, material, Box{}, nil}
+	return &Mesh{color, material, nil}
 }
 
 func (m *Mesh) LoadOBJ(path string) error {
@@ -31,12 +30,11 @@ func (m *Mesh) SetShapes(shapes []Shape) {
 			triangle.FixNormals()
 		}
 	}
-	m.box = BoxForShapes(shapes)
 	m.shapeTree = NewTree(shapes)
 }
 
 func (m *Mesh) Box() Box {
-	return m.box
+	return m.shapeTree.box
 }
 
 func (m *Mesh) Intersect(r Ray) Hit {
