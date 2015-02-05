@@ -13,7 +13,7 @@ func main() {
 		scene.AddShape(shape)
 	}
 	camera := pt.LookAt(pt.Vector{1, -0.45, 4}, pt.Vector{1, -0.6, 0.4}, pt.Vector{0, 1, 0}, 45)
-	im := pt.Render(&scene, &camera, 2560, 1440, 16, 16, 4)
+	im := pt.Render(&scene, &camera, 2560/8, 1440/8, 16, 16, 4)
 	if err := pt.SavePNG("out.png", im); err != nil {
 		panic(err)
 	}

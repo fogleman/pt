@@ -25,28 +25,27 @@ func (s *Scene) AddLight(shape Shape) {
 	s.lights = append(s.lights, shape)
 }
 
-func (s *Scene) IntersectShapes(r Ray) (Hit, bool) {
+func (s *Scene) IntersectShapes(r Ray) Hit {
 	return s.shapeTree.Intersect(r)
 }
 
-func (s *Scene) IntersectLights(r Ray) (Hit, bool) {
-	hit1, ok1 := s.lightTree.Intersect(r)
-	if ok1 {
-		// TODO: clean this up
-		hit2, ok2 := s.shapeTree.Intersect(r)
-		if ok2 {
-			ok1 = hit1.T < hit2.T
+func (s *Scene) IntersectLights(r Ray) Hit {
+	hit := s.lightTree.Intersect(r)
+	if hit.Ok() {
+		shapeHit := s.shapeTree.Intersect(r)
+		if shapeHit.T < hit.T {
+			return NoHit
 		}
 	}
-	return hit1, ok1
+	return hit
 }
 
 func (s *Scene) Shadow(r Ray, max float64) bool {
-	t := s.shapeTree.Shadow(r)
-	return t < max
+	hit := s.shapeTree.Intersect(r)
+	return hit.T < max
 }
 
-func (s *Scene) DirectLight(i, n Ray, rnd *rand.Rand) Color {
+func (s *Scene) DirectLight(n Ray, rnd *rand.Rand) Color {
 	color := Color{}
 	for _, light := range s.lights {
 		p := light.RandomPoint(rnd)
@@ -66,27 +65,26 @@ func (s *Scene) RecursiveSample(r Ray, reflected bool, depth int, rnd *rand.Rand
 		return Color{}
 	}
 	if reflected {
-		hit, ok := s.IntersectLights(r)
-		if ok {
-			return hit.Shape.Color(hit.Ray.Origin)
+		hit := s.IntersectLights(r)
+		if hit.Ok() {
+			info := hit.Info(r)
+			return info.Color
 		}
 	}
-	hit, ok := s.IntersectShapes(r)
-	if !ok {
+	hit := s.IntersectShapes(r)
+	if !hit.Ok() {
 		return Color{}
 	}
-	shape := hit.Shape
-	color := shape.Color(hit.Ray.Origin)
-	material := shape.Material(hit.Ray.Origin)
+	info := hit.Info(r)
 	p, u, v := rnd.Float64(), rnd.Float64(), rnd.Float64()
-	ray, reflected := hit.Ray.Bounce(r, material, p, u, v)
-	indirect := s.RecursiveSample(ray, reflected, depth-1, rnd)
+	newRay, reflected := info.Ray.Bounce(r, info.Material, p, u, v)
+	indirect := s.RecursiveSample(newRay, reflected, depth-1, rnd)
 	if reflected {
-		tinted := indirect.Mix(color.MulColor(indirect), material.Tint)
+		tinted := indirect.Mix(info.Color.MulColor(indirect), info.Material.Tint)
 		return tinted
 	} else {
-		direct := s.DirectLight(r, hit.Ray, rnd)
-		return color.MulColor(direct.Add(indirect))
+		direct := s.DirectLight(info.Ray, rnd)
+		return info.Color.MulColor(direct.Add(indirect))
 	}
 }
 
@@ -94,13 +92,11 @@ func (s *Scene) Sample(r Ray, samples, depth int, rnd *rand.Rand) Color {
 	if depth < 0 {
 		return Color{}
 	}
-	hit, ok := s.IntersectShapes(r)
-	if !ok {
+	hit := s.IntersectShapes(r)
+	if !hit.Ok() {
 		return Color{}
 	}
-	shape := hit.Shape
-	color := shape.Color(hit.Ray.Origin)
-	material := shape.Material(hit.Ray.Origin)
+	info := hit.Info(r)
 	result := Color{}
 	n := int(math.Sqrt(float64(samples)))
 	for u := 0; u < n; u++ {
@@ -108,14 +104,14 @@ func (s *Scene) Sample(r Ray, samples, depth int, rnd *rand.Rand) Color {
 			p := rnd.Float64()
 			fu := (float64(u) + rnd.Float64()) / float64(n)
 			fv := (float64(v) + rnd.Float64()) / float64(n)
-			ray, reflected := hit.Ray.Bounce(r, material, p, fu, fv)
-			indirect := s.RecursiveSample(ray, reflected, depth-1, rnd)
+			newRay, reflected := info.Ray.Bounce(r, info.Material, p, fu, fv)
+			indirect := s.RecursiveSample(newRay, reflected, depth-1, rnd)
 			if reflected {
-				tinted := indirect.Mix(color.MulColor(indirect), material.Tint)
+				tinted := indirect.Mix(info.Color.MulColor(indirect), info.Material.Tint)
 				result = result.Add(tinted)
 			} else {
-				direct := s.DirectLight(r, hit.Ray, rnd)
-				result = result.Add(color.MulColor(direct.Add(indirect)))
+				direct := s.DirectLight(info.Ray, rnd)
+				result = result.Add(info.Color.MulColor(direct.Add(indirect)))
 			}
 		}
 	}
