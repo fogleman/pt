@@ -42,6 +42,8 @@ Here are some resources that I have found useful.
 
 ![Sample](http://i.imgur.com/2PNvTgE.png)
 
+![Sample](http://i.imgur.com/2bVB9PL.png)
+
 ![Sample](http://i.imgur.com/zCPDKbt.png)
 
 ![Sample](http://i.imgur.com/7nJieKd.png)
