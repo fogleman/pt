@@ -25,16 +25,17 @@ func parseInts(items []string) []int {
 	return result
 }
 
-func LoadOBJ(path string) (shapes []Shape, err error) {
-	color := HexColor(0xEFC94C)
-	material := Material{2, 0, 0}
+func LoadOBJ(path string) (mesh *Mesh, err error) {
 	file, err := os.Open(path)
 	if err != nil {
 		return
 	}
 	defer file.Close()
-	var vs []Vector
-	vs = append(vs, Vector{}) // 1-based indexing
+	var shapes []Shape
+	var vs, vts, vns []Vector
+	vs = append(vs, Vector{})   // 1-based indexing
+	vts = append(vts, Vector{}) // 1-based indexing
+	vns = append(vns, Vector{}) // 1-based indexing
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		line := scanner.Text()
@@ -49,22 +50,46 @@ func LoadOBJ(path string) (shapes []Shape, err error) {
 			v := Vector{f[0], f[1], f[2]}
 			vs = append(vs, v)
 		}
+		if keyword == "vt" {
+			f := parseFloats(args)
+			v := Vector{f[0], f[1], f[2]}
+			vts = append(vts, v)
+		}
+		if keyword == "vn" {
+			f := parseFloats(args)
+			v := Vector{f[0], f[1], f[2]}
+			vns = append(vns, v)
+		}
 		if keyword == "f" {
-			var fvs []string
+			var fvs, fvts, fvns []string
 			for _, arg := range args {
 				vertex := strings.Split(arg+"//", "/")
 				fvs = append(fvs, vertex[0])
+				fvts = append(fvts, vertex[1])
+				fvns = append(fvns, vertex[2])
 			}
-			indexes := parseInts(fvs)
-			for i := 1; i < len(indexes)-1; i++ {
-				a, b, c := indexes[0], indexes[i], indexes[i+1]
-				shape := NewTriangle(vs[a], vs[b], vs[c], color, material)
-				shapes = append(shapes, shape)
+			ivs := parseInts(fvs)
+			ivts := parseInts(fvts)
+			ivns := parseInts(fvns)
+			for i := 1; i < len(ivs)-1; i++ {
+				i1, i2, i3 := 0, i, i+1
+				t := Triangle{}
+				t.v1 = vs[ivs[i1]]
+				t.v2 = vs[ivs[i2]]
+				t.v3 = vs[ivs[i3]]
+				t.t1 = vs[ivts[i1]]
+				t.t2 = vs[ivts[i2]]
+				t.t3 = vs[ivts[i3]]
+				t.n1 = vs[ivns[i1]]
+				t.n2 = vs[ivns[i2]]
+				t.n3 = vs[ivns[i3]]
+				shapes = append(shapes, &t)
 			}
 		}
 	}
 	if err = scanner.Err(); err != nil {
 		return
 	}
+	mesh = NewMesh(shapes)
 	return
 }

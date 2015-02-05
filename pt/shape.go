@@ -6,7 +6,7 @@ import (
 
 type Shape interface {
 	Box() Box
-	Intersect(Ray) float64
+	Intersect(Ray) Hit
 	Color(Vector) Color
 	Material(Vector) Material
 	Normal(Vector) Vector
@@ -25,7 +25,7 @@ func NewTransformedShape(s Shape, m Matrix) Shape {
 
 // TODO: transformed Box()
 
-func (s *TransformedShape) Intersect(r Ray) float64 {
+func (s *TransformedShape) Intersect(r Ray) Hit {
 	return s.Shape.Intersect(s.inverse.MulRay(r))
 }
 

@@ -40,9 +40,9 @@ func (node *Node) Intersect(r Ray, tmin, tmax float64) Hit {
 	if node.axis == AxisNone {
 		hit := NoHit
 		for _, shape := range node.shapes {
-			t := shape.Intersect(r)
-			if t < hit.T {
-				hit = Hit{shape, t}
+			h := shape.Intersect(r)
+			if h.T < hit.T {
+				hit = h
 			}
 		}
 		return hit

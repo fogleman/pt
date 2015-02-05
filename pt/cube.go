@@ -22,16 +22,16 @@ func (c *Cube) Box() Box {
 	return c.box
 }
 
-func (c *Cube) Intersect(r Ray) float64 {
+func (c *Cube) Intersect(r Ray) Hit {
 	n := c.min.Sub(r.Origin).DivVector(r.Direction)
 	f := c.max.Sub(r.Origin).DivVector(r.Direction)
 	n, f = n.Min(f), n.Max(f)
 	t0 := math.Max(math.Max(n.X, n.Y), n.Z)
 	t1 := math.Min(math.Min(f.X, f.Y), f.Z)
 	if t0 > 0 && t0 < t1 {
-		return t0
+		return Hit{c, t0}
 	}
-	return INF
+	return NoHit
 }
 
 func (c *Cube) Color(p Vector) Color {

@@ -26,7 +26,7 @@ func (s *Sphere) Box() Box {
 	return s.box
 }
 
-func (s *Sphere) Intersect(r Ray) float64 {
+func (s *Sphere) Intersect(r Ray) Hit {
 	to := r.Origin.Sub(s.center)
 	b := to.Dot(r.Direction)
 	c := to.Dot(to) - s.radius*s.radius
@@ -34,10 +34,10 @@ func (s *Sphere) Intersect(r Ray) float64 {
 	if d > 0 {
 		t := -b - math.Sqrt(d)
 		if t > 0 {
-			return t
+			return Hit{s, t}
 		}
 	}
-	return INF
+	return NoHit
 }
 
 func (s *Sphere) Color(p Vector) Color {

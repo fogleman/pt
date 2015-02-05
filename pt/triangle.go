@@ -6,63 +6,78 @@ import (
 )
 
 type Triangle struct {
+	mesh       *Mesh
 	v1, v2, v3 Vector
-	color      Color
-	material   Material
-	normal     Vector
-	box        Box
-}
-
-func NewTriangle(v1, v2, v3 Vector, color Color, material Material) Shape {
-	normal := v2.Sub(v1).Cross(v3.Sub(v1)).Normalize()
-	min := v1.Min(v2).Min(v3)
-	max := v1.Max(v2).Max(v3)
-	box := Box{min, max}
-	return &Triangle{v1, v2, v3, color, material, normal, box}
+	n1, n2, n3 Vector
+	t1, t2, t3 Vector
 }
 
 func (t *Triangle) Box() Box {
-	return t.box
+	min := t.v1.Min(t.v2).Min(t.v3)
+	max := t.v1.Max(t.v2).Max(t.v3)
+	return Box{min, max}
 }
 
-func (me *Triangle) Intersect(r Ray) float64 {
-	edge1 := me.v2.Sub(me.v1)
-	edge2 := me.v3.Sub(me.v1)
+func (t *Triangle) Intersect(r Ray) Hit {
+	edge1 := t.v2.Sub(t.v1)
+	edge2 := t.v3.Sub(t.v1)
 	pvec := r.Direction.Cross(edge2)
 	det := edge1.Dot(pvec)
 	if math.Abs(det) < EPS {
-		return INF
+		return NoHit
 	}
 	inv := 1 / det
-	tvec := r.Origin.Sub(me.v1)
+	tvec := r.Origin.Sub(t.v1)
 	u := tvec.Dot(pvec) * inv
 	if u < 0 || u > 1 {
-		return INF
+		return NoHit
 	}
 	qvec := tvec.Cross(edge1)
 	v := r.Direction.Dot(qvec) * inv
 	if v < 0 || u+v > 1 {
-		return INF
+		return NoHit
 	}
-	t := edge2.Dot(qvec) * inv
-	if t < EPS {
-		return INF
+	d := edge2.Dot(qvec) * inv
+	if d < EPS {
+		return NoHit
 	}
-	return t
+	return Hit{t, d}
 }
 
-func (t *Triangle) Color(v Vector) Color {
-	return t.color
+func (t *Triangle) Color(p Vector) Color {
+	return t.mesh.color
 }
 
-func (t *Triangle) Material(v Vector) Material {
-	return t.material
+func (t *Triangle) Material(p Vector) Material {
+	return t.mesh.material
 }
 
-func (t *Triangle) Normal(v Vector) Vector {
-	return t.normal
+func (t *Triangle) Normal(p Vector) Vector {
+	u, v, w := t.Barycentric(p)
+	n := Vector{}
+	n = n.Add(t.n1.Mul(u))
+	n = n.Add(t.n2.Mul(v))
+	n = n.Add(t.n3.Mul(w))
+	n = n.Normalize() // needed?
+	return n
 }
 
 func (t *Triangle) RandomPoint(rnd *rand.Rand) Vector {
 	return Vector{} // TODO: fix
+}
+
+func (t *Triangle) Barycentric(p Vector) (u, v, w float64) {
+	v0 := t.v2.Sub(t.v1)
+	v1 := t.v3.Sub(t.v1)
+	v2 := p.Sub(t.v1)
+	d00 := v0.Dot(v0)
+	d01 := v0.Dot(v1)
+	d11 := v1.Dot(v1)
+	d20 := v2.Dot(v0)
+	d21 := v2.Dot(v1)
+	d := d00*d11 - d01*d01
+	v = (d11*d20 - d01*d21) / d
+	w = (d00*d21 - d01*d20) / d
+	u = 1 - v - w
+	return
 }
