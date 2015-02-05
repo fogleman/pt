@@ -64,7 +64,7 @@ func Median(items []float64) float64 {
 	switch {
 	case n == 0:
 		return 0
-	case n % 2 == 1:
+	case n%2 == 1:
 		return items[n/2]
 	default:
 		a := items[n/2-1]

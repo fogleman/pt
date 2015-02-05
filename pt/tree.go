@@ -133,6 +133,7 @@ func (node *Node) Split(depth int) {
 	ys = Distinct(ys)
 	zs = Distinct(zs)
 	mx, my, mz := Median(xs), Median(ys), Median(zs)
+	// TODO: clean this up
 	xs = []float64{mx, mx}
 	ys = []float64{my, my}
 	zs = []float64{mz, mz}
