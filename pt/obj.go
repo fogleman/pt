@@ -25,7 +25,7 @@ func parseInts(items []string) []int {
 	return result
 }
 
-func LoadOBJ(path string) (shapes []Shape, err error) {
+func LoadOBJ(path string) (triangles []*Triangle, err error) {
 	file, err := os.Open(path)
 	if err != nil {
 		return
@@ -85,7 +85,7 @@ func LoadOBJ(path string) (shapes []Shape, err error) {
 				min := t.v1.Min(t.v2).Min(t.v3)
 				max := t.v1.Max(t.v2).Max(t.v3)
 				t.box = Box{min, max}
-				shapes = append(shapes, &t)
+				triangles = append(triangles, &t)
 			}
 		}
 	}

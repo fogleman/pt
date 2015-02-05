@@ -7,29 +7,33 @@ import (
 type Mesh struct {
 	color     Color
 	material  Material
+	triangles []*Triangle
 	shapeTree *Tree
 }
 
 func NewMesh(color Color, material Material) *Mesh {
-	return &Mesh{color, material, nil}
+	return &Mesh{color, material, nil, nil}
 }
 
 func (m *Mesh) LoadOBJ(path string) error {
-	shapes, err := LoadOBJ(path)
+	triangles, err := LoadOBJ(path)
 	if err != nil {
 		return err
 	}
-	m.SetShapes(shapes)
+	m.SetTriangles(triangles)
 	return nil
 }
 
-func (m *Mesh) SetShapes(shapes []Shape) {
-	for _, shape := range shapes {
-		if triangle, ok := shape.(*Triangle); ok {
-			triangle.mesh = m
-			triangle.FixNormals()
-		}
+func (m *Mesh) SetTriangles(triangles []*Triangle) {
+	for _, triangle := range triangles {
+		triangle.mesh = m
+		triangle.FixNormals()
 	}
+	shapes := make([]Shape, len(triangles))
+	for i := range triangles {
+		shapes[i] = triangles[i]
+	}
+	m.triangles = triangles
 	m.shapeTree = NewTree(shapes)
 }
 

@@ -11,7 +11,7 @@ type Tree struct {
 }
 
 func NewTree(shapes []Shape) *Tree {
-	fmt.Print("Building k-d tree... ")
+	fmt.Printf("Building k-d tree (%d shapes)... ", len(shapes))
 	defer fmt.Println("OK")
 	box := BoxForShapes(shapes)
 	node := NewNode(shapes)
