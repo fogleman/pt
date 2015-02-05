@@ -1,6 +1,7 @@
 package pt
 
 import (
+	"fmt"
 	"math"
 )
 
@@ -10,6 +11,8 @@ type Tree struct {
 }
 
 func NewTree(shapes []Shape) *Tree {
+	fmt.Print("Building k-d tree... ")
+	defer fmt.Println("OK")
 	box := BoxForShapes(shapes)
 	node := NewNode(shapes)
 	node.Split(0)
@@ -129,6 +132,10 @@ func (node *Node) Split(depth int) {
 	xs = Distinct(xs)
 	ys = Distinct(ys)
 	zs = Distinct(zs)
+	mx, my, mz := Median(xs), Median(ys), Median(zs)
+	xs = []float64{mx, mx}
+	ys = []float64{my, my}
+	zs = []float64{mz, mz}
 	best := len(node.shapes)
 	bestAxis := AxisNone
 	bestPoint := 0.0

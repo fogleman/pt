@@ -59,6 +59,20 @@ func Distinct(items []float64) []float64 {
 	return result
 }
 
+func Median(items []float64) float64 {
+	n := len(items)
+	switch {
+	case n == 0:
+		return 0
+	case n % 2 == 1:
+		return items[n/2]
+	default:
+		a := items[n/2-1]
+		b := items[n/2]
+		return (a + b) / 2
+	}
+}
+
 func DurationString(d time.Duration) string {
 	h := int(d.Hours())
 	m := int(d.Minutes()) % 60
