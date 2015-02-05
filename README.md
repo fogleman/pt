@@ -13,8 +13,6 @@ I am writing a [path tracer](http://en.wikipedia.org/wiki/Path_tracing) in Go.
 Here are things that I'm planning, or at least hoping, to do.
 
 * material properties *(partially done)*
-* more shapes
-* more example scenes
 * OBJ / STL models *(partially done)*
 * textured objects *(partially done)*
 * constructive solid geometry
