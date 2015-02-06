@@ -78,25 +78,21 @@ func Render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, depth
 }
 
 func IterativeRender(pathTemplate string, iterations int, scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, depth int) error {
-	// TODO: don't store all frames
-	var frames []image.Image
+	pixels := make([]Color, w * h)
 	result := image.NewNRGBA(image.Rect(0, 0, w, h))
-	for i := 0; i < iterations; i++ {
+	for i := 1; i <= iterations; i++ {
 		frame := Render(scene, camera, w, h, cameraSamples, hitSamples, depth)
-		frames = append(frames, frame)
 		for y := 0; y < h; y++ {
 			for x := 0; x < w; x++ {
-				c := Color{}
-				for _, frame := range frames {
-					r, g, b, _ := frame.At(x, y).RGBA()
-					color := Color{float64(r) / 65535, float64(g) / 65535, float64(b) / 65535}
-					c = c.Add(color)
-				}
-				c = c.Div(float64(len(frames)))
-				r := uint8(math.Min(255, c.R*255))
-				g := uint8(math.Min(255, c.G*255))
-				b := uint8(math.Min(255, c.B*255))
-				result.SetNRGBA(x, y, color.NRGBA{r, g, b, 255})
+				index := y * w + x
+				r, g, b, _ := frame.At(x, y).RGBA()
+				c := Color{float64(r) / 65535, float64(g) / 65535, float64(b) / 65535}
+				pixels[index] = pixels[index].Add(c)
+				avg := pixels[index].Div(float64(i))
+				ar := uint8(math.Min(255, avg.R*255))
+				ag := uint8(math.Min(255, avg.G*255))
+				ab := uint8(math.Min(255, avg.B*255))
+				result.SetNRGBA(x, y, color.NRGBA{ar, ag, ab, 255})
 			}
 		}
 		path := fmt.Sprintf(pathTemplate, i)
