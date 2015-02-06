@@ -11,8 +11,9 @@ Here are things that I'm planning, or at least hoping, to do.
 * material properties *(partially done)*
 * OBJ / STL models *(partially done)*
 * textured objects *(partially done)*
-* constructive solid geometry
+* light attenuation
 * depth of field
+* constructive solid geometry
 * input files to define scene
 * animation support
 
