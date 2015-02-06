@@ -78,6 +78,7 @@ func Render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, depth
 }
 
 func IterativeRender(pathTemplate string, iterations int, scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, depth int) error {
+	// TODO: don't store all frames
 	var frames []image.Image
 	result := image.NewNRGBA(image.Rect(0, 0, w, h))
 	for i := 0; i < iterations; i++ {
