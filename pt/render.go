@@ -7,6 +7,7 @@ import (
 	"math"
 	"math/rand"
 	"runtime"
+	"strings"
 	"time"
 )
 
@@ -78,9 +79,11 @@ func Render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, depth
 }
 
 func IterativeRender(pathTemplate string, iterations int, scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, depth int) error {
+	scene.Compile()
 	pixels := make([]Color, w * h)
 	result := image.NewNRGBA(image.Rect(0, 0, w, h))
 	for i := 1; i <= iterations; i++ {
+		fmt.Printf("\n[Iteration %d of %d]\n", i, iterations)
 		frame := Render(scene, camera, w, h, cameraSamples, hitSamples, depth)
 		for y := 0; y < h; y++ {
 			for x := 0; x < w; x++ {
@@ -95,7 +98,10 @@ func IterativeRender(pathTemplate string, iterations int, scene *Scene, camera *
 				result.SetNRGBA(x, y, color.NRGBA{ar, ag, ab, 255})
 			}
 		}
-		path := fmt.Sprintf(pathTemplate, i)
+		path := pathTemplate
+		if strings.Contains(path, "%") {
+			path = fmt.Sprintf(pathTemplate, i)
+		}
 		if err := SavePNG(path, result); err != nil {
 			return err
 		}

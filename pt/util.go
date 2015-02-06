@@ -24,6 +24,8 @@ func Degrees(radians float64) float64 {
 }
 
 func SavePNG(path string, im image.Image) error {
+	fmt.Printf("Writing %s... ", path)
+	defer fmt.Println("OK")
 	file, err := os.Create(path)
 	if err != nil {
 		return err
