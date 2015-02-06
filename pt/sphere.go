@@ -43,6 +43,7 @@ func (s *Sphere) Color(p Vector) Color {
 	if s.texture == nil {
 		return s.material.Color
 	}
+	// TODO: make a Texture interface
 	size := s.texture.Bounds().Max
 	u := math.Atan2(p.Z, p.X)
 	v := math.Atan2(p.Y, Vector{p.X, 0, p.Z}.Length())

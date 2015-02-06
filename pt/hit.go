@@ -14,7 +14,7 @@ type HitInfo struct {
 	Material Material
 }
 
-var NoHit = Hit{T: INF}
+var NoHit = Hit{nil, INF}
 
 func (hit *Hit) Ok() bool {
 	return hit.T < INF
