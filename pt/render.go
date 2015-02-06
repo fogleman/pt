@@ -80,14 +80,14 @@ func Render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, depth
 
 func IterativeRender(pathTemplate string, iterations int, scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, depth int) error {
 	scene.Compile()
-	pixels := make([]Color, w * h)
+	pixels := make([]Color, w*h)
 	result := image.NewNRGBA(image.Rect(0, 0, w, h))
 	for i := 1; i <= iterations; i++ {
 		fmt.Printf("\n[Iteration %d of %d]\n", i, iterations)
 		frame := Render(scene, camera, w, h, cameraSamples, hitSamples, depth)
 		for y := 0; y < h; y++ {
 			for x := 0; x < w; x++ {
-				index := y * w + x
+				index := y*w + x
 				r, g, b, _ := frame.At(x, y).RGBA()
 				c := Color{float64(r) / 65535, float64(g) / 65535, float64(b) / 65535}
 				pixels[index] = pixels[index].Add(c)

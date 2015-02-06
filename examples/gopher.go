@@ -4,9 +4,9 @@ import "github.com/fogleman/pt/pt"
 
 func main() {
 	scene := pt.Scene{}
-	gopher := pt.Material{pt.Color{}, 2, 0, 0}
-	wall := pt.Material{pt.HexColor(0xFCFAE1), 2, pt.Radians(30), 0}
-	floor := pt.Material{pt.HexColor(0xFCFAE1), 2, pt.Radians(30), 0}
+	gopher := pt.Material{pt.Color{}, 3, pt.Radians(20), 0}
+	wall := pt.Material{pt.HexColor(0xFCFAE1), 3, pt.Radians(20), 0}
+	floor := pt.Material{pt.HexColor(0xFCFAE1), 3, pt.Radians(20), 0}
 	scene.AddLight(pt.NewSphere(pt.Vector{10, 10, 10}, 2, pt.DiffuseMaterial(pt.Color{1, 1, 1}), nil))
 	scene.AddShape(pt.NewCube(pt.Vector{-30, -1, -30}, pt.Vector{-5, 10, 30}, wall))
 	scene.AddShape(pt.NewCube(pt.Vector{-30, -1, -30}, pt.Vector{30, 0, 30}, floor))
