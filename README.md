@@ -1,12 +1,8 @@
 ### Summary
 
-I am writing a [path tracer](http://en.wikipedia.org/wiki/Path_tracing) in Go.
+I am writing a [path tracer](http://en.wikipedia.org/wiki/Path_tracing) in Go. This Go gopher was rendered using it:
 
 ![Go Gopher](http://i.imgur.com/buSF7m5.png)
-
-    1280 x 720 pixels, 25 x 64 = 1600 samples per pixel, 8 bounces max
-    3 shapes, 1 light
-    Render time: 3m52s on 3.4 GHz Intel Core i5 (4 cores)
 
 ### TODO
 
