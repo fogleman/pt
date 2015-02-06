@@ -1,6 +1,6 @@
 ### Summary
 
-I am writing a [path tracer](http://en.wikipedia.org/wiki/Path_tracing) in Go. This Go gopher was rendered using it:
+I am writing a [path tracer](http://en.wikipedia.org/wiki/Path_tracing) in Go. The Go gopher below was rendered using it, and here's the code that was used to do it: [gopher.go](https://github.com/fogleman/pt/blob/master/examples/gopher.go)
 
 ![Go Gopher](http://i.imgur.com/buSF7m5.png)
 
