@@ -44,7 +44,7 @@ func (t *Triangle) Intersect(r Ray) Hit {
 }
 
 func (t *Triangle) Color(p Vector) Color {
-	return t.mesh.color
+	return t.mesh.material.Color
 }
 
 func (t *Triangle) Material(p Vector) Material {

@@ -8,14 +8,13 @@ import (
 type Cube struct {
 	min      Vector
 	max      Vector
-	color    Color
 	material Material
 	box      Box
 }
 
-func NewCube(min, max Vector, color Color, material Material) Shape {
+func NewCube(min, max Vector, material Material) Shape {
 	box := Box{min, max}
-	return &Cube{min, max, color, material, box}
+	return &Cube{min, max, material, box}
 }
 
 func (c *Cube) Box() Box {
@@ -35,7 +34,7 @@ func (c *Cube) Intersect(r Ray) Hit {
 }
 
 func (c *Cube) Color(p Vector) Color {
-	return c.color
+	return c.material.Color
 }
 
 func (c *Cube) Material(p Vector) Material {

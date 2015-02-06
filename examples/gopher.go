@@ -4,9 +4,9 @@ import "github.com/fogleman/pt/pt"
 
 func main() {
 	scene := pt.Scene{}
-	scene.AddLight(pt.NewSphere(pt.Vector{2, 8, 0.5}, 2, pt.Color{1, 1, 1}, pt.DiffuseMaterial(), nil))
-	scene.AddShape(pt.NewCube(pt.Vector{-30, -1, -30}, pt.Vector{30, 0.376662, 30}, pt.HexColor(0xFCFAE1), pt.Material{1.5, 0, 0}))
-	mesh := pt.NewMesh(pt.HexColor(0x5BCFDE), pt.Material{1.5, 0, 0})
+	scene.AddLight(pt.NewSphere(pt.Vector{2, 8, 0.5}, 2, pt.DiffuseMaterial(pt.Color{1, 1, 1}), nil))
+	scene.AddShape(pt.NewCube(pt.Vector{-30, -1, -30}, pt.Vector{30, 0.376662, 30}, pt.Material{pt.HexColor(0xFCFAE1), 1.5, 0, 0}))
+	mesh := pt.NewMesh(pt.Material{pt.HexColor(0x5BCFDE), 1.5, 0, 0})
 	mesh.LoadOBJ("examples/gopher.obj")
 	mesh.SmoothNormals()
 	scene.AddShape(mesh)

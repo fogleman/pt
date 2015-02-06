@@ -9,17 +9,16 @@ import (
 type Sphere struct {
 	center   Vector
 	radius   float64
-	color    Color
 	material Material
 	texture  image.Image
 	box      Box
 }
 
-func NewSphere(center Vector, radius float64, color Color, material Material, texture image.Image) Shape {
+func NewSphere(center Vector, radius float64, material Material, texture image.Image) Shape {
 	min := Vector{center.X - radius, center.Y - radius, center.Z - radius}
 	max := Vector{center.X + radius, center.Y + radius, center.Z + radius}
 	box := Box{min, max}
-	return &Sphere{center, radius, color, material, texture, box}
+	return &Sphere{center, radius, material, texture, box}
 }
 
 func (s *Sphere) Box() Box {
@@ -42,7 +41,7 @@ func (s *Sphere) Intersect(r Ray) Hit {
 
 func (s *Sphere) Color(p Vector) Color {
 	if s.texture == nil {
-		return s.color
+		return s.material.Color
 	}
 	size := s.texture.Bounds().Max
 	u := math.Atan2(p.Z, p.X)

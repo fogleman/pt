@@ -5,14 +5,13 @@ import (
 )
 
 type Mesh struct {
-	color     Color
 	material  Material
 	triangles []*Triangle
 	shapeTree *Tree
 }
 
-func NewMesh(color Color, material Material) *Mesh {
-	return &Mesh{color, material, nil, nil}
+func NewMesh(material Material) *Mesh {
+	return &Mesh{material, nil, nil}
 }
 
 func (m *Mesh) LoadOBJ(path string) error {
