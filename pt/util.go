@@ -7,7 +7,9 @@ import (
 	"image/png"
 	"math"
 	"os"
+	"path"
 	"sort"
+	"strconv"
 	"time"
 )
 
@@ -78,4 +80,27 @@ func DurationString(d time.Duration) string {
 	m := int(d.Minutes()) % 60
 	s := int(d.Seconds()) % 60
 	return fmt.Sprintf("%d:%02d:%02d", h, m, s)
+}
+
+func ParseFloats(items []string) []float64 {
+	var result []float64
+	for _, item := range items {
+		f, _ := strconv.ParseFloat(item, 64)
+		result = append(result, f)
+	}
+	return result
+}
+
+func ParseInts(items []string) []int {
+	var result []int
+	for _, item := range items {
+		f, _ := strconv.ParseInt(item, 0, 0)
+		result = append(result, int(f))
+	}
+	return result
+}
+
+func RelativePath(path1, path2 string) string {
+	dir, _ := path.Split(path1)
+	return path.Join(dir, path2)
 }

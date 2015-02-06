@@ -3,29 +3,11 @@ package pt
 import (
 	"bufio"
 	"os"
-	"strconv"
 	"strings"
 )
 
-func parseFloats(items []string) []float64 {
-	var result []float64
-	for _, item := range items {
-		f, _ := strconv.ParseFloat(item, 64)
-		result = append(result, f)
-	}
-	return result
-}
-
-func parseInts(items []string) []int {
-	var result []int
-	for _, item := range items {
-		f, _ := strconv.ParseInt(item, 0, 0)
-		result = append(result, int(f))
-	}
-	return result
-}
-
-func LoadOBJ(path string) (triangles []*Triangle, err error) {
+func LoadOBJ(path string, parent Material) (triangles []*Triangle, err error) {
+	material := &parent
 	file, err := os.Open(path)
 	if err != nil {
 		return
@@ -35,6 +17,7 @@ func LoadOBJ(path string) (triangles []*Triangle, err error) {
 	vs = append(vs, Vector{})   // 1-based indexing
 	vts = append(vts, Vector{}) // 1-based indexing
 	vns = append(vns, Vector{}) // 1-based indexing
+	materials := make(map[string]*Material)
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		line := scanner.Text()
@@ -44,18 +27,29 @@ func LoadOBJ(path string) (triangles []*Triangle, err error) {
 		}
 		keyword := fields[0]
 		args := fields[1:]
+		if keyword == "mtllib" {
+			p := RelativePath(path, args[0])
+			if err = LoadMTL(p, parent, materials); err != nil {
+				return
+			}
+		}
+		if keyword == "usemtl" {
+			if m, ok := materials[args[0]]; ok {
+				material = m
+			}
+		}
 		if keyword == "v" {
-			f := parseFloats(args)
+			f := ParseFloats(args)
 			v := Vector{f[0], f[1], f[2]}
 			vs = append(vs, v)
 		}
 		if keyword == "vt" {
-			f := parseFloats(args)
+			f := ParseFloats(args)
 			v := Vector{f[0], f[1], f[2]}
 			vts = append(vts, v)
 		}
 		if keyword == "vn" {
-			f := parseFloats(args)
+			f := ParseFloats(args)
 			v := Vector{f[0], f[1], f[2]}
 			vns = append(vns, v)
 		}
@@ -67,12 +61,12 @@ func LoadOBJ(path string) (triangles []*Triangle, err error) {
 				fvts = append(fvts, vertex[1])
 				fvns = append(fvns, vertex[2])
 			}
-			ivs := parseInts(fvs)
-			ivts := parseInts(fvts)
-			ivns := parseInts(fvns)
+			ivs := ParseInts(fvs)
+			ivts := ParseInts(fvts)
+			ivns := ParseInts(fvns)
 			for i := 1; i < len(ivs)-1; i++ {
 				i1, i2, i3 := 0, i, i+1
-				t := Triangle{}
+				t := Triangle{material: material}
 				t.v1 = vs[ivs[i1]]
 				t.v2 = vs[ivs[i2]]
 				t.v3 = vs[ivs[i3]]

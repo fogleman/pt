@@ -6,7 +6,7 @@ import (
 )
 
 type Triangle struct {
-	mesh       *Mesh
+	material   *Material
 	box        Box
 	v1, v2, v3 Vector
 	n1, n2, n3 Vector
@@ -44,11 +44,11 @@ func (t *Triangle) Intersect(r Ray) Hit {
 }
 
 func (t *Triangle) Color(p Vector) Color {
-	return t.mesh.material.Color
+	return t.material.Color
 }
 
 func (t *Triangle) Material(p Vector) Material {
-	return t.mesh.material
+	return *t.material
 }
 
 func (t *Triangle) Normal(p Vector) Vector {

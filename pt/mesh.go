@@ -15,7 +15,7 @@ func NewMesh(material Material) *Mesh {
 }
 
 func (m *Mesh) LoadOBJ(path string) error {
-	triangles, err := LoadOBJ(path)
+	triangles, err := LoadOBJ(path, m.material)
 	if err != nil {
 		return err
 	}
@@ -25,8 +25,7 @@ func (m *Mesh) LoadOBJ(path string) error {
 
 func (m *Mesh) SetTriangles(triangles []*Triangle) {
 	for _, t := range triangles {
-		t.mesh = m
-		t.FixNormals()
+		t.FixNormals() // TODO: do this in LoadOBJ?
 	}
 	shapes := make([]Shape, len(triangles))
 	for i := range triangles {
