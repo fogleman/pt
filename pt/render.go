@@ -28,7 +28,7 @@ func Render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, depth
 	ncpu := runtime.NumCPU()
 	runtime.GOMAXPROCS(ncpu)
 	scene.Compile()
-	image := image.NewNRGBA(image.Rect(0, 0, w, h))
+	result := image.NewNRGBA(image.Rect(0, 0, w, h))
 	ch := make(chan int, h)
 	fmt.Printf("%d x %d pixels, %d x %d = %d samples, %d bounces, %d cores\n",
 		w, h, cameraSamples, hitSamples, cameraSamples*hitSamples, depth, ncpu)
@@ -48,11 +48,11 @@ func Render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, depth
 							c = c.Add(scene.Sample(ray, hitSamples, depth, rnd))
 						}
 					}
-					c = c.Div(float64(n * n))
+					c = c.Div(float64(n * n)).Pow(1 / 2.2)
 					r := uint8(math.Min(255, c.R*255))
 					g := uint8(math.Min(255, c.G*255))
 					b := uint8(math.Min(255, c.B*255))
-					image.SetNRGBA(x, y, color.NRGBA{r, g, b, 255})
+					result.SetNRGBA(x, y, color.NRGBA{r, g, b, 255})
 				}
 				ch <- 1
 			}
@@ -64,5 +64,34 @@ func Render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, depth
 		showProgress(start, i+1, h)
 	}
 	fmt.Println()
-	return image
+	return result
+}
+
+func IterativeRender(pathTemplate string, iterations int, scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, depth int) error {
+	var frames []image.Image
+	result := image.NewNRGBA(image.Rect(0, 0, w, h))
+	for i := 0; i < iterations; i++ {
+		frame := Render(scene, camera, w, h, cameraSamples, hitSamples, depth)
+		frames = append(frames, frame)
+		for y := 0; y < h; y++ {
+			for x := 0; x < w; x++ {
+				c := Color{}
+				for _, frame := range frames {
+					r, g, b, _ := frame.At(x, y).RGBA()
+					color := Color{float64(r) / 65535, float64(g) / 65535, float64(b) / 65535}
+					c = c.Add(color)
+				}
+				c = c.Div(float64(len(frames)))
+				r := uint8(math.Min(255, c.R*255))
+				g := uint8(math.Min(255, c.G*255))
+				b := uint8(math.Min(255, c.B*255))
+				result.SetNRGBA(x, y, color.NRGBA{r, g, b, 255})
+			}
+		}
+		path := fmt.Sprintf(pathTemplate, i)
+		if err := SavePNG(path, result); err != nil {
+			return err
+		}
+	}
+	return nil
 }

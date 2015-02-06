@@ -13,8 +13,12 @@ type Scene struct {
 }
 
 func (s *Scene) Compile() {
-	s.shapeTree = NewTree(s.shapes)
-	s.lightTree = NewTree(s.lights)
+	if s.shapeTree == nil {
+		s.shapeTree = NewTree(s.shapes)
+	}
+	if s.lightTree == nil {
+		s.lightTree = NewTree(s.lights)
+	}
 }
 
 func (s *Scene) AddShape(shape Shape) {
