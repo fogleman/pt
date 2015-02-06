@@ -2,7 +2,7 @@
 
 I am writing a [path tracer](http://en.wikipedia.org/wiki/Path_tracing) in Go.
 
-![Sample](http://i.imgur.com/zHRmmeP.png)
+![Go Gopher](http://i.imgur.com/buSF7m5.png)
 
     1280 x 720 pixels, 25 x 64 = 1600 samples per pixel, 8 bounces max
     3 shapes, 1 light
@@ -43,4 +43,4 @@ Here are some resources that I have found useful.
 
 ![Sample](http://i.imgur.com/zCPDKbt.png)
 
-![Sample](http://i.imgur.com/7nJieKd.png)
+![Sample](http://i.imgur.com/zHRmmeP.png)
