@@ -1,6 +1,8 @@
 ### Summary
 
-I am writing a [path tracer](http://en.wikipedia.org/wiki/Path_tracing) in Go. The Go gopher below was rendered using it, and here's the code that was used to do it: [gopher.go](https://github.com/fogleman/pt/blob/master/examples/gopher.go). It's 2560x1440px... so you can make it your wallpaper!
+I am writing a [path tracer](http://en.wikipedia.org/wiki/Path_tracing) in Go. The Go gopher below was rendered using it, and [here's the code](https://github.com/fogleman/pt/blob/master/examples/gopher.go) that was used to do it. It's 2560x1440px... so you can make it your wallpaper! The gopher 3D model was found [here](https://github.com/golang-samples/gopher-3d).
+
+Disclaimer: This is my first time using Go.
 
 ![Go Gopher](http://i.imgur.com/buSF7m5.png)
 
