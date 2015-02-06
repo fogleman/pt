@@ -30,6 +30,14 @@ func BoxForTriangles(shapes []*Triangle) Box {
 	return box
 }
 
+func (a Box) Anchor(anchor Vector) Vector {
+	return a.Min.Add(a.Max.Sub(a.Min).MulVector(anchor))
+}
+
+func (a Box) Center() Vector {
+	return a.Anchor(Vector{0.5, 0.5, 0.5})
+}
+
 func (a Box) Extend(b Box) Box {
 	return Box{a.Min.Min(b.Min), a.Max.Max(b.Max)}
 }

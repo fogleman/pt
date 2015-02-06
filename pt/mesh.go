@@ -66,9 +66,7 @@ func (m *Mesh) SmoothNormals() {
 
 func (m *Mesh) MoveTo(position, anchor Vector) {
 	box := BoxForTriangles(m.triangles)
-	min, max := box.Min, box.Max
-	point := min.Add(max.Sub(min).MulVector(anchor))
-	offset := position.Sub(point)
+	offset := position.Sub(box.Anchor(anchor))
 	for _, t := range m.triangles {
 		t.v1 = t.v1.Add(offset)
 		t.v2 = t.v2.Add(offset)
