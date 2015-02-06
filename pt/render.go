@@ -35,20 +35,30 @@ func Render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, depth
 	start := time.Now()
 	for i := 0; i < ncpu; i++ {
 		go func(i int) {
-			n := int(math.Sqrt(float64(cameraSamples)))
 			rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
 			for y := i; y < h; y += ncpu {
 				for x := 0; x < w; x++ {
 					c := Color{}
-					for u := 0; u < n; u++ {
-						for v := 0; v < n; v++ {
-							fu := (float64(u) + 0.5) / float64(n)
-							fv := (float64(v) + 0.5) / float64(n)
-							ray := camera.CastRay(x, y, w, h, fu, fv)
-							c = c.Add(scene.Sample(ray, hitSamples, depth, rnd))
+					if cameraSamples == 0 {
+						// random subsampling
+						fu := rnd.Float64()
+						fv := rnd.Float64()
+						ray := camera.CastRay(x, y, w, h, fu, fv)
+						c = c.Add(scene.Sample(ray, hitSamples, depth, rnd))
+					} else {
+						// stratified subsampling
+						n := int(math.Sqrt(float64(cameraSamples)))
+						for u := 0; u < n; u++ {
+							for v := 0; v < n; v++ {
+								fu := (float64(u) + 0.5) / float64(n)
+								fv := (float64(v) + 0.5) / float64(n)
+								ray := camera.CastRay(x, y, w, h, fu, fv)
+								c = c.Add(scene.Sample(ray, hitSamples, depth, rnd))
+							}
 						}
+						c = c.Div(float64(n * n))
 					}
-					c = c.Div(float64(n * n)).Pow(1 / 2.2)
+					c = c.Pow(1 / 2.2)
 					r := uint8(math.Min(255, c.R*255))
 					g := uint8(math.Min(255, c.G*255))
 					b := uint8(math.Min(255, c.B*255))
