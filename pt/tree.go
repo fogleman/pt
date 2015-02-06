@@ -3,6 +3,7 @@ package pt
 import (
 	"fmt"
 	"math"
+	"sort"
 )
 
 type Tree struct {
@@ -86,7 +87,8 @@ func (node *Node) Intersect(r Ray, tmin, tmax float64) Hit {
 	}
 }
 
-func (node *Node) PartitionCount(axis Axis, point float64) (left, right int) {
+func (node *Node) PartitionScore(axis Axis, point float64) int {
+	left, right := 0, 0
 	for _, shape := range node.shapes {
 		box := shape.Box()
 		l, r := box.Partition(axis, point)
@@ -97,7 +99,11 @@ func (node *Node) PartitionCount(axis Axis, point float64) (left, right int) {
 			right++
 		}
 	}
-	return
+	if left >= right {
+		return left
+	} else {
+		return right
+	}
 }
 
 func (node *Node) Partition(axis Axis, point float64) (left, right []Shape) {
@@ -115,7 +121,6 @@ func (node *Node) Partition(axis Axis, point float64) (left, right []Shape) {
 }
 
 func (node *Node) Split(depth int) {
-	// TODO: max depth?
 	if len(node.shapes) < 10 {
 		return
 	}
@@ -129,56 +134,40 @@ func (node *Node) Split(depth int) {
 		zs = append(zs, box.Min.Z)
 		zs = append(zs, box.Max.Z)
 	}
-	xs = Distinct(xs)
-	ys = Distinct(ys)
-	zs = Distinct(zs)
+	sort.Float64s(xs)
+	sort.Float64s(ys)
+	sort.Float64s(zs)
 	mx, my, mz := Median(xs), Median(ys), Median(zs)
-	// TODO: clean this up
-	xs = []float64{mx, mx}
-	ys = []float64{my, my}
-	zs = []float64{mz, mz}
 	best := len(node.shapes)
 	bestAxis := AxisNone
 	bestPoint := 0.0
-	for i := 0; i < len(xs)-1; i++ {
-		x := (xs[i] + xs[i+1]) / 2
-		l, r := node.PartitionCount(AxisX, x)
-		n := int(math.Max(float64(l), float64(r)))
-		if n < best {
-			best = n
-			bestAxis = AxisX
-			bestPoint = x
-		}
+	sx := node.PartitionScore(AxisX, mx)
+	if sx < best {
+		best = sx
+		bestAxis = AxisX
+		bestPoint = mx
 	}
-	for i := 0; i < len(ys)-1; i++ {
-		y := (ys[i] + ys[i+1]) / 2
-		l, r := node.PartitionCount(AxisY, y)
-		n := int(math.Max(float64(l), float64(r)))
-		if n < best {
-			best = n
-			bestAxis = AxisY
-			bestPoint = y
-		}
+	sy := node.PartitionScore(AxisY, my)
+	if sy < best {
+		best = sy
+		bestAxis = AxisY
+		bestPoint = my
 	}
-	for i := 0; i < len(zs)-1; i++ {
-		z := (zs[i] + zs[i+1]) / 2
-		l, r := node.PartitionCount(AxisZ, z)
-		n := int(math.Max(float64(l), float64(r)))
-		if n < best {
-			best = n
-			bestAxis = AxisZ
-			bestPoint = z
-		}
+	sz := node.PartitionScore(AxisZ, mz)
+	if sz < best {
+		best = sz
+		bestAxis = AxisZ
+		bestPoint = mz
 	}
 	if bestAxis == AxisNone {
 		return
 	}
+	l, r := node.Partition(bestAxis, bestPoint)
 	node.axis = bestAxis
 	node.point = bestPoint
-	l, r := node.Partition(bestAxis, bestPoint)
 	node.left = NewNode(l)
 	node.right = NewNode(r)
 	node.left.Split(depth + 1)
 	node.right.Split(depth + 1)
-	node.shapes = nil
+	node.shapes = nil // only needed at leaf nodes
 }
