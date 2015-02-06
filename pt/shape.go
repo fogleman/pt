@@ -26,7 +26,8 @@ func NewTransformedShape(s Shape, m Matrix) Shape {
 // TODO: transformed Box()
 
 func (s *TransformedShape) Intersect(r Ray) Hit {
-	return s.Shape.Intersect(s.inverse.MulRay(r))
+	hit := s.Shape.Intersect(s.inverse.MulRay(r))
+	return Hit{s, hit.T}
 }
 
 func (s *TransformedShape) Color(p Vector) Color {
