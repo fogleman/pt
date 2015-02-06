@@ -6,6 +6,8 @@ Disclaimer: This is my first time using Go.
 
 ![Go Gopher](http://i.imgur.com/buSF7m5.png)
 
+    go run examples/gopher.go
+
 ### TODO
 
 Here are things that I'm planning, or at least hoping, to do.
