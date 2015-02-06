@@ -19,6 +19,17 @@ func BoxForShapes(shapes []Shape) Box {
 	return box
 }
 
+func BoxForTriangles(shapes []*Triangle) Box {
+	if len(shapes) == 0 {
+		return Box{}
+	}
+	box := shapes[0].Box()
+	for _, shape := range shapes {
+		box = box.Extend(shape.Box())
+	}
+	return box
+}
+
 func (a Box) Extend(b Box) Box {
 	return Box{a.Min.Min(b.Min), a.Max.Max(b.Max)}
 }

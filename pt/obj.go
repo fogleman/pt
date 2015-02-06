@@ -74,9 +74,7 @@ func LoadOBJ(path string, parent Material) (*Mesh, error) {
 				t.n1 = vns[ivns[i1]]
 				t.n2 = vns[ivns[i2]]
 				t.n3 = vns[ivns[i3]]
-				min := t.v1.Min(t.v2).Min(t.v3)
-				max := t.v1.Max(t.v2).Max(t.v3)
-				t.box = Box{min, max}
+				t.UpdateBox()
 				t.FixNormals()
 				triangles = append(triangles, &t)
 			}

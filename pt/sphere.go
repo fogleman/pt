@@ -21,6 +21,9 @@ func NewSphere(center Vector, radius float64, material Material, texture image.I
 	return &Sphere{center, radius, material, texture, box}
 }
 
+func (s *Sphere) Compile() {
+}
+
 func (s *Sphere) Box() Box {
 	return s.box
 }

@@ -13,6 +13,12 @@ type Scene struct {
 }
 
 func (s *Scene) Compile() {
+	for _, shape := range s.shapes {
+		shape.Compile()
+	}
+	for _, light := range s.lights {
+		light.Compile()
+	}
 	if s.shapeTree == nil {
 		s.shapeTree = NewTree(s.shapes)
 	}

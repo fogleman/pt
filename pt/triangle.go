@@ -13,6 +13,9 @@ type Triangle struct {
 	t1, t2, t3 Vector
 }
 
+func (t *Triangle) Compile() {
+}
+
 func (t *Triangle) Box() Box {
 	return t.box
 }
@@ -79,6 +82,12 @@ func (t *Triangle) Barycentric(p Vector) (u, v, w float64) {
 	w = (d00*d21 - d01*d20) / d
 	u = 1 - v - w
 	return
+}
+
+func (t *Triangle) UpdateBox() {
+	min := t.v1.Min(t.v2).Min(t.v3)
+	max := t.v1.Max(t.v2).Max(t.v3)
+	t.box = Box{min, max}
 }
 
 func (t *Triangle) FixNormals() {
