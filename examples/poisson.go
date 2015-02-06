@@ -15,7 +15,7 @@ func main() {
 	scene.AddShape(pt.NewCube(pt.Vector{-n, -1, -n}, pt.Vector{n, 0, n}, pt.HexColor(0x334D5C), pt.DiffuseMaterial()))
 	for _, point := range pt.PoissonDisc(-n, -n, n, n, 1, 32) {
 		point = pt.Vector{point.X, 0, point.Y}
-		r := rand.Float64() * 0.6 + 0.2
+		r := rand.Float64()*0.6 + 0.2
 		sphere := pt.NewSphere(point, r, pt.HexColor(0xEFC94C), material, nil)
 		scene.AddShape(sphere)
 	}

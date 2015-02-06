@@ -6,18 +6,19 @@ import (
 	"strings"
 )
 
-func LoadOBJ(path string, parent Material) (triangles []*Triangle, err error) {
-	material := &parent
+func LoadOBJ(path string, parent Material) (*Mesh, error) {
 	file, err := os.Open(path)
 	if err != nil {
-		return
+		return nil, err
 	}
 	defer file.Close()
 	var vs, vts, vns []Vector
 	vs = append(vs, Vector{})   // 1-based indexing
 	vts = append(vts, Vector{}) // 1-based indexing
 	vns = append(vns, Vector{}) // 1-based indexing
+	var triangles []*Triangle
 	materials := make(map[string]*Material)
+	material := &parent
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		line := scanner.Text()
@@ -27,33 +28,29 @@ func LoadOBJ(path string, parent Material) (triangles []*Triangle, err error) {
 		}
 		keyword := fields[0]
 		args := fields[1:]
-		if keyword == "mtllib" {
+		switch keyword {
+		case "mtllib":
 			p := RelativePath(path, args[0])
-			if err = LoadMTL(p, parent, materials); err != nil {
-				return
+			if err := LoadMTL(p, parent, materials); err != nil {
+				return nil, err
 			}
-		}
-		if keyword == "usemtl" {
+		case "usemtl":
 			if m, ok := materials[args[0]]; ok {
 				material = m
 			}
-		}
-		if keyword == "v" {
+		case "v":
 			f := ParseFloats(args)
 			v := Vector{f[0], f[1], f[2]}
 			vs = append(vs, v)
-		}
-		if keyword == "vt" {
+		case "vt":
 			f := ParseFloats(args)
 			v := Vector{f[0], f[1], f[2]}
 			vts = append(vts, v)
-		}
-		if keyword == "vn" {
+		case "vn":
 			f := ParseFloats(args)
 			v := Vector{f[0], f[1], f[2]}
 			vns = append(vns, v)
-		}
-		if keyword == "f" {
+		case "f":
 			var fvs, fvts, fvns []string
 			for _, arg := range args {
 				vertex := strings.Split(arg+"//", "/")
@@ -66,7 +63,8 @@ func LoadOBJ(path string, parent Material) (triangles []*Triangle, err error) {
 			ivns := ParseInts(fvns)
 			for i := 1; i < len(ivs)-1; i++ {
 				i1, i2, i3 := 0, i, i+1
-				t := Triangle{material: material}
+				t := Triangle{}
+				t.material = material
 				t.v1 = vs[ivs[i1]]
 				t.v2 = vs[ivs[i2]]
 				t.v3 = vs[ivs[i3]]
@@ -79,10 +77,10 @@ func LoadOBJ(path string, parent Material) (triangles []*Triangle, err error) {
 				min := t.v1.Min(t.v2).Min(t.v3)
 				max := t.v1.Max(t.v2).Max(t.v3)
 				t.box = Box{min, max}
+				t.FixNormals()
 				triangles = append(triangles, &t)
 			}
 		}
 	}
-	err = scanner.Err()
-	return
+	return NewMesh(triangles), scanner.Err()
 }

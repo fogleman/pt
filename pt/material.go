@@ -38,12 +38,12 @@ func LoadMTL(path string, parent Material, materials map[string]*Material) error
 		}
 		keyword := fields[0]
 		args := fields[1:]
-		if keyword == "newmtl" {
+		switch keyword {
+		case "newmtl":
 			parentCopy := parent
 			material = &parentCopy
 			materials[args[0]] = material
-		}
-		if keyword == "Kd" {
+		case "Kd":
 			c := ParseFloats(args)
 			material.Color = Color{c[0], c[1], c[2]}
 		}

@@ -5,34 +5,16 @@ import (
 )
 
 type Mesh struct {
-	material  Material
 	triangles []*Triangle
 	shapeTree *Tree
 }
 
-func NewMesh(material Material) *Mesh {
-	return &Mesh{material, nil, nil}
-}
-
-func (m *Mesh) LoadOBJ(path string) error {
-	triangles, err := LoadOBJ(path, m.material)
-	if err != nil {
-		return err
-	}
-	m.SetTriangles(triangles)
-	return nil
-}
-
-func (m *Mesh) SetTriangles(triangles []*Triangle) {
-	for _, t := range triangles {
-		t.FixNormals() // TODO: do this in LoadOBJ?
-	}
+func NewMesh(triangles []*Triangle) *Mesh {
 	shapes := make([]Shape, len(triangles))
 	for i := range triangles {
 		shapes[i] = triangles[i]
 	}
-	m.triangles = triangles
-	m.shapeTree = NewTree(shapes)
+	return &Mesh{triangles, NewTree(shapes)}
 }
 
 func (m *Mesh) SmoothNormals() {
