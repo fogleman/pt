@@ -1,7 +1,6 @@
 package pt
 
 import (
-	"image"
 	"math"
 	"math/rand"
 )
@@ -10,15 +9,14 @@ type Sphere struct {
 	center   Vector
 	radius   float64
 	material Material
-	texture  image.Image
 	box      Box
 }
 
-func NewSphere(center Vector, radius float64, material Material, texture image.Image) Shape {
+func NewSphere(center Vector, radius float64, material Material) Shape {
 	min := Vector{center.X - radius, center.Y - radius, center.Z - radius}
 	max := Vector{center.X + radius, center.Y + radius, center.Z + radius}
 	box := Box{min, max}
-	return &Sphere{center, radius, material, texture, box}
+	return &Sphere{center, radius, material, box}
 }
 
 func (s *Sphere) Compile() {
@@ -43,19 +41,14 @@ func (s *Sphere) Intersect(r Ray) Hit {
 }
 
 func (s *Sphere) Color(p Vector) Color {
-	if s.texture == nil {
+	if s.material.Texture == nil {
 		return s.material.Color
 	}
-	// TODO: make a Texture interface
-	size := s.texture.Bounds().Max
 	u := math.Atan2(p.Z, p.X)
 	v := math.Atan2(p.Y, Vector{p.X, 0, p.Z}.Length())
 	u = (u + math.Pi) / (2 * math.Pi)
 	v = 1 - (v+math.Pi/2)/math.Pi
-	x := int(u * float64(size.X))
-	y := int(v * float64(size.Y))
-	r, g, b, _ := s.texture.At(x, y).RGBA()
-	return Color{float64(r) / 65535, float64(g) / 65535, float64(b) / 65535}
+	return s.material.Texture.Sample(u, v)
 }
 
 func (s *Sphere) Material(p Vector) Material {

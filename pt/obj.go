@@ -47,7 +47,7 @@ func LoadOBJ(path string, parent Material) (*Mesh, error) {
 			vs = append(vs, v)
 		case "vt":
 			f := ParseFloats(args)
-			v := Vector{f[0], f[1], f[2]}
+			v := Vector{f[0], f[1], 0}
 			vts = append(vts, v)
 		case "vn":
 			f := ParseFloats(args)

@@ -47,7 +47,15 @@ func (t *Triangle) Intersect(r Ray) Hit {
 }
 
 func (t *Triangle) Color(p Vector) Color {
-	return t.material.Color
+	if t.material.Texture == nil {
+		return t.material.Color
+	}
+	u, v, w := t.Barycentric(p)
+	n := Vector{}
+	n = n.Add(t.t1.MulScalar(u))
+	n = n.Add(t.t2.MulScalar(v))
+	n = n.Add(t.t3.MulScalar(w))
+	return t.material.Texture.Sample(n.X, n.Y)
 }
 
 func (t *Triangle) Material(p Vector) Material {
