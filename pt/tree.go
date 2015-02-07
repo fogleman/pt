@@ -106,7 +106,9 @@ func (node *Node) PartitionScore(axis Axis, point float64) int {
 	}
 }
 
-func (node *Node) Partition(axis Axis, point float64) (left, right []Shape) {
+func (node *Node) Partition(size int, axis Axis, point float64) (left, right []Shape) {
+	left = make([]Shape, 0, size)
+	right = make([]Shape, 0, size)
 	for _, shape := range node.shapes {
 		box := shape.Box()
 		l, r := box.Partition(axis, point)
@@ -124,7 +126,9 @@ func (node *Node) Split(depth int) {
 	if len(node.shapes) < 10 {
 		return
 	}
-	var xs, ys, zs []float64
+	xs := make([]float64, 0, len(node.shapes) * 2)
+	ys := make([]float64, 0, len(node.shapes) * 2)
+	zs := make([]float64, 0, len(node.shapes) * 2)
 	for _, shape := range node.shapes {
 		box := shape.Box()
 		xs = append(xs, box.Min.X)
@@ -162,7 +166,7 @@ func (node *Node) Split(depth int) {
 	if bestAxis == AxisNone {
 		return
 	}
-	l, r := node.Partition(bestAxis, bestPoint)
+	l, r := node.Partition(best, bestAxis, bestPoint)
 	node.axis = bestAxis
 	node.point = bestPoint
 	node.left = NewNode(l)
