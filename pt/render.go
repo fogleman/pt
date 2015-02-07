@@ -57,7 +57,7 @@ func Render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, depth
 								c = c.Add(scene.Sample(ray, hitSamples, depth, rnd))
 							}
 						}
-						c = c.Div(float64(n * n))
+						c = c.DivScalar(float64(n * n))
 					}
 					c = c.Pow(1 / 2.2)
 					r := uint8(math.Min(255, c.R*255))
@@ -91,7 +91,7 @@ func IterativeRender(pathTemplate string, iterations int, scene *Scene, camera *
 				r, g, b, _ := frame.At(x, y).RGBA()
 				c := Color{float64(r) / 65535, float64(g) / 65535, float64(b) / 65535}
 				pixels[index] = pixels[index].Add(c)
-				avg := pixels[index].Div(float64(i))
+				avg := pixels[index].DivScalar(float64(i))
 				ar := uint8(math.Min(255, avg.R*255))
 				ag := uint8(math.Min(255, avg.G*255))
 				ab := uint8(math.Min(255, avg.B*255))

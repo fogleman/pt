@@ -31,7 +31,7 @@ func BoxForTriangles(shapes []*Triangle) Box {
 }
 
 func (a Box) Anchor(anchor Vector) Vector {
-	return a.Min.Add(a.Max.Sub(a.Min).MulVector(anchor))
+	return a.Min.Add(a.Max.Sub(a.Min).Mul(anchor))
 }
 
 func (a Box) Center() Vector {
@@ -43,8 +43,8 @@ func (a Box) Extend(b Box) Box {
 }
 
 func (b *Box) Intersect(r Ray) (float64, float64) {
-	n := b.Min.Sub(r.Origin).DivVector(r.Direction)
-	f := b.Max.Sub(r.Origin).DivVector(r.Direction)
+	n := b.Min.Sub(r.Origin).Div(r.Direction)
+	f := b.Max.Sub(r.Origin).Div(r.Direction)
 	n, f = n.Min(f), n.Max(f)
 	t0 := math.Max(math.Max(n.X, n.Y), n.Z)
 	t1 := math.Min(math.Min(f.X, f.Y), f.Z)

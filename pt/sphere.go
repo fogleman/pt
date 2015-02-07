@@ -73,7 +73,7 @@ func (s *Sphere) RandomPoint(rnd *rand.Rand) Vector {
 		z := rnd.Float64()*2 - 1
 		v := Vector{x, y, z}
 		if v.Length() <= 1 {
-			return v.Mul(s.radius).Add(s.center)
+			return v.MulScalar(s.radius).Add(s.center)
 		}
 	}
 }

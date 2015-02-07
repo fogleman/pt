@@ -25,8 +25,8 @@ func (c *Cube) Box() Box {
 }
 
 func (c *Cube) Intersect(r Ray) Hit {
-	n := c.min.Sub(r.Origin).DivVector(r.Direction)
-	f := c.max.Sub(r.Origin).DivVector(r.Direction)
+	n := c.min.Sub(r.Origin).Div(r.Direction)
+	f := c.max.Sub(r.Origin).Div(r.Direction)
 	n, f = n.Min(f), n.Max(f)
 	t0 := math.Max(math.Max(n.X, n.Y), n.Z)
 	t1 := math.Min(math.Min(f.X, f.Y), f.Z)

@@ -9,7 +9,7 @@ type Ray struct {
 }
 
 func (r Ray) Position(t float64) Vector {
-	return r.Origin.Add(r.Direction.Mul(t))
+	return r.Origin.Add(r.Direction.MulScalar(t))
 }
 
 func (n Ray) Reflect(i Ray) Ray {
@@ -36,9 +36,9 @@ func (r Ray) WeightedBounce(u, v float64) Ray {
 	s := r.Direction.Cross(r.Direction.MinAxis())
 	t := r.Direction.Cross(s)
 	d := Vector{}
-	d = d.Add(s.Mul(m1 * math.Cos(a)))
-	d = d.Add(t.Mul(m1 * math.Sin(a)))
-	d = d.Add(r.Direction.Mul(m2))
+	d = d.Add(s.MulScalar(m1 * math.Cos(a)))
+	d = d.Add(t.MulScalar(m1 * math.Sin(a)))
+	d = d.Add(r.Direction.MulScalar(m2))
 	return Ray{r.Origin, d}
 }
 
@@ -53,9 +53,9 @@ func (r Ray) ConeBounce(theta, u, v float64) Ray {
 	s := r.Direction.Cross(r.Direction.MinAxis())
 	t := r.Direction.Cross(s)
 	d := Vector{}
-	d = d.Add(s.Mul(m1 * math.Cos(a)))
-	d = d.Add(t.Mul(m1 * math.Sin(a)))
-	d = d.Add(r.Direction.Mul(m2))
+	d = d.Add(s.MulScalar(m1 * math.Cos(a)))
+	d = d.Add(t.MulScalar(m1 * math.Sin(a)))
+	d = d.Add(r.Direction.MulScalar(m2))
 	return Ray{r.Origin, d}
 }
 

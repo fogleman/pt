@@ -36,20 +36,20 @@ func (a Vector) Sub(b Vector) Vector {
 	return Vector{a.X - b.X, a.Y - b.Y, a.Z - b.Z}
 }
 
-func (a Vector) Mul(b float64) Vector {
-	return Vector{a.X * b, a.Y * b, a.Z * b}
-}
-
-func (a Vector) Div(b float64) Vector {
-	return Vector{a.X / b, a.Y / b, a.Z / b}
-}
-
-func (a Vector) MulVector(b Vector) Vector {
+func (a Vector) Mul(b Vector) Vector {
 	return Vector{a.X * b.X, a.Y * b.Y, a.Z * b.Z}
 }
 
-func (a Vector) DivVector(b Vector) Vector {
+func (a Vector) Div(b Vector) Vector {
 	return Vector{a.X / b.X, a.Y / b.Y, a.Z / b.Z}
+}
+
+func (a Vector) MulScalar(b float64) Vector {
+	return Vector{a.X * b, a.Y * b, a.Z * b}
+}
+
+func (a Vector) DivScalar(b float64) Vector {
+	return Vector{a.X / b, a.Y / b, a.Z / b}
 }
 
 func (a Vector) Min(b Vector) Vector {
@@ -61,7 +61,7 @@ func (a Vector) Max(b Vector) Vector {
 }
 
 func (n Vector) Reflect(i Vector) Vector {
-	return i.Sub(n.Mul(2 * n.Dot(i)))
+	return i.Sub(n.MulScalar(2 * n.Dot(i)))
 }
 
 func (a Vector) MinAxis() Vector {

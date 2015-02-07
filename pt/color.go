@@ -23,15 +23,15 @@ func (a Color) Sub(b Color) Color {
 	return Color{a.R - b.R, a.G - b.G, a.B - b.B}
 }
 
-func (a Color) Mul(b float64) Color {
-	return Color{a.R * b, a.G * b, a.B * b}
-}
-
-func (a Color) MulColor(b Color) Color {
+func (a Color) Mul(b Color) Color {
 	return Color{a.R * b.R, a.G * b.G, a.B * b.B}
 }
 
-func (a Color) Div(b float64) Color {
+func (a Color) MulScalar(b float64) Color {
+	return Color{a.R * b, a.G * b, a.B * b}
+}
+
+func (a Color) DivScalar(b float64) Color {
 	return Color{a.R / b, a.G / b, a.B / b}
 }
 
@@ -40,7 +40,7 @@ func (a Color) Pow(b float64) Color {
 }
 
 func (a Color) Mix(b Color, pct float64) Color {
-	a = a.Mul(1 - pct)
-	b = b.Mul(pct)
+	a = a.MulScalar(1 - pct)
+	b = b.MulScalar(pct)
 	return a.Add(b)
 }

@@ -57,9 +57,9 @@ func (t *Triangle) Material(p Vector) Material {
 func (t *Triangle) Normal(p Vector) Vector {
 	u, v, w := t.Barycentric(p)
 	n := Vector{}
-	n = n.Add(t.n1.Mul(u))
-	n = n.Add(t.n2.Mul(v))
-	n = n.Add(t.n3.Mul(w))
+	n = n.Add(t.n1.MulScalar(u))
+	n = n.Add(t.n2.MulScalar(v))
+	n = n.Add(t.n3.MulScalar(w))
 	n = n.Normalize() // needed?
 	return n
 }
