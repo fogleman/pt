@@ -126,9 +126,9 @@ func (node *Node) Split(depth int) {
 	if len(node.shapes) < 10 {
 		return
 	}
-	xs := make([]float64, 0, len(node.shapes) * 2)
-	ys := make([]float64, 0, len(node.shapes) * 2)
-	zs := make([]float64, 0, len(node.shapes) * 2)
+	xs := make([]float64, 0, len(node.shapes)*2)
+	ys := make([]float64, 0, len(node.shapes)*2)
+	zs := make([]float64, 0, len(node.shapes)*2)
 	for _, shape := range node.shapes {
 		box := shape.Box()
 		xs = append(xs, box.Min.X)
