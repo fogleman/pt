@@ -2,11 +2,14 @@ package pt
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 	"strings"
 )
 
 func LoadOBJ(path string, parent Material) (*Mesh, error) {
+	fmt.Printf("Loading %s... ", path)
+	defer fmt.Println("OK")
 	file, err := os.Open(path)
 	if err != nil {
 		return nil, err
