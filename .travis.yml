@@ -1,0 +1,16 @@
+language: go
+
+go:
+  - 1.4.1
+  - tip
+
+install: go get -v -t github.com/fogleman/pt/pt
+
+script:
+  - go test -v ./pt/... && go build ./pt
+  - go build examples/cornell.go
+  - go build examples/example1.go
+  - go build examples/example2.go
+  - go build examples/gopher.go
+  - go build examples/suzanne.go
+  - go build examples/teapot.go
