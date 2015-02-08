@@ -15,7 +15,7 @@ func main() {
 	// scene.AddShape(pt.NewCube(pt.Vector{-n, -n, -11}, pt.Vector{n, n, -10}, white))
 	scene.AddShape(pt.NewCube(pt.Vector{-11, -n, -n}, pt.Vector{-10, n, n}, red))
 	scene.AddShape(pt.NewCube(pt.Vector{10, -n, -n}, pt.Vector{11, n, n}, green))
-	scene.AddShape(pt.NewSphere(pt.Vector{3, -7, -3}, 3, white, nil))
+	scene.AddShape(pt.NewSphere(pt.Vector{3, -7, -3}, 3, white))
 	cube := pt.NewCube(pt.Vector{-3, -4, -3}, pt.Vector{3, 4, 3}, light)
 	transform := pt.Rotate(pt.Vector{0, 1, 0}, pt.Radians(30)).Translate(pt.Vector{-3, -6, 4})
 	scene.AddShape(pt.NewTransformedShape(cube, transform))

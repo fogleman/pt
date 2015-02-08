@@ -8,10 +8,10 @@ import (
 func main() {
 	scene := pt.Scene{}
 	material := pt.DiffuseMaterial(pt.HexColor(0x334D5C))
-	scene.AddLight(pt.NewSphere(pt.Vector{0.5, 1, 3}, 0.5, pt.DiffuseMaterial(pt.Color{1, 1, 1}), nil))
-	scene.AddLight(pt.NewSphere(pt.Vector{1.5, 1, 3}, 0.5, pt.DiffuseMaterial(pt.Color{1, 1, 1}), nil))
+	scene.AddLight(pt.NewSphere(pt.Vector{0.5, 1, 3}, 0.5, pt.DiffuseMaterial(pt.Color{1, 1, 1})))
+	scene.AddLight(pt.NewSphere(pt.Vector{1.5, 1, 3}, 0.5, pt.DiffuseMaterial(pt.Color{1, 1, 1})))
 	scene.AddShape(pt.NewCube(pt.Vector{-5, -5, -2}, pt.Vector{5, 5, -1}, material))
-	mesh, err := pt.LoadOBJ("examples/suzanne.obj", pt.Material{pt.HexColor(0xEFC94C), 2, 0, 0})
+	mesh, err := pt.LoadOBJ("examples/suzanne.obj", pt.Material{pt.HexColor(0xEFC94C), nil, 2, 0, 0})
 	if err != nil {
 		log.Fatalf("LoadOBJ error: %v", err)
 	}

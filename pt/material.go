@@ -18,8 +18,12 @@ func DiffuseMaterial(color Color) Material {
 	return Material{color, nil, 1, 0, 0}
 }
 
-func RefractiveMaterial(color Color, index float64) Material {
+func SpecularMaterial(color Color, index float64) Material {
 	return Material{color, nil, index, 0, 0}
+}
+
+func GlossyMaterial(color Color, index, gloss float64) Material {
+	return Material{color, nil, index, gloss, 0}
 }
 
 func LoadMTL(path string, parent Material, materials map[string]*Material) error {

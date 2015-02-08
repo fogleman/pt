@@ -94,3 +94,8 @@ func RelativePath(path1, path2 string) string {
 	dir, _ := path.Split(path1)
 	return path.Join(dir, path2)
 }
+
+func Fract(x float64) float64 {
+	_, x = math.Modf(x)
+	return x
+}

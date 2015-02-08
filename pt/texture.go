@@ -2,7 +2,6 @@ package pt
 
 import (
 	"image"
-	"math"
 )
 
 type Texture interface {
@@ -17,7 +16,7 @@ func NewTexture(im image.Image) Texture {
 	return &ImageTexture{im}
 }
 
-func NewPNGTexture(path string) (Texture, error) {
+func PNGTexture(path string) (Texture, error) {
 	im, err := LoadPNG(path)
 	if err != nil {
 		return nil, err
@@ -25,7 +24,7 @@ func NewPNGTexture(path string) (Texture, error) {
 	return NewTexture(im), nil
 }
 
-func NewJPGTexture(path string) (Texture, error) {
+func JPGTexture(path string) (Texture, error) {
 	im, err := LoadJPG(path)
 	if err != nil {
 		return nil, err
@@ -34,14 +33,8 @@ func NewJPGTexture(path string) (Texture, error) {
 }
 
 func (t *ImageTexture) Sample(u, v float64) Color {
-	_, u = math.Modf(u)
-	_, v = math.Modf(v)
-	if u < 0 {
-		u++
-	}
-	if v < 0 {
-		v++
-	}
+	u = Fract(Fract(u) + 1)
+	v = Fract(Fract(v) + 1)
 	size := t.Image.Bounds().Max
 	x := int(u * float64(size.X-1))
 	y := int(v * float64(size.Y-1))

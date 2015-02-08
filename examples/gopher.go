@@ -4,11 +4,11 @@ import "github.com/fogleman/pt/pt"
 
 func main() {
 	scene := pt.Scene{}
-	wall := pt.Material{pt.HexColor(0xFCFAE1), 2, 0, 0}
-	scene.AddLight(pt.NewSphere(pt.Vector{2, 30, 0.5}, 2, pt.DiffuseMaterial(pt.Color{1, 1, 1}), nil))
+	wall := pt.Material{pt.HexColor(0xFCFAE1), nil, 2, 0, 0}
+	scene.AddLight(pt.NewSphere(pt.Vector{2, 30, 0.5}, 2, pt.DiffuseMaterial(pt.Color{1, 1, 1})))
 	scene.AddShape(pt.NewCube(pt.Vector{-30, -1, -30}, pt.Vector{-8, 30, 30}, wall))
 	scene.AddShape(pt.NewCube(pt.Vector{-30, -1, -30}, pt.Vector{30, 0, 30}, wall))
-	material := pt.Material{pt.Color{}, 1.5, pt.Radians(30), 0}
+	material := pt.Material{pt.Color{}, nil, 1.5, pt.Radians(30), 0}
 	mesh, _ := pt.LoadOBJ("examples/gopher.obj", material)
 	mesh.SmoothNormals()
 	mesh.MoveTo(pt.Vector{}, pt.Vector{0.5, 0, 0.5})
