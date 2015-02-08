@@ -85,3 +85,33 @@ func LoadOBJ(path string, parent Material) (*Mesh, error) {
 	}
 	return NewMesh(triangles), scanner.Err()
 }
+
+func LoadMTL(path string, parent Material, materials map[string]*Material) error {
+	file, err := os.Open(path)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	scanner := bufio.NewScanner(file)
+	parentCopy := parent
+	material := &parentCopy
+	for scanner.Scan() {
+		line := scanner.Text()
+		fields := strings.Fields(line)
+		if len(fields) == 0 {
+			continue
+		}
+		keyword := fields[0]
+		args := fields[1:]
+		switch keyword {
+		case "newmtl":
+			parentCopy := parent
+			material = &parentCopy
+			materials[args[0]] = material
+		case "Kd":
+			c := ParseFloats(args)
+			material.Color = Color{c[0], c[1], c[2]}
+		}
+	}
+	return scanner.Err()
+}
