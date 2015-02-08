@@ -1,8 +1,8 @@
 package main
 
 import (
-	"log"
 	"github.com/fogleman/pt/pt"
+	"log"
 )
 
 func main() {
