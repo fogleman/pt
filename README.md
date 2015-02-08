@@ -14,8 +14,7 @@ Disclaimer: This is my first time using Go.
 
 Here are things that I'm planning, or at least hoping, to do.
 
-* material properties *(mostly done)*
-* OBJ / STL models *(mostly done)*
+* more material properties
 * light attenuation
 * refraction
 * subsurface scattering
