@@ -12,14 +12,15 @@ Disclaimer: This is my first time using Go.
 
 Here are things that I'm planning, or at least hoping, to do.
 
-* material properties *(partially done)*
-* OBJ / STL models *(partially done)*
-* textured objects *(partially done)*
+* material properties *(mostly done)*
+* OBJ / STL models *(mostly done)*
 * light attenuation
+* refraction
+* subsurface scattering
 * depth of field
 * constructive solid geometry
 * input files to define scene
-* animation support
+* animation support?
 
 ### Links
 
