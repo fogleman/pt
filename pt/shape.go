@@ -28,8 +28,8 @@ func NewTransformedShape(s Shape, m Matrix) Shape {
 
 func (s *TransformedShape) Intersect(r Ray) Hit {
 	hit := s.Shape.Intersect(s.inverse.MulRay(r))
-	// TODO: doesn't work with meshes
-	return Hit{s, hit.T}
+	shape := &TransformedShape{hit.Shape, s.matrix, s.inverse}
+	return Hit{shape, hit.T}
 }
 
 func (s *TransformedShape) Color(p Vector) Color {
