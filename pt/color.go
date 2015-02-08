@@ -12,7 +12,7 @@ func HexColor(x int) Color {
 	r := float64((x>>16)&0xff) / 255
 	g := float64((x>>8)&0xff) / 255
 	b := float64((x>>0)&0xff) / 255
-	return Color{r, g, b}
+	return Color{r, g, b}.Pow(2.2)
 }
 
 func (a Color) Add(b Color) Color {
