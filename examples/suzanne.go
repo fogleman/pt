@@ -11,7 +11,7 @@ func main() {
 	scene.AddLight(pt.NewSphere(pt.Vector{0.5, 1, 3}, 0.5, pt.DiffuseMaterial(pt.Color{1, 1, 1})))
 	scene.AddLight(pt.NewSphere(pt.Vector{1.5, 1, 3}, 0.5, pt.DiffuseMaterial(pt.Color{1, 1, 1})))
 	scene.AddShape(pt.NewCube(pt.Vector{-5, -5, -2}, pt.Vector{5, 5, -1}, material))
-	mesh, err := pt.LoadOBJ("examples/suzanne.obj", pt.Material{pt.HexColor(0xEFC94C), nil, 2, 0, 0})
+	mesh, err := pt.LoadOBJ("examples/suzanne.obj", pt.SpecularMaterial(pt.HexColor(0xEFC94C), 2))
 	if err != nil {
 		log.Fatalf("LoadOBJ error: %v", err)
 	}
