@@ -29,7 +29,7 @@ func LoadBinarySTL(path string, material Material) (*Mesh, error) {
 		return nil, err
 	}
 	count := int(header.Count)
-	triangles := make([]*Triangle, 0, count)
+	triangles := make([]*Triangle, count)
 	for i := 0; i < count; i++ {
 		d := STLTriangle{}
 		if err := binary.Read(file, binary.LittleEndian, &d); err != nil {
@@ -46,7 +46,7 @@ func LoadBinarySTL(path string, material Material) (*Mesh, error) {
 		t.n3 = normal
 		t.UpdateBox()
 		t.FixNormals()
-		triangles = append(triangles, &t)
+		triangles[i] = &t
 	}
 	return NewMesh(triangles), nil
 }

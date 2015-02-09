@@ -73,19 +73,19 @@ func DurationString(d time.Duration) string {
 }
 
 func ParseFloats(items []string) []float64 {
-	var result []float64
-	for _, item := range items {
+	result := make([]float64, len(items))
+	for i, item := range items {
 		f, _ := strconv.ParseFloat(item, 64)
-		result = append(result, f)
+		result[i] = f
 	}
 	return result
 }
 
 func ParseInts(items []string) []int {
-	var result []int
-	for _, item := range items {
+	result := make([]int, len(items))
+	for i, item := range items {
 		f, _ := strconv.ParseInt(item, 0, 0)
-		result = append(result, int(f))
+		result[i] = int(f)
 	}
 	return result
 }
