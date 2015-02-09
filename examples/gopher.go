@@ -5,7 +5,7 @@ import "github.com/fogleman/pt/pt"
 func main() {
 	scene := pt.Scene{}
 	wall := pt.SpecularMaterial(pt.HexColor(0xFCFAE1), 2)
-	scene.AddLight(pt.NewSphere(pt.Vector{4, 8, 3}, 2, pt.DiffuseMaterial(pt.Color{1, 1, 1}.MulScalar(40))))
+	scene.AddLight(pt.NewSphere(pt.Vector{4, 7, 3}, 2, pt.DiffuseMaterial(pt.Color{1, 1, 1}.MulScalar(25))))
 	scene.AddShape(pt.NewCube(pt.Vector{-30, -1, -30}, pt.Vector{-8, 10, 30}, wall))
 	scene.AddShape(pt.NewCube(pt.Vector{-30, -1, -30}, pt.Vector{30, 0.376662, 30}, wall))
 	material := pt.GlossyMaterial(pt.Color{}, 1.5, pt.Radians(30))
