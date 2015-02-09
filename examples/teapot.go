@@ -7,8 +7,8 @@ import (
 
 func main() {
 	scene := pt.Scene{}
-	scene.AddLight(pt.NewSphere(pt.Vector{-2, 5, -3}, 2, pt.DiffuseMaterial(pt.Color{1.5, 1.5, 1.5})))
-	scene.AddLight(pt.NewSphere(pt.Vector{5, 5, -3}, 0.5, pt.DiffuseMaterial(pt.Color{1.5, 1.5, 1.5})))
+	scene.AddLight(pt.NewSphere(pt.Vector{-2, 5, -3}, 2, pt.DiffuseMaterial(pt.Color{1, 1, 1}.MulScalar(60))))
+	scene.AddLight(pt.NewSphere(pt.Vector{5, 5, -3}, 0.5, pt.DiffuseMaterial(pt.Color{1, 1, 1}.MulScalar(60))))
 	scene.AddShape(pt.NewCube(pt.Vector{-30, -1, -30}, pt.Vector{30, 0, 30}, pt.SpecularMaterial(pt.HexColor(0xFCFAE1), 2)))
 	mesh, err := pt.LoadOBJ("examples/teapot.obj", pt.SpecularMaterial(pt.HexColor(0xB9121B), 2))
 	if err != nil {

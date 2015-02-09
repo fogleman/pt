@@ -6,7 +6,7 @@ func main() {
 	white := pt.DiffuseMaterial(pt.Color{0.740, 0.742, 0.734})
 	red := pt.DiffuseMaterial(pt.Color{0.366, 0.037, 0.042})
 	green := pt.DiffuseMaterial(pt.Color{0.163, 0.409, 0.083})
-	light := pt.DiffuseMaterial(pt.Color{0.780, 0.780, 0.776})
+	light := pt.DiffuseMaterial(pt.Color{0.780, 0.780, 0.776}.MulScalar(50))
 	scene := pt.Scene{}
 	n := 10.0
 	scene.AddShape(pt.NewCube(pt.Vector{-n, -11, -n}, pt.Vector{n, -10, n}, white))
@@ -16,7 +16,7 @@ func main() {
 	scene.AddShape(pt.NewCube(pt.Vector{-11, -n, -n}, pt.Vector{-10, n, n}, red))
 	scene.AddShape(pt.NewCube(pt.Vector{10, -n, -n}, pt.Vector{11, n, n}, green))
 	scene.AddShape(pt.NewSphere(pt.Vector{3, -7, -3}, 3, white))
-	cube := pt.NewCube(pt.Vector{-3, -4, -3}, pt.Vector{3, 4, 3}, light)
+	cube := pt.NewCube(pt.Vector{-3, -4, -3}, pt.Vector{3, 4, 3}, white)
 	transform := pt.Rotate(pt.Vector{0, 1, 0}, pt.Radians(30)).Translate(pt.Vector{-3, -6, 4})
 	scene.AddShape(pt.NewTransformedShape(cube, transform))
 	scene.AddLight(pt.NewCube(pt.Vector{-2, 9.8, -2}, pt.Vector{2, 10, 2}, light))

@@ -55,6 +55,15 @@ func (s *Scene) Shadow(r Ray, max float64) bool {
 	return hit.T < max
 }
 
+func (s *Scene) LightProbability(light Shape, position Vector) float64 {
+	box := light.Box()
+	// TODO: get a proper solid angle from the shape
+	radius := (box.Max.X - box.Min.X) / 2
+	distance := box.Center().Sub(position).Length()
+	theta := math.Atan2(radius, distance)
+	return 1 - math.Cos(theta)
+}
+
 func (s *Scene) DirectLight(n Ray, rnd *rand.Rand) Color {
 	color := Color{}
 	for _, light := range s.lights {
@@ -65,7 +74,8 @@ func (s *Scene) DirectLight(n Ray, rnd *rand.Rand) Color {
 			continue
 		}
 		diffuse := math.Max(0, lr.Direction.Dot(n.Direction))
-		color = color.Add(light.Color(p).MulScalar(diffuse))
+		probability := s.LightProbability(light, n.Origin)
+		color = color.Add(light.Color(p).MulScalar(diffuse * probability))
 	}
 	return color.DivScalar(float64(len(s.lights)))
 }
@@ -89,6 +99,7 @@ func (s *Scene) RecursiveSample(r Ray, reflected bool, depth int, rnd *rand.Rand
 	p, u, v := rnd.Float64(), rnd.Float64(), rnd.Float64()
 	newRay, reflected := info.Ray.Bounce(r, info.Material, p, u, v)
 	indirect := s.RecursiveSample(newRay, reflected, depth-1, rnd)
+	indirect = indirect.Min(Color{1, 1, 1})
 	if reflected {
 		tinted := indirect.Mix(info.Color.Mul(indirect), info.Material.Tint)
 		return tinted
@@ -116,6 +127,7 @@ func (s *Scene) Sample(r Ray, samples, depth int, rnd *rand.Rand) Color {
 			fv := (float64(v) + rnd.Float64()) / float64(n)
 			newRay, reflected := info.Ray.Bounce(r, info.Material, p, fu, fv)
 			indirect := s.RecursiveSample(newRay, reflected, depth-1, rnd)
+			indirect = indirect.Min(Color{1, 1, 1})
 			if reflected {
 				tinted := indirect.Mix(info.Color.Mul(indirect), info.Material.Tint)
 				result = result.Add(tinted)
