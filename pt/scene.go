@@ -15,9 +15,6 @@ func (s *Scene) Compile() {
 	for _, shape := range s.shapes {
 		shape.Compile()
 	}
-	for _, light := range s.lights {
-		light.Compile()
-	}
 	if s.tree == nil {
 		s.tree = NewTree(s.shapes)
 	}
