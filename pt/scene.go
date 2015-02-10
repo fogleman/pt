@@ -70,10 +70,13 @@ func (s *Scene) DirectLight(n Ray, rnd *rand.Rand) Color {
 		p := light.RandomPoint(rnd)
 		d := p.Sub(n.Origin)
 		lr := Ray{n.Origin, d.Normalize()}
+		diffuse := lr.Direction.Dot(n.Direction)
+		if diffuse <= 0 {
+			continue
+		}
 		if s.Shadow(lr, d.Length()) {
 			continue
 		}
-		diffuse := math.Max(0, lr.Direction.Dot(n.Direction))
 		probability := s.LightProbability(light, n.Origin)
 		color = color.Add(light.Color(p).MulScalar(diffuse * probability))
 	}
