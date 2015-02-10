@@ -69,7 +69,10 @@ func (s *Scene) RecursiveSample(r Ray, reflected bool, depth int, rnd *rand.Rand
 		return Color{}
 	}
 	info := hit.Info(r)
-	result := info.Color.MulScalar(info.Material.Emittance)
+	result := Color{}
+	if reflected {
+		result = result.Add(info.Color.MulScalar(info.Material.Emittance))
+	}
 	p, u, v := rnd.Float64(), rnd.Float64(), rnd.Float64()
 	newRay, reflected := info.Ray.Bounce(r, info.Material, p, u, v)
 	indirect := s.RecursiveSample(newRay, reflected, depth-1, rnd)
@@ -92,7 +95,7 @@ func (s *Scene) Sample(r Ray, samples, depth int, rnd *rand.Rand) Color {
 		return Color{}
 	}
 	info := hit.Info(r)
-	result := info.Color.MulScalar(info.Material.Emittance * float64(samples))
+	result := Color{}
 	n := int(math.Sqrt(float64(samples)))
 	for u := 0; u < n; u++ {
 		for v := 0; v < n; v++ {
@@ -108,6 +111,7 @@ func (s *Scene) Sample(r Ray, samples, depth int, rnd *rand.Rand) Color {
 				direct := s.DirectLight(info.Ray, rnd)
 				result = result.Add(info.Color.Mul(direct.Add(indirect)))
 			}
+			result = result.Add(info.Color.MulScalar(info.Material.Emittance))
 		}
 	}
 	return result.DivScalar(float64(n * n))
