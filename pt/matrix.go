@@ -136,6 +136,25 @@ func (a Matrix) MulRay(b Ray) Ray {
 	return Ray{a.MulVector(b.Origin), a.MulDirection(b.Direction)}
 }
 
+func (a Matrix) MulBox(b Box) Box {
+	// http://dev.theomader.com/transform-bounding-boxes/
+	minx, maxx := b.Min.X, b.Max.X
+	miny, maxy := b.Min.Y, b.Max.Y
+	minz, maxz := b.Min.Z, b.Max.Z
+	xa := a.x00*minx + a.x10*minx + a.x20*minx + a.x30*minx
+	xb := a.x00*maxx + a.x10*maxx + a.x20*maxx + a.x30*maxx
+	ya := a.x01*miny + a.x11*miny + a.x21*miny + a.x31*miny
+	yb := a.x01*maxy + a.x11*maxy + a.x21*maxy + a.x31*maxy
+	za := a.x02*minz + a.x12*minz + a.x22*minz + a.x32*minz
+	zb := a.x02*maxz + a.x12*maxz + a.x22*maxz + a.x32*maxz
+	minx, maxx = math.Min(xa, xb), math.Max(xa, xb)
+	miny, maxy = math.Min(ya, yb), math.Max(ya, yb)
+	minz, maxz = math.Min(za, zb), math.Max(za, zb)
+	min := Vector{minx + a.x03, miny + a.x13, minz + a.x23}
+	max := Vector{maxx + a.x03, maxy + a.x13, maxz + a.x23}
+	return Box{min, max}
+}
+
 func (a Matrix) Transpose() Matrix {
 	return Matrix{
 		a.x00, a.x10, a.x20, a.x30,
