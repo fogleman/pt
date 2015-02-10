@@ -37,12 +37,14 @@ Here are some resources that I have found useful.
 
 ### Samples
 
-![Sample](http://i.imgur.com/eI5yLu7.png)
+![Suzanne](http://i.imgur.com/eI5yLu7.png)
 
-![Sample](http://i.imgur.com/2PNvTgE.png)
+![Pencil](http://i.imgur.com/m6drd9s.png)
 
-![Sample](http://i.imgur.com/2bVB9PL.png)
+![Balls](http://i.imgur.com/2PNvTgE.png)
 
-![Sample](http://i.imgur.com/zCPDKbt.png)
+![Teapot](http://i.imgur.com/2bVB9PL.png)
 
-![Sample](http://i.imgur.com/zHRmmeP.png)
+![Earth](http://i.imgur.com/zCPDKbt.png)
+
+![Balls](http://i.imgur.com/zHRmmeP.png)
