@@ -6,23 +6,19 @@ func main() {
 	white := pt.DiffuseMaterial(pt.Color{0.740, 0.742, 0.734})
 	red := pt.DiffuseMaterial(pt.Color{0.366, 0.037, 0.042})
 	green := pt.DiffuseMaterial(pt.Color{0.163, 0.409, 0.083})
-	light := pt.DiffuseMaterial(pt.Color{0.780, 0.780, 0.776}.MulScalar(50))
+	light := pt.LightMaterial(pt.Color{0.780, 0.780, 0.776}, 10, pt.QuadraticAttenuation(0.1))
 	scene := pt.Scene{}
 	n := 10.0
-	scene.AddShape(pt.NewCube(pt.Vector{-n, -11, -n}, pt.Vector{n, -10, n}, white))
-	scene.AddShape(pt.NewCube(pt.Vector{-n, 10, -n}, pt.Vector{n, 11, n}, white))
-	scene.AddShape(pt.NewCube(pt.Vector{-n, -n, 10}, pt.Vector{n, n, 11}, white))
-	// scene.AddShape(pt.NewCube(pt.Vector{-n, -n, -11}, pt.Vector{n, n, -10}, white))
-	scene.AddShape(pt.NewCube(pt.Vector{-11, -n, -n}, pt.Vector{-10, n, n}, red))
-	scene.AddShape(pt.NewCube(pt.Vector{10, -n, -n}, pt.Vector{11, n, n}, green))
-	scene.AddShape(pt.NewSphere(pt.Vector{3, -7, -3}, 3, white))
+	scene.Add(pt.NewCube(pt.Vector{-n, -11, -n}, pt.Vector{n, -10, n}, white))
+	scene.Add(pt.NewCube(pt.Vector{-n, 10, -n}, pt.Vector{n, 11, n}, white))
+	scene.Add(pt.NewCube(pt.Vector{-n, -n, 10}, pt.Vector{n, n, 11}, white))
+	scene.Add(pt.NewCube(pt.Vector{-11, -n, -n}, pt.Vector{-10, n, n}, red))
+	scene.Add(pt.NewCube(pt.Vector{10, -n, -n}, pt.Vector{11, n, n}, green))
+	scene.Add(pt.NewSphere(pt.Vector{3, -7, -3}, 3, white))
 	cube := pt.NewCube(pt.Vector{-3, -4, -3}, pt.Vector{3, 4, 3}, white)
 	transform := pt.Rotate(pt.Vector{0, 1, 0}, pt.Radians(30)).Translate(pt.Vector{-3, -6, 4})
-	scene.AddShape(pt.NewTransformedShape(cube, transform))
-	scene.AddLight(pt.NewCube(pt.Vector{-2, 9.8, -2}, pt.Vector{2, 10, 2}, light))
+	scene.Add(pt.NewTransformedShape(cube, transform))
+	scene.Add(pt.NewCube(pt.Vector{-2, 9.8, -2}, pt.Vector{2, 10, 2}, light))
 	camera := pt.LookAt(pt.Vector{0, 0, -20}, pt.Vector{0, 0, 1}, pt.Vector{0, 1, 0}, 65)
-	im := pt.Render(&scene, &camera, 512, 512, 1, 16, 4)
-	if err := pt.SavePNG("out.png", im); err != nil {
-		panic(err)
-	}
+	pt.IterativeRender("out%03d.png", 10, &scene, &camera, 512, 512, 0, 16, 4)
 }
