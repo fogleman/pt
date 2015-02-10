@@ -13,9 +13,6 @@ type Triangle struct {
 	t1, t2, t3 Vector
 }
 
-func (t *Triangle) Compile() {
-}
-
 func (t *Triangle) Box() Box {
 	return t.box
 }

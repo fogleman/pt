@@ -5,7 +5,6 @@ import (
 )
 
 type Shape interface {
-	Compile()
 	Box() Box
 	Intersect(Ray) Hit
 	Color(Vector) Color

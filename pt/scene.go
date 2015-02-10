@@ -13,7 +13,9 @@ type Scene struct {
 
 func (s *Scene) Compile() {
 	for _, shape := range s.shapes {
-		shape.Compile()
+		if mesh, ok := shape.(*Mesh); ok {
+			mesh.Compile()
+		}
 	}
 	if s.tree == nil {
 		s.tree = NewTree(s.shapes)

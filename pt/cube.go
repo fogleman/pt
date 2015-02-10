@@ -17,9 +17,6 @@ func NewCube(min, max Vector, material Material) Shape {
 	return &Cube{min, max, material, box}
 }
 
-func (c *Cube) Compile() {
-}
-
 func (c *Cube) Box() Box {
 	return c.box
 }
