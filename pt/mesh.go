@@ -5,30 +5,32 @@ import (
 )
 
 type Mesh struct {
+	box       Box
 	triangles []*Triangle
-	shapeTree *Tree
+	tree      *Tree
 }
 
 func NewMesh(triangles []*Triangle) *Mesh {
-	return &Mesh{triangles, nil}
+	box := BoxForTriangles(triangles)
+	return &Mesh{box, triangles, nil}
 }
 
 func (m *Mesh) Compile() {
-	if m.shapeTree == nil {
+	if m.tree == nil {
 		shapes := make([]Shape, len(m.triangles))
 		for i, triangle := range m.triangles {
 			shapes[i] = triangle
 		}
-		m.shapeTree = NewTree(shapes)
+		m.tree = NewTree(shapes)
 	}
 }
 
 func (m *Mesh) Box() Box {
-	return m.shapeTree.box
+	return m.box
 }
 
 func (m *Mesh) Intersect(r Ray) Hit {
-	return m.shapeTree.Intersect(r)
+	return m.tree.Intersect(r)
 }
 
 func (m *Mesh) Color(p Vector) Color {
@@ -47,6 +49,10 @@ func (m *Mesh) RandomPoint(rnd *rand.Rand) Vector {
 	return Vector{} // not implemented
 }
 
+func (m *Mesh) UpdateBox() {
+	m.box = BoxForTriangles(m.triangles)
+}
+
 func (m *Mesh) SmoothNormals() {
 	lookup := make(map[Vector]Vector)
 	for _, t := range m.triangles {
@@ -62,16 +68,17 @@ func (m *Mesh) SmoothNormals() {
 		t.n2 = lookup[t.v2]
 		t.n3 = lookup[t.v3]
 	}
+	m.UpdateBox()
 }
 
 func (m *Mesh) MoveTo(position, anchor Vector) {
-	box := BoxForTriangles(m.triangles)
-	offset := position.Sub(box.Anchor(anchor))
+	offset := position.Sub(m.box.Anchor(anchor))
 	for _, t := range m.triangles {
 		t.v1 = t.v1.Add(offset)
 		t.v2 = t.v2.Add(offset)
 		t.v3 = t.v3.Add(offset)
 		t.UpdateBox()
 	}
-	m.shapeTree = nil // dirty
+	m.UpdateBox()
+	m.tree = nil // dirty
 }
