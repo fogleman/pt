@@ -7,7 +7,7 @@ import "github.com/fogleman/pt/pt"
 func main() {
 	scene := pt.Scene{}
 	material := pt.DiffuseMaterial(pt.HexColor(0xFCFAE1))
-	mesh, _ := pt.LoadOBJ("examples/sponza/sponza.obj", material)
+	mesh, _ := pt.LoadOBJ("examples/dabrovic-sponza/sponza.obj", material)
 	mesh.MoveTo(pt.Vector{}, pt.Vector{0.5, 0, 0.5})
 	// fmt.Println(mesh.Box())
 	scene.Add(mesh)
