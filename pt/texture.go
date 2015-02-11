@@ -1,7 +1,11 @@
 package pt
 
 import (
+	"errors"
+	"fmt"
 	"image"
+	"path"
+	"strings"
 )
 
 type Texture interface {
@@ -12,24 +16,53 @@ type ImageTexture struct {
 	image.Image
 }
 
-func NewTexture(im image.Image) Texture {
-	return &ImageTexture{im}
+var textures map[string]Texture
+
+func init() {
+	textures = make(map[string]Texture)
 }
 
 func PNGTexture(path string) (Texture, error) {
+	fmt.Printf("Loading PNG: %s\n", path)
 	im, err := LoadPNG(path)
 	if err != nil {
 		return nil, err
 	}
-	return NewTexture(im), nil
+	return &ImageTexture{im}, nil
 }
 
 func JPGTexture(path string) (Texture, error) {
+	fmt.Printf("Loading JPG: %s\n", path)
 	im, err := LoadJPG(path)
 	if err != nil {
 		return nil, err
 	}
-	return NewTexture(im), nil
+	return &ImageTexture{im}, nil
+}
+
+func LoadTexture(p string) (Texture, error) {
+	ext := strings.ToLower(path.Ext(p))
+	switch ext {
+	case ".png":
+		return PNGTexture(p)
+	case ".jpg":
+		return JPGTexture(p)
+	case ".jpeg":
+		return JPGTexture(p)
+	}
+	err := errors.New(fmt.Sprintf("Unrecognized texture extension: %s", p))
+	return nil, err
+}
+
+func GetTexture(path string) Texture {
+	if texture, ok := textures[path]; ok {
+		return texture
+	}
+	if texture, err := LoadTexture(path); err == nil {
+		textures[path] = texture
+		return texture
+	}
+	return nil
 }
 
 func (t *ImageTexture) Sample(u, v float64) Color {

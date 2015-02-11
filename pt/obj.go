@@ -8,8 +8,7 @@ import (
 )
 
 func LoadOBJ(path string, parent Material) (*Mesh, error) {
-	fmt.Printf("Loading %s... ", path)
-	defer fmt.Println("OK")
+	fmt.Printf("Loading OBJ: %s\n", path)
 	file, err := os.Open(path)
 	if err != nil {
 		return nil, err
@@ -87,6 +86,7 @@ func LoadOBJ(path string, parent Material) (*Mesh, error) {
 }
 
 func LoadMTL(path string, parent Material, materials map[string]*Material) error {
+	fmt.Printf("Loading MTL: %s\n", path)
 	file, err := os.Open(path)
 	if err != nil {
 		return err
@@ -111,6 +111,9 @@ func LoadMTL(path string, parent Material, materials map[string]*Material) error
 		case "Kd":
 			c := ParseFloats(args)
 			material.Color = Color{c[0], c[1], c[2]}
+		case "map_Kd":
+			p := RelativePath(path, args[0])
+			material.Texture = GetTexture(p)
 		}
 	}
 	return scanner.Err()
