@@ -12,32 +12,21 @@ type Texture interface {
 	Sample(u, v float64) Color
 }
 
-type ImageTexture struct {
-	image.Image
-}
-
 var textures map[string]Texture
 
 func init() {
 	textures = make(map[string]Texture)
 }
 
-func PNGTexture(path string) (Texture, error) {
-	fmt.Printf("Loading PNG: %s\n", path)
-	im, err := LoadPNG(path)
-	if err != nil {
-		return nil, err
+func GetTexture(path string) Texture {
+	if texture, ok := textures[path]; ok {
+		return texture
 	}
-	return &ImageTexture{im}, nil
-}
-
-func JPGTexture(path string) (Texture, error) {
-	fmt.Printf("Loading JPG: %s\n", path)
-	im, err := LoadJPG(path)
-	if err != nil {
-		return nil, err
+	if texture, err := LoadTexture(path); err == nil {
+		textures[path] = texture
+		return texture
 	}
-	return &ImageTexture{im}, nil
+	return nil
 }
 
 func LoadTexture(p string) (Texture, error) {
@@ -54,23 +43,49 @@ func LoadTexture(p string) (Texture, error) {
 	return nil, err
 }
 
-func GetTexture(path string) Texture {
-	if texture, ok := textures[path]; ok {
-		return texture
+func PNGTexture(path string) (Texture, error) {
+	fmt.Printf("Loading PNG: %s\n", path)
+	im, err := LoadPNG(path)
+	if err != nil {
+		return nil, err
 	}
-	if texture, err := LoadTexture(path); err == nil {
-		textures[path] = texture
-		return texture
-	}
-	return nil
+	return NewTexture(im), nil
 }
 
-func (t *ImageTexture) Sample(u, v float64) Color {
+func JPGTexture(path string) (Texture, error) {
+	fmt.Printf("Loading JPG: %s\n", path)
+	im, err := LoadJPG(path)
+	if err != nil {
+		return nil, err
+	}
+	return NewTexture(im), nil
+}
+
+type ColorTexture struct {
+	width, height int
+	data          []Color
+}
+
+func NewTexture(im image.Image) Texture {
+	size := im.Bounds().Max
+	data := make([]Color, size.X*size.Y)
+	for y := 0; y < size.Y; y++ {
+		for x := 0; x < size.X; x++ {
+			index := y*size.X + x
+			r, g, b, _ := im.At(x, y).RGBA()
+			fr := float64(r) / 65535
+			fg := float64(g) / 65535
+			fb := float64(b) / 65535
+			data[index] = Color{fr, fg, fb}.Pow(2.2)
+		}
+	}
+	return &ColorTexture{size.X, size.Y, data}
+}
+
+func (t *ColorTexture) Sample(u, v float64) Color {
 	u = Fract(Fract(u) + 1)
 	v = Fract(Fract(v) + 1)
-	size := t.Image.Bounds().Max
-	x := int(u * float64(size.X-1))
-	y := int(v * float64(size.Y-1))
-	r, g, b, _ := t.Image.At(x, y).RGBA()
-	return Color{float64(r) / 65535, float64(g) / 65535, float64(b) / 65535}.Pow(2.2)
+	x := int(u * float64(t.width-1))
+	y := int(v * float64(t.height-1))
+	return t.data[y*t.width+x]
 }
