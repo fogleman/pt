@@ -74,3 +74,7 @@ func (a Vector) MinAxis() Vector {
 	}
 	return Vector{0, 0, 1}
 }
+
+func (a Vector) MinComponent() float64 {
+	return math.Min(math.Min(a.X, a.Y), a.Z)
+}

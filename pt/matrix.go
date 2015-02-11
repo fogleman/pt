@@ -118,7 +118,7 @@ func (a Matrix) Mul(b Matrix) Matrix {
 	return m
 }
 
-func (a Matrix) MulVector(b Vector) Vector {
+func (a Matrix) MulPosition(b Vector) Vector {
 	x := a.x00*b.X + a.x01*b.Y + a.x02*b.Z + a.x03
 	y := a.x10*b.X + a.x11*b.Y + a.x12*b.Z + a.x13
 	z := a.x20*b.X + a.x21*b.Y + a.x22*b.Z + a.x23
@@ -133,7 +133,7 @@ func (a Matrix) MulDirection(b Vector) Vector {
 }
 
 func (a Matrix) MulRay(b Ray) Ray {
-	return Ray{a.MulVector(b.Origin), a.MulDirection(b.Direction)}
+	return Ray{a.MulPosition(b.Origin), a.MulDirection(b.Direction)}
 }
 
 func (a Matrix) MulBox(b Box) Box {

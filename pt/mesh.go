@@ -68,15 +68,30 @@ func (m *Mesh) SmoothNormals() {
 		t.n2 = lookup[t.v2]
 		t.n3 = lookup[t.v3]
 	}
-	m.UpdateBox()
 }
 
 func (m *Mesh) MoveTo(position, anchor Vector) {
-	offset := position.Sub(m.box.Anchor(anchor))
+	matrix := Translate(position.Sub(m.box.Anchor(anchor)))
+	m.Transform(matrix)
+}
+
+func (m *Mesh) FitInside(box Box) {
+	scale := box.Size().Div(m.Box().Size()).MinComponent()
+	matrix := Identity()
+	matrix = matrix.Translate(m.Box().Center().MulScalar(-1))
+	matrix = matrix.Scale(Vector{scale, scale, scale})
+	matrix = matrix.Translate(box.Center())
+	m.Transform(matrix)
+}
+
+func (m *Mesh) Transform(matrix Matrix) {
 	for _, t := range m.triangles {
-		t.v1 = t.v1.Add(offset)
-		t.v2 = t.v2.Add(offset)
-		t.v3 = t.v3.Add(offset)
+		t.v1 = matrix.MulPosition(t.v1)
+		t.v2 = matrix.MulPosition(t.v2)
+		t.v3 = matrix.MulPosition(t.v3)
+		t.n1 = matrix.MulDirection(t.n1)
+		t.n2 = matrix.MulDirection(t.n2)
+		t.n3 = matrix.MulDirection(t.n3)
 		t.UpdateBox()
 	}
 	m.UpdateBox()

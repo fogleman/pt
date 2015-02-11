@@ -36,17 +36,17 @@ func (s *TransformedShape) Intersect(r Ray) Hit {
 }
 
 func (s *TransformedShape) Color(p Vector) Color {
-	return s.Shape.Color(s.inverse.MulVector(p))
+	return s.Shape.Color(s.inverse.MulPosition(p))
 }
 
 func (s *TransformedShape) Material(p Vector) Material {
-	return s.Shape.Material(s.inverse.MulVector(p))
+	return s.Shape.Material(s.inverse.MulPosition(p))
 }
 
 func (s *TransformedShape) Normal(p Vector) Vector {
-	return s.matrix.MulDirection(s.Shape.Normal(s.inverse.MulVector(p)))
+	return s.matrix.MulDirection(s.Shape.Normal(s.inverse.MulPosition(p)))
 }
 
 func (s *TransformedShape) RandomPoint(rnd *rand.Rand) Vector {
-	return s.matrix.MulVector(s.Shape.RandomPoint(rnd))
+	return s.matrix.MulPosition(s.Shape.RandomPoint(rnd))
 }

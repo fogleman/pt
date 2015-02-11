@@ -31,11 +31,15 @@ func BoxForTriangles(shapes []*Triangle) Box {
 }
 
 func (a Box) Anchor(anchor Vector) Vector {
-	return a.Min.Add(a.Max.Sub(a.Min).Mul(anchor))
+	return a.Min.Add(a.Size().Mul(anchor))
 }
 
 func (a Box) Center() Vector {
 	return a.Anchor(Vector{0.5, 0.5, 0.5})
+}
+
+func (a Box) Size() Vector {
+	return a.Max.Sub(a.Min)
 }
 
 func (a Box) Extend(b Box) Box {
