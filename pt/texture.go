@@ -72,5 +72,5 @@ func (t *ImageTexture) Sample(u, v float64) Color {
 	x := int(u * float64(size.X-1))
 	y := int(v * float64(size.Y-1))
 	r, g, b, _ := t.Image.At(x, y).RGBA()
-	return Color{float64(r) / 65535, float64(g) / 65535, float64(b) / 65535}
+	return Color{float64(r) / 65535, float64(g) / 65535, float64(b) / 65535}.Pow(2.2)
 }
