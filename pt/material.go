@@ -23,6 +23,10 @@ func GlossyMaterial(color Color, index, gloss float64) Material {
 	return Material{color, nil, 0, NoAttenuation, index, gloss, 0, false}
 }
 
+func TransparentMaterial(color Color, index, gloss, tint float64) Material {
+	return Material{color, nil, 0, NoAttenuation, index, gloss, tint, true}
+}
+
 func LightMaterial(color Color, emittance float64, attenuation Attenuation) Material {
 	return Material{color, nil, emittance, attenuation, 1, 0, 0, false}
 }
