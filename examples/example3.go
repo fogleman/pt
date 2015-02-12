@@ -19,5 +19,5 @@ func main() {
 	}
 	scene.Add(pt.NewCube(pt.Vector{-5, 10, -5}, pt.Vector{5, 11, 5}, pt.LightMaterial(pt.Color{1, 1, 1}, 5, pt.QuadraticAttenuation(0.05))))
 	camera := pt.LookAt(pt.Vector{20, 10, 0}, pt.Vector{8, 0, 0}, pt.Vector{0, 1, 0}, 45)
-	pt.IterativeRender("out%03d.png", 1000, &scene, &camera, 2560/2, 1440/2, 0, 4, 2)
+	pt.IterativeRender("out%03d.png", 1000, &scene, &camera, 2560/2, 1440/2, -1, 4, 2)
 }

@@ -12,5 +12,5 @@ func main() {
 	scene.Add(mesh)
 	scene.Add(pt.NewSphere(pt.Vector{0, 10, 0}, 1, pt.LightMaterial(pt.Color{1, 1, 1}, 1, pt.NoAttenuation)))
 	camera := pt.LookAt(pt.Vector{-3, 1, 0}, pt.Vector{0, 0, 0}, pt.Vector{0, 1, 0}, 45)
-	pt.IterativeRender("out%03d.png", 1000, &scene, &camera, 512, 512, 0, 16, 4)
+	pt.IterativeRender("out%03d.png", 1000, &scene, &camera, 512, 512, -1, 16, 4)
 }

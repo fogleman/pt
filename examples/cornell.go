@@ -20,5 +20,5 @@ func main() {
 	scene.Add(pt.NewTransformedShape(cube, transform))
 	scene.Add(pt.NewCube(pt.Vector{-2, 9.8, -2}, pt.Vector{2, 10, 2}, light))
 	camera := pt.LookAt(pt.Vector{0, 0, -20}, pt.Vector{0, 0, 1}, pt.Vector{0, 1, 0}, 65)
-	pt.IterativeRender("out%03d.png", 10, &scene, &camera, 512, 512, 0, 16, 4)
+	pt.IterativeRender("out%03d.png", 10, &scene, &camera, 512, 512, -1, 16, 4)
 }

@@ -13,5 +13,5 @@ func main() {
 	mesh.SmoothNormals()
 	scene.Add(mesh)
 	camera := pt.LookAt(pt.Vector{8, 3, 0.5}, pt.Vector{-1, 2.5, 0.5}, pt.Vector{0, 1, 0}, 45)
-	pt.IterativeRender("out%03d.png", 10, &scene, &camera, 2560/4, 1440/4, 0, 16, 4)
+	pt.IterativeRender("out%03d.png", 10, &scene, &camera, 2560/4, 1440/4, -1, 16, 4)
 }
