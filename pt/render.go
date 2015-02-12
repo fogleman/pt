@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-func showProgress(start time.Time, rays, i, h int) {
+func showProgress(start time.Time, rays uint64, i, h int) {
 	pct := int(100 * float64(i) / float64(h))
 	elapsed := time.Since(start)
 	rps := float64(rays) / elapsed.Seconds()

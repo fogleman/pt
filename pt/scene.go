@@ -31,8 +31,8 @@ func (s *Scene) Add(shape Shape) {
 	}
 }
 
-func (s *Scene) RayCount() int {
-	return int(atomic.LoadUint64(&s.rays))
+func (s *Scene) RayCount() uint64 {
+	return atomic.LoadUint64(&s.rays)
 }
 
 func (s *Scene) Intersect(r Ray) Hit {
