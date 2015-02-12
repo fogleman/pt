@@ -1,8 +1,6 @@
 package pt
 
-import (
-	"math/rand"
-)
+import "math/rand"
 
 type Mesh struct {
 	box       Box
@@ -75,12 +73,13 @@ func (m *Mesh) MoveTo(position, anchor Vector) {
 	m.Transform(matrix)
 }
 
-func (m *Mesh) FitInside(box Box) {
+func (m *Mesh) FitInside(box Box, anchor Vector) {
 	scale := box.Size().Div(m.Box().Size()).MinComponent()
+	extra := box.Size().Sub(m.Box().Size().MulScalar(scale))
 	matrix := Identity()
-	matrix = matrix.Translate(m.Box().Center().MulScalar(-1))
+	matrix = matrix.Translate(m.Box().Min.MulScalar(-1))
 	matrix = matrix.Scale(Vector{scale, scale, scale})
-	matrix = matrix.Translate(box.Center())
+	matrix = matrix.Translate(box.Min.Add(extra.Mul(anchor)))
 	m.Transform(matrix)
 }
 
