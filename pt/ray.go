@@ -53,3 +53,20 @@ func (r Ray) ConeBounce(theta, u, v float64) Ray {
 	d = d.Add(r.Direction.MulScalar(m2))
 	return Ray{r.Origin, d}
 }
+
+func (i Ray) Bounce(info *HitInfo, p, u, v float64) (Ray, bool) {
+	n := info.Ray
+	n1, n2 := 1.0, info.Material.Index
+	if info.Inside {
+		n1, n2 = n2, n1
+	}
+	if p < n.Reflectance(i, n1, n2) {
+		reflected := n.Reflect(i)
+		return reflected.ConeBounce(info.Material.Gloss, u, v), true
+	} else if info.Material.Transparent {
+		refracted := n.Refract(i, n1, n2)
+		return refracted.ConeBounce(info.Material.Gloss, u, v), true
+	} else {
+		return n.WeightedBounce(u, v), false
+	}
+}
