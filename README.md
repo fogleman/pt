@@ -1,6 +1,6 @@
 ### Summary
 
-[![Build Status](https://travis-ci.org/fogleman/pt.png)](https://travis-ci.org/fogleman/pt)
+[![Build Status](https://travis-ci.org/fogleman/pt.png)](https://travis-ci.org/fogleman/pt) [![GoDoc](https://godoc.org/github.com/fogleman/pt/pt?status.svg)](https://godoc.org/github.com/fogleman/pt/pt)
 
 I am writing a [path tracer](http://en.wikipedia.org/wiki/Path_tracing) in Go. The Go gopher below was rendered using it, and [here's the code](https://github.com/fogleman/pt/blob/master/examples/gopher.go) that was used to do it. It's 2560x1440px... so you can make it your wallpaper! The gopher 3D model was found [here](https://github.com/golang-samples/gopher-3d).
 
