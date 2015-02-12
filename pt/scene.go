@@ -67,7 +67,7 @@ func (s *Scene) DirectLight(n Ray, rnd *rand.Rand) Color {
 	return color.DivScalar(float64(len(s.lights)))
 }
 
-func (s *Scene) Sample(r Ray, reflected bool, samples, depth int, rnd *rand.Rand) Color {
+func (s *Scene) Sample(r Ray, emission bool, samples, depth int, rnd *rand.Rand) Color {
 	if depth < 0 {
 		return Color{}
 	}
@@ -77,7 +77,7 @@ func (s *Scene) Sample(r Ray, reflected bool, samples, depth int, rnd *rand.Rand
 	}
 	info := hit.Info(r)
 	result := Color{}
-	if reflected {
+	if emission {
 		result = result.Add(info.Color.MulScalar(info.Material.Emittance * float64(samples)))
 	}
 	n := int(math.Sqrt(float64(samples)))
