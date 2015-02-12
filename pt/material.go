@@ -7,7 +7,7 @@ type Material struct {
 	Attenuation Attenuation
 	Index       float64 // refractive index
 	Gloss       float64 // reflection cone angle in radians
-	Tint        float64 // specular tinting
+	Tint        float64 // specular and refractive tinting
 	Transparent bool
 }
 
