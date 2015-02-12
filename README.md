@@ -14,9 +14,9 @@ Disclaimer: This is my first time using Go.
 
 Here are things that I'm planning, or at least hoping, to do.
 
-* more material properties
-* refraction
+* bump / normal maps
 * subsurface scattering
+* atmosphere
 * depth of field
 * constructive solid geometry
 * input files to define scene
