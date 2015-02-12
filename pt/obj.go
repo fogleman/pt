@@ -24,10 +24,9 @@ func LoadOBJ(path string, parent Material) (*Mesh, error) {
 		return nil, err
 	}
 	defer file.Close()
-	var vs, vts, vns []Vector
-	vs = append(vs, Vector{})   // 1-based indexing
-	vts = append(vts, Vector{}) // 1-based indexing
-	vns = append(vns, Vector{}) // 1-based indexing
+	vs := make([]Vector, 1, 1024)  // 1-based indexing
+	vts := make([]Vector, 1, 1024) // 1-based indexing
+	vns := make([]Vector, 1, 1024) // 1-based indexing
 	var triangles []*Triangle
 	materials := make(map[string]*Material)
 	material := &parent
@@ -63,12 +62,14 @@ func LoadOBJ(path string, parent Material) (*Mesh, error) {
 			v := Vector{f[0], f[1], f[2]}
 			vns = append(vns, v)
 		case "f":
-			var fvs, fvts, fvns []int
-			for _, arg := range args {
+			fvs := make([]int, len(args))
+			fvts := make([]int, len(args))
+			fvns := make([]int, len(args))
+			for i, arg := range args {
 				vertex := strings.Split(arg+"//", "/")
-				fvs = append(fvs, parseIndex(vertex[0], len(vs)))
-				fvts = append(fvts, parseIndex(vertex[1], len(vts)))
-				fvns = append(fvns, parseIndex(vertex[2], len(vns)))
+				fvs[i] = parseIndex(vertex[0], len(vs))
+				fvts[i] = parseIndex(vertex[1], len(vts))
+				fvns[i] = parseIndex(vertex[2], len(vns))
 			}
 			for i := 1; i < len(fvs)-1; i++ {
 				i1, i2, i3 := 0, i, i+1
