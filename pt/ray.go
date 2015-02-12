@@ -16,17 +16,12 @@ func (n Ray) Reflect(i Ray) Ray {
 	return Ray{n.Origin, n.Direction.Reflect(i.Direction)}
 }
 
+func (n Ray) Refract(i Ray, n1, n2 float64) Ray {
+	return Ray{n.Origin, n.Direction.Refract(i.Direction, n1, n2)}
+}
+
 func (n Ray) Reflectance(i Ray, n1, n2 float64) float64 {
-	nr := n1 / n2
-	cosI := -n.Direction.Dot(i.Direction)
-	sinT2 := nr * nr * (1 - cosI*cosI)
-	if sinT2 > 1 {
-		return 1
-	}
-	cosT := math.Sqrt(1 - sinT2)
-	rOrth := (n1*cosI - n2*cosT) / (n1*cosI + n2*cosT)
-	rPar := (n2*cosI - n1*cosT) / (n2*cosI + n1*cosT)
-	return (rOrth*rOrth + rPar*rPar) / 2
+	return n.Direction.Reflectance(i.Direction, n1, n2)
 }
 
 func (r Ray) WeightedBounce(u, v float64) Ray {
@@ -57,13 +52,4 @@ func (r Ray) ConeBounce(theta, u, v float64) Ray {
 	d = d.Add(t.MulScalar(m1 * math.Sin(a)))
 	d = d.Add(r.Direction.MulScalar(m2))
 	return Ray{r.Origin, d}
-}
-
-func (r Ray) Bounce(i Ray, material Material, p, u, v float64) (Ray, bool) {
-	if p < r.Reflectance(i, 1, material.Index) {
-		reflected := r.Reflect(i)
-		return reflected.ConeBounce(material.Gloss, u, v), true
-	} else {
-		return r.WeightedBounce(u, v), false
-	}
 }

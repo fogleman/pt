@@ -29,9 +29,14 @@ func (s *Sphere) Intersect(r Ray) Hit {
 	c := to.Dot(to) - s.radius*s.radius
 	d := b*b - c
 	if d > 0 {
-		t := -b - math.Sqrt(d)
-		if t > 0 {
-			return Hit{s, t}
+		d = math.Sqrt(d)
+		t1 := -b - d
+		t2 := -b + d
+		if t1 > EPS {
+			return Hit{s, t1}
+		}
+		if t2 > EPS {
+			return Hit{s, t2}
 		}
 	}
 	return NoHit

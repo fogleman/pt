@@ -74,7 +74,7 @@ func (s *Scene) RecursiveSample(r Ray, reflected bool, depth int, rnd *rand.Rand
 		result = result.Add(info.Color.MulScalar(info.Material.Emittance))
 	}
 	p, u, v := rnd.Float64(), rnd.Float64(), rnd.Float64()
-	newRay, reflected := info.Ray.Bounce(r, info.Material, p, u, v)
+	newRay, reflected := s.Bounce(r, info.Ray, &info, p, u, v)
 	indirect := s.RecursiveSample(newRay, reflected, depth-1, rnd)
 	if reflected {
 		tinted := indirect.Mix(info.Color.Mul(indirect), info.Material.Tint)
@@ -102,7 +102,7 @@ func (s *Scene) Sample(r Ray, samples, depth int, rnd *rand.Rand) Color {
 			p := rnd.Float64()
 			fu := (float64(u) + rnd.Float64()) / float64(n)
 			fv := (float64(v) + rnd.Float64()) / float64(n)
-			newRay, reflected := info.Ray.Bounce(r, info.Material, p, fu, fv)
+			newRay, reflected := s.Bounce(r, info.Ray, &info, p, fu, fv)
 			indirect := s.RecursiveSample(newRay, reflected, depth-1, rnd)
 			if reflected {
 				tinted := indirect.Mix(info.Color.Mul(indirect), info.Material.Tint)
@@ -115,4 +115,20 @@ func (s *Scene) Sample(r Ray, samples, depth int, rnd *rand.Rand) Color {
 		}
 	}
 	return result.DivScalar(float64(n * n))
+}
+
+func (s *Scene) Bounce(i, n Ray, info *HitInfo, p, u, v float64) (Ray, bool) {
+	n1, n2 := 1.0, info.Material.Index
+	if info.Inside {
+		n1, n2 = n2, n1
+	}
+	if p < n.Reflectance(i, n1, n2) {
+		reflected := n.Reflect(i)
+		return reflected.ConeBounce(info.Material.Gloss, u, v), true
+	} else if info.Material.Transparent {
+		refracted := n.Refract(i, n1, n2)
+		return refracted.ConeBounce(info.Material.Gloss, u, v), true
+	} else {
+		return n.WeightedBounce(u, v), false
+	}
 }

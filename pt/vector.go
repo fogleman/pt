@@ -60,10 +60,6 @@ func (a Vector) Max(b Vector) Vector {
 	return Vector{math.Max(a.X, b.X), math.Max(a.Y, b.Y), math.Max(a.Z, b.Z)}
 }
 
-func (n Vector) Reflect(i Vector) Vector {
-	return i.Sub(n.MulScalar(2 * n.Dot(i)))
-}
-
 func (a Vector) MinAxis() Vector {
 	x, y, z := math.Abs(a.X), math.Abs(a.Y), math.Abs(a.Z)
 	switch {
@@ -77,4 +73,32 @@ func (a Vector) MinAxis() Vector {
 
 func (a Vector) MinComponent() float64 {
 	return math.Min(math.Min(a.X, a.Y), a.Z)
+}
+
+func (n Vector) Reflect(i Vector) Vector {
+	return i.Sub(n.MulScalar(2 * n.Dot(i)))
+}
+
+func (n Vector) Refract(i Vector, n1, n2 float64) Vector {
+	nr := n1 / n2
+	cosI := -n.Dot(i)
+	sinT2 := nr * nr * (1 - cosI*cosI)
+	if sinT2 > 1 {
+		return Vector{}
+	}
+	cosT := math.Sqrt(1 - sinT2)
+	return i.MulScalar(nr).Add(n.MulScalar(nr*cosI - cosT))
+}
+
+func (n Vector) Reflectance(i Vector, n1, n2 float64) float64 {
+	nr := n1 / n2
+	cosI := -n.Dot(i)
+	sinT2 := nr * nr * (1 - cosI*cosI)
+	if sinT2 > 1 {
+		return 1
+	}
+	cosT := math.Sqrt(1 - sinT2)
+	rOrth := (n1*cosI - n2*cosT) / (n1*cosI + n2*cosT)
+	rPar := (n2*cosI - n1*cosT) / (n2*cosI + n1*cosT)
+	return (rOrth*rOrth + rPar*rPar) / 2
 }
