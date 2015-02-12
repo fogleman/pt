@@ -3,12 +3,14 @@ package pt
 import (
 	"math"
 	"math/rand"
+	"sync/atomic"
 )
 
 type Scene struct {
 	shapes []Shape
 	lights []Shape
 	tree   *Tree
+	rays   uint64
 }
 
 func (s *Scene) Compile() {
@@ -29,12 +31,17 @@ func (s *Scene) Add(shape Shape) {
 	}
 }
 
+func (s *Scene) RayCount() int {
+	return int(atomic.LoadUint64(&s.rays))
+}
+
 func (s *Scene) Intersect(r Ray) Hit {
+	atomic.AddUint64(&s.rays, 1)
 	return s.tree.Intersect(r)
 }
 
 func (s *Scene) Shadow(r Ray, light Shape, max float64) bool {
-	hit := s.tree.Intersect(r)
+	hit := s.Intersect(r)
 	return hit.Shape != light && hit.T < max
 }
 

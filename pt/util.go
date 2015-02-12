@@ -72,6 +72,17 @@ func DurationString(d time.Duration) string {
 	return fmt.Sprintf("%d:%02d:%02d", h, m, s)
 }
 
+func NumberString(x float64) string {
+	suffixes := []string{"", "k", "M", "G"}
+	for _, suffix := range suffixes {
+		if x < 1000 {
+			return fmt.Sprintf("%.1f%s", x, suffix)
+		}
+		x /= 1000
+	}
+	return fmt.Sprintf("%.1f%s", x, "T")
+}
+
 func ParseFloats(items []string) []float64 {
 	result := make([]float64, len(items))
 	for i, item := range items {

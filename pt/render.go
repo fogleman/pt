@@ -11,18 +11,19 @@ import (
 	"time"
 )
 
-func showProgress(start time.Time, i, h int) {
+func showProgress(start time.Time, rays, i, h int) {
 	pct := int(100 * float64(i) / float64(h))
 	elapsed := time.Since(start)
+	rps := float64(rays) / elapsed.Seconds()
 	fmt.Printf("\r%4d / %d (%3d%%) [", i, h, pct)
-	for p := 0; p < 100; p += 2 {
+	for p := 0; p < 100; p += 3 {
 		if pct > p {
 			fmt.Print("=")
 		} else {
 			fmt.Print(" ")
 		}
 	}
-	fmt.Printf("] %s ", DurationString(elapsed))
+	fmt.Printf("] %s %s ", DurationString(elapsed), NumberString(rps))
 }
 
 func Render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, depth int) image.Image {
@@ -34,6 +35,7 @@ func Render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, depth
 	fmt.Printf("%d x %d pixels, %d x %d = %d samples, %d bounces, %d cores\n",
 		w, h, cameraSamples, hitSamples, cameraSamples*hitSamples, depth, ncpu)
 	start := time.Now()
+	scene.rays = 0
 	for i := 0; i < ncpu; i++ {
 		go func(i int) {
 			rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
@@ -69,10 +71,10 @@ func Render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, depth
 			}
 		}(i)
 	}
-	showProgress(start, 0, h)
+	showProgress(start, scene.RayCount(), 0, h)
 	for i := 0; i < h; i++ {
 		<-ch
-		showProgress(start, i+1, h)
+		showProgress(start, scene.RayCount(), i+1, h)
 	}
 	fmt.Println()
 	return result
