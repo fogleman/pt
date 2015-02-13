@@ -39,14 +39,10 @@ Here are some resources that I have found useful.
 
 ![Sponza](http://i.imgur.com/wjNZJPT.png)
 
-![Suzanne](http://i.imgur.com/eI5yLu7.png)
+![Cubes](http://i.imgur.com/VH8qkU8.png)
 
-![Pencil](http://i.imgur.com/m6drd9s.png)
+![Suzanne](http://i.imgur.com/eI5yLu7.png)
 
 ![Balls](http://i.imgur.com/2PNvTgE.png)
 
-![Teapot](http://i.imgur.com/2bVB9PL.png)
-
-![Earth](http://i.imgur.com/zCPDKbt.png)
-
-![Balls](http://i.imgur.com/zHRmmeP.png)
+![Pencil](http://i.imgur.com/m6drd9s.png)
