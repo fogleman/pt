@@ -39,7 +39,7 @@ Here are some resources that I have found useful.
 
 ![Sponza](http://i.imgur.com/wjNZJPT.png)
 
-![Cubes](http://i.imgur.com/VH8qkU8.png)
+![Cubes](http://i.imgur.com/rwbgxI0.png)
 
 ![Suzanne](http://i.imgur.com/eI5yLu7.png)
 
