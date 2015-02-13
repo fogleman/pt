@@ -19,6 +19,9 @@ func NewSphere(center Vector, radius float64, material Material) Shape {
 	return &Sphere{center, radius, material, box}
 }
 
+func (s *Sphere) Compile() {
+}
+
 func (s *Sphere) Box() Box {
 	return s.box
 }

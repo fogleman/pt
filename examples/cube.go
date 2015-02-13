@@ -10,7 +10,6 @@ func createMesh(material pt.Material) pt.Shape {
 	mesh, _ := pt.LoadBinarySTL("examples/cube.stl", material)
 	mesh.FitInside(pt.Box{pt.Vector{0, 0, 0}, pt.Vector{1, 1, 1}}, pt.Vector{0.5, 0.5, 0.5})
 	mesh.SmoothNormals()
-	mesh.Compile()
 	return mesh
 }
 
