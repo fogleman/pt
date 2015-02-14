@@ -145,7 +145,7 @@ func (node *Node) Split(depth int) {
 	sort.Float64s(ys)
 	sort.Float64s(zs)
 	mx, my, mz := Median(xs), Median(ys), Median(zs)
-	best := int(float64(len(node.shapes)) * 0.8)
+	best := int(float64(len(node.shapes)) * 0.85)
 	bestAxis := AxisNone
 	bestPoint := 0.0
 	sx := node.PartitionScore(AxisX, mx)
