@@ -52,6 +52,10 @@ func (m *Mesh) UpdateBox() {
 }
 
 func (m *Mesh) SmoothNormals() {
+	m.SmoothNormalsThreshold(0)
+}
+
+func (m *Mesh) SmoothNormalsThreshold(threshold float64) {
 	lookup := make(map[Vector]Vector)
 	for _, t := range m.triangles {
 		lookup[t.v1] = lookup[t.v1].Add(t.n1)
@@ -62,6 +66,9 @@ func (m *Mesh) SmoothNormals() {
 		lookup[k] = v.Normalize()
 	}
 	for _, t := range m.triangles {
+		if threshold > 0 && t.Area() >= threshold {
+			continue
+		}
 		t.n1 = lookup[t.v1]
 		t.n2 = lookup[t.v2]
 		t.n3 = lookup[t.v3]

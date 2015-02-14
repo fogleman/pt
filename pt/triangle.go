@@ -76,6 +76,13 @@ func (t *Triangle) RandomPoint(rnd *rand.Rand) Vector {
 	return Vector{} // TODO: fix
 }
 
+func (t *Triangle) Area() float64 {
+	e1 := t.v2.Sub(t.v1)
+	e2 := t.v3.Sub(t.v1)
+	n := e1.Cross(e2)
+	return n.Length() / 2
+}
+
 func (t *Triangle) Barycentric(p Vector) (u, v, w float64) {
 	v0 := t.v2.Sub(t.v1)
 	v1 := t.v3.Sub(t.v1)
