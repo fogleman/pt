@@ -30,6 +30,9 @@ func (s *TransformedShape) Box() Box {
 
 func (s *TransformedShape) Intersect(r Ray) Hit {
 	hit := s.Shape.Intersect(s.inverse.MulRay(r))
+	if !hit.Ok() {
+		return hit
+	}
 	// if s.Shape is a Mesh, the hit.Shape will be a Triangle in the Mesh
 	// we need to transform this Triangle, not the Mesh itself
 	shape := &TransformedShape{hit.Shape, s.matrix, s.inverse}
