@@ -41,19 +41,11 @@ func NewNode(shapes []Shape) *Node {
 }
 
 func (node *Node) Intersect(r Ray, tmin, tmax float64) Hit {
-	if node.axis == AxisNone {
-		hit := NoHit
-		for _, shape := range node.shapes {
-			h := shape.Intersect(r)
-			if h.T < hit.T {
-				hit = h
-			}
-		}
-		return hit
-	}
 	var tsplit float64
 	var leftFirst bool
 	switch node.axis {
+	case AxisNone:
+		return node.IntersectShapes(r)
 	case AxisX:
 		tsplit = (node.point - r.Origin.X) / r.Direction.X
 		leftFirst = (r.Origin.X < node.point) || (r.Origin.X == node.point && r.Direction.X <= 0)
@@ -88,6 +80,17 @@ func (node *Node) Intersect(r Ray, tmin, tmax float64) Hit {
 			return h2
 		}
 	}
+}
+
+func (node *Node) IntersectShapes(r Ray) Hit {
+	hit := NoHit
+	for _, shape := range node.shapes {
+		h := shape.Intersect(r)
+		if h.T < hit.T {
+			hit = h
+		}
+	}
+	return hit
 }
 
 func (node *Node) PartitionScore(axis Axis, point float64) int {
