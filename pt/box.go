@@ -1,8 +1,6 @@
 package pt
 
-import (
-	"math"
-)
+import "math"
 
 type Box struct {
 	Min, Max Vector
@@ -47,12 +45,24 @@ func (a Box) Extend(b Box) Box {
 }
 
 func (b *Box) Intersect(r Ray) (float64, float64) {
-	n := b.Min.Sub(r.Origin).Div(r.Direction)
-	f := b.Max.Sub(r.Origin).Div(r.Direction)
-	n, f = n.Min(f), n.Max(f)
-	t0 := math.Max(math.Max(n.X, n.Y), n.Z)
-	t1 := math.Min(math.Min(f.X, f.Y), f.Z)
-	return t0, t1
+	x1 := (b.Min.X - r.Origin.X) / r.Direction.X
+	y1 := (b.Min.Y - r.Origin.Y) / r.Direction.Y
+	z1 := (b.Min.Z - r.Origin.Z) / r.Direction.Z
+	x2 := (b.Max.X - r.Origin.X) / r.Direction.X
+	y2 := (b.Max.Y - r.Origin.Y) / r.Direction.Y
+	z2 := (b.Max.Z - r.Origin.Z) / r.Direction.Z
+	if x1 > x2 {
+		x1, x2 = x2, x1
+	}
+	if y1 > y2 {
+		y1, y2 = y2, y1
+	}
+	if z1 > z2 {
+		z1, z2 = z2, z1
+	}
+	t1 := math.Max(math.Max(x1, y1), z1)
+	t2 := math.Min(math.Min(x2, y2), z2)
+	return t1, t2
 }
 
 func (b *Box) Partition(axis Axis, point float64) (left, right bool) {
