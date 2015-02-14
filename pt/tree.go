@@ -78,6 +78,9 @@ func (node *Node) Intersect(r Ray, tmin, tmax float64) Hit {
 		return second.Intersect(r, tmin, tmax)
 	} else {
 		h1 := first.Intersect(r, tmin, tsplit)
+		if h1.T <= tsplit {
+			return h1
+		}
 		h2 := second.Intersect(r, tsplit, math.Min(tmax, h1.T))
 		if h1.T <= h2.T {
 			return h1
