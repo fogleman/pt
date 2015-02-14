@@ -126,7 +126,7 @@ func (node *Node) Partition(size int, axis Axis, point float64) (left, right []S
 }
 
 func (node *Node) Split(depth int) {
-	if len(node.shapes) < 10 {
+	if len(node.shapes) < 8 {
 		return
 	}
 	xs := make([]float64, 0, len(node.shapes)*2)
