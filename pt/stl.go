@@ -14,7 +14,7 @@ type STLHeader struct {
 }
 
 type STLTriangle struct {
-	N, V1, V2, V3 [3]float32
+	_, V1, V2, V3 [3]float32
 	_             uint16
 }
 
@@ -41,10 +41,6 @@ func LoadBinarySTL(path string, material Material) (*Mesh, error) {
 		t.v1 = Vector{float64(d.V1[0]), float64(d.V1[1]), float64(d.V1[2])}
 		t.v2 = Vector{float64(d.V2[0]), float64(d.V2[1]), float64(d.V2[2])}
 		t.v3 = Vector{float64(d.V3[0]), float64(d.V3[1]), float64(d.V3[2])}
-		normal := Vector{float64(d.N[0]), float64(d.N[1]), float64(d.N[2])}
-		t.n1 = normal
-		t.n2 = normal
-		t.n3 = normal
 		t.UpdateBox()
 		t.FixNormals()
 		triangles[i] = &t
