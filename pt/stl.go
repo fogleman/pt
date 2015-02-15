@@ -19,7 +19,7 @@ type STLTriangle struct {
 }
 
 func LoadBinarySTL(path string, material Material) (*Mesh, error) {
-	fmt.Printf("Loading Binary STL: %s\n", path)
+	fmt.Printf("Loading STL (Binary): %s\n", path)
 	file, err := os.Open(path)
 	if err != nil {
 		return nil, err
@@ -53,7 +53,7 @@ func LoadBinarySTL(path string, material Material) (*Mesh, error) {
 }
 
 func LoadSTL(path string, material Material) (*Mesh, error) {
-	fmt.Printf("Loading ASCII STL: %s\n", path)
+	fmt.Printf("Loading STL (ASCII): %s\n", path)
 	file, err := os.Open(path)
 	if err != nil {
 		return nil, err
