@@ -1,6 +1,9 @@
 package main
 
-import "github.com/fogleman/pt/pt"
+import (
+	"github.com/fogleman/pt/pt"
+	"log"
+)
 
 func main() {
 	scene := pt.Scene{}
@@ -9,7 +12,10 @@ func main() {
 	scene.Add(pt.NewCube(pt.Vector{-30, -1, -30}, pt.Vector{-8, 10, 30}, wall))
 	scene.Add(pt.NewCube(pt.Vector{-30, -1, -30}, pt.Vector{30, 0.376662, 30}, wall))
 	material := pt.GlossyMaterial(pt.Color{}, 1.5, pt.Radians(30))
-	mesh, _ := pt.LoadOBJ("examples/gopher.obj", material)
+	mesh, err := pt.LoadOBJ("examples/gopher.obj", material)
+	if err != nil {
+		log.Fatalln(err.Error())
+	}
 	mesh.SmoothNormals()
 	scene.Add(mesh)
 	camera := pt.LookAt(pt.Vector{8, 3, 0.5}, pt.Vector{-1, 2.5, 0.5}, pt.Vector{0, 1, 0}, 45)

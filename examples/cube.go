@@ -1,13 +1,17 @@
 package main
 
 import (
+	"log"
 	"math/rand"
 
 	"github.com/fogleman/pt/pt"
 )
 
 func createMesh(material pt.Material) pt.Shape {
-	mesh, _ := pt.LoadBinarySTL("examples/cube.stl", material)
+	mesh, err := pt.LoadBinarySTL("examples/cube.stl", material)
+	if err != nil {
+		log.Fatalln(err.Error())
+	}
 	mesh.FitInside(pt.Box{pt.Vector{0, 0, 0}, pt.Vector{1, 1, 1}}, pt.Vector{0.5, 0.5, 0.5})
 	return mesh
 }
