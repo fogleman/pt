@@ -129,7 +129,7 @@ func (a Matrix) MulDirection(b Vector) Vector {
 	x := a.x00*b.X + a.x01*b.Y + a.x02*b.Z
 	y := a.x10*b.X + a.x11*b.Y + a.x12*b.Z
 	z := a.x20*b.X + a.x21*b.Y + a.x22*b.Z
-	return Vector{x, y, z}
+	return Vector{x, y, z}.Normalize()
 }
 
 func (a Matrix) MulRay(b Ray) Ray {

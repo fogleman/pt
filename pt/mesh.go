@@ -1,6 +1,9 @@
 package pt
 
-import "math/rand"
+import (
+	"math"
+	"math/rand"
+)
 
 type Mesh struct {
 	box       Box
@@ -49,6 +52,31 @@ func (m *Mesh) RandomPoint(rnd *rand.Rand) Vector {
 
 func (m *Mesh) UpdateBox() {
 	m.box = BoxForTriangles(m.triangles)
+}
+
+func smoothNormalsThreshold(normal Vector, normals []Vector, threshold float64) Vector {
+	result := Vector{}
+	for _, x := range normals {
+		if x.Dot(normal) >= threshold {
+			result = result.Add(x)
+		}
+	}
+	return result.Normalize()
+}
+
+func (m *Mesh) SmoothNormalsThreshold(radians float64) {
+	threshold := math.Cos(radians)
+	lookup := make(map[Vector][]Vector)
+	for _, t := range m.triangles {
+		lookup[t.v1] = append(lookup[t.v1], t.n1)
+		lookup[t.v2] = append(lookup[t.v2], t.n2)
+		lookup[t.v3] = append(lookup[t.v3], t.n3)
+	}
+	for _, t := range m.triangles {
+		t.n1 = smoothNormalsThreshold(t.n1, lookup[t.v1], threshold)
+		t.n2 = smoothNormalsThreshold(t.n2, lookup[t.v2], threshold)
+		t.n3 = smoothNormalsThreshold(t.n3, lookup[t.v3], threshold)
+	}
 }
 
 func (m *Mesh) SmoothNormals() {
