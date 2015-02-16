@@ -26,14 +26,14 @@ Here are things that I'm planning, or at least hoping, to do.
 
 Here are some resources that I have found useful.
 
-* http://madebyevan.com/webgl-path-tracing/
-* http://www.thepolygoners.com/tutorials/GIIntro/GIIntro.htm
-* http://www.iquilezles.org/www/articles/simplepathtracing/simplepathtracing.htm
-* http://web.cs.wpi.edu/~emmanuel/courses/cs563/write_ups/zackw/realistic_raytracing.html
-* http://graphics.stanford.edu/courses/cs148-10-summer/docs/2006--degreve--reflection_refraction.pdf
-* http://www.rorydriscoll.com/2009/01/07/better-sampling/
-* https://www.youtube.com/playlist?list=PLslgisHe5tBPckSYyKoU3jEA4bqiFmNBJ
-* http://www.amazon.com/Physically-Based-Rendering-Second-Edition/dp/0123750792
+* [http://madebyevan.com/webgl-path-tracing/](WebGL Path Tracing - Evan Wallace)
+* [http://www.thepolygoners.com/tutorials/GIIntro/GIIntro.htm](Global Illumination in a Nutshell)
+* [http://www.iquilezles.org/www/articles/simplepathtracing/simplepathtracing.htm](Simple Path Tracing - Iñigo Quilez)
+* [http://web.cs.wpi.edu/~emmanuel/courses/cs563/write_ups/zackw/realistic_raytracing.html](Realistic Raytracing - Zack Waters)
+* [http://graphics.stanford.edu/courses/cs148-10-summer/docs/2006--degreve--reflection_refraction.pdf](Reflections and Refractions in Ray Tracing - Bram de Greve)
+* [http://www.rorydriscoll.com/2009/01/07/better-sampling/](Better Sampling - Rory Driscoll)
+* [https://www.youtube.com/playlist?list=PLslgisHe5tBPckSYyKoU3jEA4bqiFmNBJ](Ray Tracing for Global Illumination - Nelson Max at UC Davis)
+* [http://www.amazon.com/Physically-Based-Rendering-Second-Edition/dp/0123750792](Physically Based Rendering - Matt Pharr, Greg Humphreys)
 
 ### Samples
 
