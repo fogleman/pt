@@ -124,3 +124,7 @@ func (m *Mesh) Transform(matrix Matrix) {
 	m.UpdateBox()
 	m.tree = nil // dirty
 }
+
+func (m *Mesh) SaveBinarySTL(path string) error {
+	return SaveBinarySTL(path, m)
+}

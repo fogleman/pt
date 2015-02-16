@@ -48,6 +48,35 @@ func LoadBinarySTL(path string, material Material) (*Mesh, error) {
 	return NewMesh(triangles), nil
 }
 
+func SaveBinarySTL(path string, mesh *Mesh) error {
+	file, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	header := STLHeader{}
+	header.Count = uint32(len(mesh.triangles))
+	if err := binary.Write(file, binary.LittleEndian, &header); err != nil {
+		return err
+	}
+	for _, triangle := range mesh.triangles {
+		d := STLTriangle{}
+		d.V1[0] = float32(triangle.v1.X)
+		d.V1[1] = float32(triangle.v1.Y)
+		d.V1[2] = float32(triangle.v1.Z)
+		d.V2[0] = float32(triangle.v2.X)
+		d.V2[1] = float32(triangle.v2.Y)
+		d.V2[2] = float32(triangle.v2.Z)
+		d.V3[0] = float32(triangle.v3.X)
+		d.V3[1] = float32(triangle.v3.Y)
+		d.V3[2] = float32(triangle.v3.Z)
+		if err := binary.Write(file, binary.LittleEndian, &d); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func LoadSTL(path string, material Material) (*Mesh, error) {
 	fmt.Printf("Loading STL (ASCII): %s\n", path)
 	file, err := os.Open(path)
