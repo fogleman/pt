@@ -43,6 +43,8 @@ Here are some resources that I have found useful.
 
 ![Suzanne](http://i.imgur.com/eI5yLu7.png)
 
+![Cylinders](http://i.imgur.com/yVeil5G.png)
+
 ![Balls](http://i.imgur.com/2PNvTgE.png)
 
 ![Pencil](http://i.imgur.com/m6drd9s.png)
