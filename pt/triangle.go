@@ -1,9 +1,6 @@
 package pt
 
-import (
-	"math"
-	"math/rand"
-)
+import "math/rand"
 
 type Triangle struct {
 	material   *Material
@@ -21,25 +18,35 @@ func (t *Triangle) Box() Box {
 }
 
 func (t *Triangle) Intersect(r Ray) Hit {
-	edge1 := t.v2.Sub(t.v1)
-	edge2 := t.v3.Sub(t.v1)
-	pvec := r.Direction.Cross(edge2)
-	det := edge1.Dot(pvec)
-	if math.Abs(det) < EPS {
+	e1x := t.v2.X - t.v1.X
+	e1y := t.v2.Y - t.v1.Y
+	e1z := t.v2.Z - t.v1.Z
+	e2x := t.v3.X - t.v1.X
+	e2y := t.v3.Y - t.v1.Y
+	e2z := t.v3.Z - t.v1.Z
+	px := r.Direction.Y*e2z - r.Direction.Z*e2y
+	py := r.Direction.Z*e2x - r.Direction.X*e2z
+	pz := r.Direction.X*e2y - r.Direction.Y*e2x
+	det := e1x*px + e1y*py + e1z*pz
+	if det > -EPS && det < EPS {
 		return NoHit
 	}
 	inv := 1 / det
-	tvec := r.Origin.Sub(t.v1)
-	u := tvec.Dot(pvec) * inv
+	tx := r.Origin.X - t.v1.X
+	ty := r.Origin.Y - t.v1.Y
+	tz := r.Origin.Z - t.v1.Z
+	u := (tx*px + ty*py + tz*pz) * inv
 	if u < 0 || u > 1 {
 		return NoHit
 	}
-	qvec := tvec.Cross(edge1)
-	v := r.Direction.Dot(qvec) * inv
+	qx := ty*e1z - tz*e1y
+	qy := tz*e1x - tx*e1z
+	qz := tx*e1y - ty*e1x
+	v := (r.Direction.X*qx + r.Direction.Y*qy + r.Direction.Z*qz) * inv
 	if v < 0 || u+v > 1 {
 		return NoHit
 	}
-	d := edge2.Dot(qvec) * inv
+	d := (e2x*qx + e2y*qy + e2z*qz) * inv
 	if d < EPS {
 		return NoHit
 	}
