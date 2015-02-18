@@ -1,6 +1,9 @@
 package main
 
-import "github.com/fogleman/pt/pt"
+import (
+	"github.com/fogleman/pt/pt"
+	"log"
+)
 
 func main() {
 	scene := pt.Scene{}
@@ -17,6 +20,6 @@ func main() {
 	camera := pt.LookAt(pt.Vector{0, 4, -8}, pt.Vector{0, 0, -2}, pt.Vector{0, 1, 0}, 45)
 	im := pt.Render(&scene, &camera, 2560/4, 1440/4, 4, 16, 8)
 	if err := pt.SavePNG("out.png", im); err != nil {
-		panic(err)
+		log.Fatalln("SavePNG error:", err)
 	}
 }
