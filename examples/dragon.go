@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/fogleman/pt/pt"
 	"log"
+
+	"github.com/fogleman/pt/pt"
 )
 
 // http://graphics.cs.williams.edu/data/meshes/dragon.zip

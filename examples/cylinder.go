@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/fogleman/pt/pt"
 	"log"
+
+	"github.com/fogleman/pt/pt"
 )
 
 func createMesh(material pt.Material) pt.Shape {
