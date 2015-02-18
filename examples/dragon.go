@@ -12,7 +12,7 @@ func main() {
 	material := pt.GlossyMaterial(pt.HexColor(0xFCFAE1), 1.5, pt.Radians(20))
 	mesh, err := pt.LoadOBJ("examples/dragon.obj", material)
 	if err != nil {
-		log.Fatalln(err.Error())
+		log.Fatalln("LoadOBJ error:", err)
 	}
 	mesh.FitInside(pt.Box{pt.Vector{-1, -1, -1}, pt.Vector{1, 1, 1}}, pt.Vector{0.5, 0.5, 0.5})
 	scene.Add(mesh)

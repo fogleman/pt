@@ -12,7 +12,7 @@ func main() {
 	material := pt.GlossyMaterial(pt.HexColor(0xFCFAE1), 1.5, pt.Radians(20))
 	mesh, err := pt.LoadOBJ("examples/dabrovic-sponza/sponza.obj", material)
 	if err != nil {
-		log.Fatalln(err.Error())
+		log.Fatalln("LoadOBJ error:", err)
 	}
 	mesh.MoveTo(pt.Vector{}, pt.Vector{0.5, 0, 0.5})
 	scene.Add(mesh)

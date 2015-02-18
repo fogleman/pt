@@ -10,7 +10,7 @@ import (
 func createMesh(material pt.Material) pt.Shape {
 	mesh, err := pt.LoadBinarySTL("examples/cube.stl", material)
 	if err != nil {
-		log.Fatalln(err.Error())
+		log.Fatalln("LoadBinarySTL error:", err)
 	}
 	mesh.FitInside(pt.Box{pt.Vector{0, 0, 0}, pt.Vector{1, 1, 1}}, pt.Vector{0.5, 0.5, 0.5})
 	return mesh

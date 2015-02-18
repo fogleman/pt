@@ -12,7 +12,7 @@ func main() {
 	heart := pt.GlossyMaterial(pt.HexColor(0xF60A20), 1.5, pt.Radians(20))
 	mesh, err := pt.LoadBinarySTL("examples/love.stl", heart)
 	if err != nil {
-		log.Fatalln(err.Error())
+		log.Fatalln("LoadBinarySTL error:", err)
 	}
 	mesh.FitInside(pt.Box{pt.Vector{-0.5, 0, -0.5}, pt.Vector{0.5, 1, 0.5}}, pt.Vector{0.5, 0, 0.5})
 	scene.Add(mesh)

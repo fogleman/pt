@@ -14,7 +14,7 @@ func main() {
 	material := pt.GlossyMaterial(pt.Color{}, 1.5, pt.Radians(30))
 	mesh, err := pt.LoadOBJ("examples/gopher.obj", material)
 	if err != nil {
-		log.Fatalln(err.Error())
+		log.Fatalln("LoadOBJ error:", err)
 	}
 	mesh.SmoothNormals()
 	scene.Add(mesh)
