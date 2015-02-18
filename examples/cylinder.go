@@ -1,9 +1,16 @@
 package main
 
-import "github.com/fogleman/pt/pt"
+import (
+	"log"
+
+	"github.com/fogleman/pt/pt"
+)
 
 func createMesh(material pt.Material) pt.Shape {
-	mesh, _ := pt.LoadBinarySTL("examples/cylinder.stl", material)
+	mesh, err := pt.LoadBinarySTL("examples/cylinder.stl", material)
+	if err != nil {
+		log.Fatalln("LoadBinarySTL error:", err)
+	}
 	mesh.FitInside(pt.Box{pt.Vector{-0.1, -0.1, 0}, pt.Vector{1.1, 1.1, 100}}, pt.Vector{0.5, 0.5, 0})
 	mesh.SmoothNormalsThreshold(pt.Radians(10))
 	return mesh
