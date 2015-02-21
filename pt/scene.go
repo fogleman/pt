@@ -44,6 +44,9 @@ func (s *Scene) Shadow(r Ray, light Shape, max float64) bool {
 }
 
 func (s *Scene) DirectLight(n Ray, rnd *rand.Rand) Color {
+	if len(s.lights) == 0 {
+		return Color{}
+	}
 	color := Color{}
 	for _, light := range s.lights {
 		p := light.RandomPoint(rnd)
