@@ -45,6 +45,8 @@ Here are some resources that I have found useful.
 
 ![Cylinders](http://i.imgur.com/yVeil5G.png)
 
+![Dinosaur](http://i.imgur.com/fx8Cgvy.png)
+
 ![Balls](http://i.imgur.com/2PNvTgE.png)
 
 ![Pencil](http://i.imgur.com/m6drd9s.png)
