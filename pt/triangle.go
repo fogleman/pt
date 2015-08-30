@@ -10,6 +10,21 @@ type Triangle struct {
 	t1, t2, t3 Vector
 }
 
+func NewTriangle(v1, v2, v3 Vector, material Material) *Triangle {
+	t := Triangle{}
+	t.v1 = v1
+	t.v2 = v2
+	t.v3 = v3
+	t.material = &material
+	t.UpdateBox()
+	t.FixNormals()
+	return &t
+}
+
+func (t *Triangle) Vertices() (Vector, Vector, Vector) {
+	return t.v1, t.v2, t.v3
+}
+
 func (t *Triangle) Compile() {
 }
 

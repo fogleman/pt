@@ -16,6 +16,10 @@ func NewMesh(triangles []*Triangle) *Mesh {
 	return &Mesh{box, triangles, nil}
 }
 
+func (m *Mesh) Triangles() []*Triangle {
+	return m.triangles
+}
+
 func (m *Mesh) Compile() {
 	if m.tree == nil {
 		shapes := make([]Shape, len(m.triangles))
