@@ -10,11 +10,14 @@ type Triangle struct {
 	t1, t2, t3 Vector
 }
 
-func NewTriangle(v1, v2, v3 Vector, material Material) *Triangle {
+func NewTriangle(v1, v2, v3, t1, t2, t3 Vector, material Material) *Triangle {
 	t := Triangle{}
 	t.v1 = v1
 	t.v2 = v2
 	t.v3 = v3
+	t.t1 = t1
+	t.t2 = t2
+	t.t3 = t3
 	t.material = &material
 	t.UpdateBox()
 	t.FixNormals()
