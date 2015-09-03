@@ -85,7 +85,8 @@ func NewTexture(im image.Image) Texture {
 func (t *ColorTexture) Sample(u, v float64) Color {
 	u = Fract(Fract(u) + 1)
 	v = Fract(Fract(v) + 1)
-	x := int(u * float64(t.width-1))
-	y := int(v * float64(t.height-1))
+	v = 1 - v
+	x := int(u * float64(t.width))
+	y := int(v * float64(t.height))
 	return t.data[y*t.width+x]
 }
