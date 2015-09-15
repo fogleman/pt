@@ -21,7 +21,7 @@ func CreateBrick(color int) *pt.Mesh {
 
 func main() {
 	scene := pt.Scene{}
-	scene.SetColor(pt.Color{0.8, 0.8, 0.8})
+	scene.SetColor(pt.Color{1, 1, 1})
 	meshes := []*pt.Mesh{
 		CreateBrick(1),  // white
 		CreateBrick(21), // bright red
@@ -30,8 +30,8 @@ func main() {
 		CreateBrick(26), // black
 		CreateBrick(28), // dark green
 	}
-	for x := -100; x <= 100; x += 2 {
-		for y := -100; y <= 100; y += 4 {
+	for x := -30; x <= 50; x += 2 {
+		for y := -50; y <= 20; y += 4 {
 			h := rand.Intn(5) + 1
 			for i := 0; i < h; i++ {
 				dy := 0
@@ -45,8 +45,8 @@ func main() {
 			}
 		}
 	}
-	light := pt.LightMaterial(pt.Color{0.2, 0.2, 0.2}, 10, pt.QuadraticAttenuation(0.01))
-	scene.Add(pt.NewSphere(pt.Vector{0, 0, 25}, 1, light))
+	// light := pt.LightMaterial(pt.Color{0.2, 0.2, 0.2}, 10, pt.QuadraticAttenuation(0.01))
+	// scene.Add(pt.NewSphere(pt.Vector{0, 0, 25}, 1, light))
 	camera := pt.LookAt(pt.Vector{-23, 13, 20}, pt.Vector{0, 0, 0}, pt.Vector{0, 0, 1}, 45)
 	pt.IterativeRender("out%03d.png", 1000, &scene, &camera, 2560, 1440, -1, 4, 4)
 }
