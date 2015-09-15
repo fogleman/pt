@@ -1,14 +1,10 @@
 package main
 
 import (
-	"log"
 	"math/rand"
-	"net/http"
 
 	"github.com/fogleman/pt/pt"
 )
-
-import _ "net/http/pprof"
 
 const H = 1.46875
 
@@ -24,9 +20,6 @@ func CreateBrick(color int) *pt.Mesh {
 }
 
 func main() {
-	go func() {
-		log.Println(http.ListenAndServe("localhost:6060", nil))
-	}()
 	scene := pt.Scene{}
 	scene.SetColor(pt.Color{1, 1, 1})
 	meshes := []*pt.Mesh{
