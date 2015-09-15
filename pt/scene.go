@@ -7,10 +7,15 @@ import (
 )
 
 type Scene struct {
+	color  Color
 	shapes []Shape
 	lights []Shape
 	tree   *Tree
 	rays   uint64
+}
+
+func (s *Scene) SetColor(color Color) {
+	s.color = color
 }
 
 func (s *Scene) Compile() {
@@ -74,7 +79,7 @@ func (s *Scene) Sample(r Ray, emission bool, samples, depth int, rnd *rand.Rand)
 	}
 	hit := s.Intersect(r)
 	if !hit.Ok() {
-		return Color{}
+		return s.color
 	}
 	info := hit.Info(r)
 	result := Color{}
