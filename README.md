@@ -37,6 +37,8 @@ Here are some resources that I have found useful.
 
 ### Samples
 
+![Dragon](http://i.imgur.com/woBoPFx.png)
+
 ![Sponza](http://i.imgur.com/wjNZJPT.png)
 
 ![Cubes](http://i.imgur.com/Ypn3WCI.png)
