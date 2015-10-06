@@ -84,7 +84,11 @@ func (s *Scene) Sample(r Ray, emission bool, samples, depth int, rnd *rand.Rand)
 	info := hit.Info(r)
 	result := Color{}
 	if emission {
-		result = result.Add(info.Color.MulScalar(info.Material.Emittance * float64(samples)))
+		emittance := info.Material.Emittance
+		if emittance > 0 {
+			attenuation := info.Material.Attenuation.Compute(hit.T)
+			result = result.Add(info.Color.MulScalar(emittance * attenuation * float64(samples)))
+		}
 	}
 	n := int(math.Sqrt(float64(samples)))
 	for u := 0; u < n; u++ {
