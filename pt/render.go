@@ -3,7 +3,6 @@ package pt
 import (
 	"fmt"
 	"image"
-	"image/color"
 	"math"
 	"math/rand"
 	"runtime"
@@ -66,10 +65,7 @@ func Render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, bounc
 						c = c.DivScalar(float64(n * n))
 					}
 					c = c.Pow(1 / 2.2)
-					r := uint8(math.Min(255, c.R*255))
-					g := uint8(math.Min(255, c.G*255))
-					b := uint8(math.Min(255, c.B*255))
-					result.SetRGBA(x, y, color.RGBA{r, g, b, 255})
+					result.SetRGBA(x, y, c.RGBA())
 				}
 				ch <- 1
 			}
@@ -98,10 +94,7 @@ func IterativeRender(pathTemplate string, iterations int, scene *Scene, camera *
 				c := Color{float64(r) / 65535, float64(g) / 65535, float64(b) / 65535}
 				pixels[index] = pixels[index].Add(c)
 				avg := pixels[index].DivScalar(float64(i))
-				ar := uint8(math.Min(255, avg.R*255))
-				ag := uint8(math.Min(255, avg.G*255))
-				ab := uint8(math.Min(255, avg.B*255))
-				result.SetRGBA(x, y, color.RGBA{ar, ag, ab, 255})
+				result.SetRGBA(x, y, avg.RGBA())
 			}
 		}
 		path := pathTemplate

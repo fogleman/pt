@@ -1,6 +1,7 @@
 package pt
 
 import (
+	"image/color"
 	"math"
 )
 
@@ -13,6 +14,13 @@ func HexColor(x int) Color {
 	g := float64((x>>8)&0xff) / 255
 	b := float64((x>>0)&0xff) / 255
 	return Color{r, g, b}.Pow(2.2)
+}
+
+func (a Color) RGBA() color.RGBA {
+	r := uint8(math.Max(0, math.Min(255, a.R*255)))
+	g := uint8(math.Max(0, math.Min(255, a.G*255)))
+	b := uint8(math.Max(0, math.Min(255, a.B*255)))
+	return color.RGBA{r, g, b, 255}
 }
 
 func (a Color) Add(b Color) Color {
