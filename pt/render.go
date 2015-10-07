@@ -30,7 +30,7 @@ func Render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, bounc
 	ncpu := runtime.NumCPU()
 	runtime.GOMAXPROCS(ncpu)
 	scene.Compile()
-	result := image.NewNRGBA(image.Rect(0, 0, w, h))
+	result := image.NewRGBA(image.Rect(0, 0, w, h))
 	ch := make(chan int, h)
 	absCameraSamples := int(math.Abs(float64(cameraSamples)))
 	fmt.Printf("%d x %d pixels, %d x %d = %d samples, %d bounces, %d cores\n",
@@ -69,7 +69,7 @@ func Render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, bounc
 					r := uint8(math.Min(255, c.R*255))
 					g := uint8(math.Min(255, c.G*255))
 					b := uint8(math.Min(255, c.B*255))
-					result.SetNRGBA(x, y, color.NRGBA{r, g, b, 255})
+					result.SetRGBA(x, y, color.RGBA{r, g, b, 255})
 				}
 				ch <- 1
 			}
@@ -87,7 +87,7 @@ func Render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, bounc
 func IterativeRender(pathTemplate string, iterations int, scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, bounces int) error {
 	scene.Compile()
 	pixels := make([]Color, w*h)
-	result := image.NewNRGBA(image.Rect(0, 0, w, h))
+	result := image.NewRGBA(image.Rect(0, 0, w, h))
 	for i := 1; i <= iterations; i++ {
 		fmt.Printf("\n[Iteration %d of %d]\n", i, iterations)
 		frame := Render(scene, camera, w, h, cameraSamples, hitSamples, bounces)
@@ -101,7 +101,7 @@ func IterativeRender(pathTemplate string, iterations int, scene *Scene, camera *
 				ar := uint8(math.Min(255, avg.R*255))
 				ag := uint8(math.Min(255, avg.G*255))
 				ab := uint8(math.Min(255, avg.B*255))
-				result.SetNRGBA(x, y, color.NRGBA{ar, ag, ab, 255})
+				result.SetRGBA(x, y, color.RGBA{ar, ag, ab, 255})
 			}
 		}
 		path := pathTemplate
