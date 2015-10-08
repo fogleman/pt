@@ -9,6 +9,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	mesh.SmoothNormalsThreshold(pt.Radians(20))
 	mesh.FitInside(pt.Box{pt.Vector{-1, 0, -1}, pt.Vector{1, 2, 1}}, pt.Vector{0.5, 0, 0.5})
 	scene.Add(mesh)
 	floor := pt.GlossyMaterial(pt.HexColor(0x33332D), 1.2, pt.Radians(20))
