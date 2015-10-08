@@ -72,11 +72,7 @@ func NewTexture(im image.Image) Texture {
 	for y := 0; y < size.Y; y++ {
 		for x := 0; x < size.X; x++ {
 			index := y*size.X + x
-			r, g, b, _ := im.At(x, y).RGBA()
-			fr := float64(r) / 65535
-			fg := float64(g) / 65535
-			fb := float64(b) / 65535
-			data[index] = Color{fr, fg, fb}.Pow(2.2)
+			data[index] = NewColor(im.At(x, y)).Pow(2.2)
 		}
 	}
 	return &ColorTexture{size.X, size.Y, data}

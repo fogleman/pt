@@ -90,8 +90,7 @@ func IterativeRender(pathTemplate string, iterations int, scene *Scene, camera *
 		for y := 0; y < h; y++ {
 			for x := 0; x < w; x++ {
 				index := y*w + x
-				r, g, b, _ := frame.At(x, y).RGBA()
-				c := Color{float64(r) / 65535, float64(g) / 65535, float64(b) / 65535}
+				c := NewColor(frame.At(x, y))
 				pixels[index] = pixels[index].Add(c)
 				avg := pixels[index].DivScalar(float64(i))
 				result.SetRGBA(x, y, avg.RGBA())

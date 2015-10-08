@@ -16,6 +16,11 @@ func HexColor(x int) Color {
 	return Color{r, g, b}.Pow(2.2)
 }
 
+func NewColor(c color.Color) Color {
+	r, g, b, _ := c.RGBA()
+	return Color{float64(r) / 65535, float64(g) / 65535, float64(b) / 65535}
+}
+
 func (a Color) RGBA() color.RGBA {
 	r := uint8(math.Max(0, math.Min(255, a.R*255)))
 	g := uint8(math.Max(0, math.Min(255, a.G*255)))
