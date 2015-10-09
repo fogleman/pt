@@ -10,6 +10,7 @@ import (
 
 type Texture interface {
 	Sample(u, v float64) Color
+	NormalSample(u, v float64) Vector
 	BumpSample(u, v float64) Vector
 }
 
@@ -86,6 +87,11 @@ func (t *ColorTexture) Sample(u, v float64) Color {
 	x := int(u * float64(t.width))
 	y := int(v * float64(t.height))
 	return t.data[y*t.width+x]
+}
+
+func (t *ColorTexture) NormalSample(u, v float64) Vector {
+	c := t.Sample(u, v).Pow(1 / 2.2)
+	return Vector{c.R*2 - 1, c.G*2 - 1, c.B*2 - 1}.Normalize()
 }
 
 func (t *ColorTexture) BumpSample(u, v float64) Vector {

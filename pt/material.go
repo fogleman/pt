@@ -3,6 +3,7 @@ package pt
 type Material struct {
 	Color          Color
 	Texture        Texture
+	NormalTexture  Texture
 	BumpTexture    Texture
 	BumpMultiplier float64
 	Emittance      float64
@@ -14,25 +15,25 @@ type Material struct {
 }
 
 func DiffuseMaterial(color Color) Material {
-	return Material{color, nil, nil, 1, 0, NoAttenuation, 1, 0, 0, false}
+	return Material{color, nil, nil, nil, 1, 0, NoAttenuation, 1, 0, 0, false}
 }
 
 func SpecularMaterial(color Color, index float64) Material {
-	return Material{color, nil, nil, 1, 0, NoAttenuation, index, 0, 0, false}
+	return Material{color, nil, nil, nil, 1, 0, NoAttenuation, index, 0, 0, false}
 }
 
 func GlossyMaterial(color Color, index, gloss float64) Material {
-	return Material{color, nil, nil, 1, 0, NoAttenuation, index, gloss, 0, false}
+	return Material{color, nil, nil, nil, 1, 0, NoAttenuation, index, gloss, 0, false}
 }
 
 func ClearMaterial(index, gloss float64) Material {
-	return Material{Color{}, nil, nil, 1, 0, NoAttenuation, index, gloss, 0, true}
+	return Material{Color{}, nil, nil, nil, 1, 0, NoAttenuation, index, gloss, 0, true}
 }
 
 func TransparentMaterial(color Color, index, gloss, tint float64) Material {
-	return Material{color, nil, nil, 1, 0, NoAttenuation, index, gloss, tint, true}
+	return Material{color, nil, nil, nil, 1, 0, NoAttenuation, index, gloss, tint, true}
 }
 
 func LightMaterial(color Color, emittance float64, attenuation Attenuation) Material {
-	return Material{color, nil, nil, 1, emittance, attenuation, 1, 0, 0, false}
+	return Material{color, nil, nil, nil, 1, emittance, attenuation, 1, 0, 0, false}
 }

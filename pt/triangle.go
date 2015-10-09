@@ -93,6 +93,27 @@ func (t *Triangle) Normal(p Vector) Vector {
 	n = n.Add(t.n1.MulScalar(u))
 	n = n.Add(t.n2.MulScalar(v))
 	n = n.Add(t.n3.MulScalar(w))
+	n = n.Normalize()
+	if t.material.NormalTexture != nil {
+		b := Vector{}
+		b = b.Add(t.t1.MulScalar(u))
+		b = b.Add(t.t2.MulScalar(v))
+		b = b.Add(t.t3.MulScalar(w))
+		ns := t.material.NormalTexture.NormalSample(b.X, b.Y)
+		dv1 := t.v2.Sub(t.v1)
+		dv2 := t.v3.Sub(t.v1)
+		dt1 := t.t2.Sub(t.t1)
+		dt2 := t.t3.Sub(t.t1)
+		T := dv1.MulScalar(dt2.Y).Sub(dv2.MulScalar(dt1.Y)).Normalize()
+		B := dv2.MulScalar(dt1.X).Sub(dv1.MulScalar(dt2.X)).Normalize()
+		N := T.Cross(B)
+		matrix := Matrix{
+			T.X, B.X, N.X, 0,
+			T.Y, B.Y, N.Y, 0,
+			T.Z, B.Z, N.Z, 0,
+			0, 0, 0, 1}
+		n = matrix.MulDirection(ns)
+	}
 	if t.material.BumpTexture != nil {
 		b := Vector{}
 		b = b.Add(t.t1.MulScalar(u))
