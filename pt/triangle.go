@@ -93,7 +93,22 @@ func (t *Triangle) Normal(p Vector) Vector {
 	n = n.Add(t.n1.MulScalar(u))
 	n = n.Add(t.n2.MulScalar(v))
 	n = n.Add(t.n3.MulScalar(w))
-	n = n.Normalize() // needed?
+	if t.material.BumpTexture != nil {
+		b := Vector{}
+		b = b.Add(t.t1.MulScalar(u))
+		b = b.Add(t.t2.MulScalar(v))
+		b = b.Add(t.t3.MulScalar(w))
+		bump := t.material.BumpTexture.BumpSample(b.X, b.Y)
+		dv1 := t.v2.Sub(t.v1)
+		dv2 := t.v3.Sub(t.v1)
+		dt1 := t.t2.Sub(t.t1)
+		dt2 := t.t3.Sub(t.t1)
+		tangent := dv1.MulScalar(dt2.Y).Sub(dv2.MulScalar(dt1.Y)).Normalize()
+		bitangent := dv2.MulScalar(dt1.X).Sub(dv1.MulScalar(dt2.X)).Normalize()
+		n = n.Add(tangent.MulScalar(bump.X * t.material.BumpMultiplier))
+		n = n.Add(bitangent.MulScalar(bump.Y * t.material.BumpMultiplier))
+	}
+	n = n.Normalize()
 	return n
 }
 

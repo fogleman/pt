@@ -10,6 +10,7 @@ import (
 
 type Texture interface {
 	Sample(u, v float64) Color
+	BumpSample(u, v float64) Vector
 }
 
 var textures map[string]Texture
@@ -85,4 +86,17 @@ func (t *ColorTexture) Sample(u, v float64) Color {
 	x := int(u * float64(t.width))
 	y := int(v * float64(t.height))
 	return t.data[y*t.width+x]
+}
+
+func (t *ColorTexture) BumpSample(u, v float64) Vector {
+	u = Fract(Fract(u) + 1)
+	v = Fract(Fract(v) + 1)
+	v = 1 - v
+	x := int(u * float64(t.width))
+	y := int(v * float64(t.height))
+	x1, x2 := ClampInt(x-1, 0, t.width-1), ClampInt(x+1, 0, t.width-1)
+	y1, y2 := ClampInt(y-1, 0, t.height-1), ClampInt(y+1, 0, t.height-1)
+	cx := t.data[y*t.width+x1].Sub(t.data[y*t.width+x2])
+	cy := t.data[y1*t.width+x].Sub(t.data[y2*t.width+x])
+	return Vector{cx.R, cy.R, 0}
 }

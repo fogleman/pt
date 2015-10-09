@@ -110,3 +110,13 @@ func Fract(x float64) float64 {
 	_, x = math.Modf(x)
 	return x
 }
+
+func ClampInt(x, lo, hi int) int {
+	if x < lo {
+		return lo
+	}
+	if x > hi {
+		return hi
+	}
+	return x
+}
