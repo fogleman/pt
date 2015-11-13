@@ -10,14 +10,23 @@ Disclaimer: This is my first time using Go.
 
     go run examples/gopher.go
 
+### Features
+
+* Supports OBJ, Binary STL and ASCII STL
+* Supports textures, bump maps and normal maps
+* Uses k-d trees to accelerate ray intersection tests
+* Supports various material properties
+* Light sources with configurable attenuation
+* Supports configurable depth of field
+* Supports iterative rendering
+* Uses all CPU cores in parallel
+
 ### TODO
 
 Here are things that I'm planning, or at least hoping, to do.
 
-* bump / normal maps
 * subsurface scattering
 * atmosphere
-* depth of field
 * constructive solid geometry
 * input files to define scene
 * animation support?

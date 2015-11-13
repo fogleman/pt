@@ -47,7 +47,7 @@ func Render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, bounc
 						for i := 0; i < absCameraSamples; i++ {
 							fu := rnd.Float64()
 							fv := rnd.Float64()
-							ray := camera.CastRay(x, y, w, h, fu, fv)
+							ray := camera.CastRay(x, y, w, h, fu, fv, rnd)
 							c = c.Add(scene.Sample(ray, true, hitSamples, bounces, rnd))
 						}
 						c = c.DivScalar(float64(absCameraSamples))
@@ -58,7 +58,7 @@ func Render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, bounc
 							for v := 0; v < n; v++ {
 								fu := (float64(u) + 0.5) / float64(n)
 								fv := (float64(v) + 0.5) / float64(n)
-								ray := camera.CastRay(x, y, w, h, fu, fv)
+								ray := camera.CastRay(x, y, w, h, fu, fv, rnd)
 								c = c.Add(scene.Sample(ray, true, hitSamples, bounces, rnd))
 							}
 						}
