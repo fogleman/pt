@@ -100,6 +100,11 @@ func (m *Mesh) SmoothNormals() {
 	}
 }
 
+func (m *Mesh) UnitCube() {
+	m.FitInside(Box{Vector{}, Vector{1, 1, 1}}, Vector{})
+	m.MoveTo(Vector{}, Vector{0.5, 0.5, 0.5})
+}
+
 func (m *Mesh) MoveTo(position, anchor Vector) {
 	matrix := Translate(position.Sub(m.box.Anchor(anchor)))
 	m.Transform(matrix)

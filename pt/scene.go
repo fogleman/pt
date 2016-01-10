@@ -7,15 +7,20 @@ import (
 )
 
 type Scene struct {
-	color  Color
-	shapes []Shape
-	lights []Shape
-	tree   *Tree
-	rays   uint64
+	color      Color
+	visibility float64
+	shapes     []Shape
+	lights     []Shape
+	tree       *Tree
+	rays       uint64
 }
 
 func (s *Scene) SetColor(color Color) {
 	s.color = color
+}
+
+func (s *Scene) SetVisibility(visibility float64) {
+	s.visibility = visibility
 }
 
 func (s *Scene) Compile() {
@@ -78,6 +83,19 @@ func (s *Scene) Sample(r Ray, emission bool, samples, depth int, rnd *rand.Rand)
 		return Color{}
 	}
 	hit := s.Intersect(r)
+	if s.visibility > 0 {
+		t := math.Pow(rnd.Float64(), 0.5) * s.visibility
+		if t < hit.T {
+			x := rnd.Float64() - 0.5
+			y := rnd.Float64() - 0.5
+			z := rnd.Float64() - 0.5
+			d := Vector{x, y, z}
+			d = d.Normalize()
+			o := r.Position(t)
+			newRay := Ray{o, d}
+			return s.Sample(newRay, false, 1, depth-1, rnd)
+		}
+	}
 	if !hit.Ok() {
 		return s.color
 	}
