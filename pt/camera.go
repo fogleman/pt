@@ -12,10 +12,10 @@ type Camera struct {
 	apertureRadius float64
 }
 
-func LookAt(eye, look, up Vector, fovy float64) Camera {
+func LookAt(eye, center, up Vector, fovy float64) Camera {
 	c := Camera{}
 	c.p = eye
-	c.w = look.Sub(eye).Normalize()
+	c.w = center.Sub(eye).Normalize()
 	c.u = up.Cross(c.w).Normalize()
 	c.v = c.w.Cross(c.u).Normalize()
 	c.m = 1 / math.Tan(fovy*math.Pi/360)
