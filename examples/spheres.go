@@ -14,7 +14,7 @@ func sphere(scene *Scene, previous, center Vector, radius float64, depth int) {
 	if depth <= 0 {
 		return
 	}
-	material := materials[(depth+4)%len(materials)]
+	material := materials[(depth+5)%len(materials)]
 	scene.Add(NewSphere(center, radius, material))
 	r2 := radius / 2.5
 	offset := radius + r2
