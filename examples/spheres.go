@@ -49,7 +49,7 @@ func main() {
 	scene := Scene{}
 	scene.SetColor(HexColor(0xFFFFFF))
 	sphere(&scene, Vector{}, Vector{}, 1, 7)
-	// scene.Add(NewSphere(Vector{10, 10, 10}, 0.5, LightMaterial(Color{1, 1, 1}, 1, NoAttenuation)))
+	scene.Add(NewSphere(Vector{0, 0, 6}, 0.5, LightMaterial(Color{1, 1, 1}, 1, NoAttenuation)))
 	camera := LookAt(Vector{3, 1.75, 1}, Vector{0.75, 0.5, 0}, Vector{0, 0, 1}, 30)
 	IterativeRender("out%03d.png", 10000, &scene, &camera, 2560, 1440, -1, 4, 4)
 }
