@@ -80,29 +80,32 @@ func Render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, bounc
 	return result
 }
 
-func IterativeRender(pathTemplate string, iterations int, scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, bounces int) error {
+func onIteration(pathTemplate string, i, w, h int, pixels []Color, frame image.Image) {
+	result := image.NewRGBA(image.Rect(0, 0, w, h))
+	for y := 0; y < h; y++ {
+		for x := 0; x < w; x++ {
+			index := y*w + x
+			c := NewColor(frame.At(x, y))
+			pixels[index] = pixels[index].Add(c)
+			avg := pixels[index].DivScalar(float64(i))
+			result.SetRGBA(x, y, avg.RGBA())
+		}
+	}
+	path := pathTemplate
+	if strings.Contains(path, "%") {
+		path = fmt.Sprintf(pathTemplate, i)
+	}
+	if err := SavePNG(path, result); err != nil {
+		panic(err)
+	}
+}
+
+func IterativeRender(pathTemplate string, iterations int, scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, bounces int) {
 	scene.Compile()
 	pixels := make([]Color, w*h)
-	result := image.NewRGBA(image.Rect(0, 0, w, h))
 	for i := 1; i <= iterations; i++ {
 		fmt.Printf("\n[Iteration %d of %d]\n", i, iterations)
 		frame := Render(scene, camera, w, h, cameraSamples, hitSamples, bounces)
-		for y := 0; y < h; y++ {
-			for x := 0; x < w; x++ {
-				index := y*w + x
-				c := NewColor(frame.At(x, y))
-				pixels[index] = pixels[index].Add(c)
-				avg := pixels[index].DivScalar(float64(i))
-				result.SetRGBA(x, y, avg.RGBA())
-			}
-		}
-		path := pathTemplate
-		if strings.Contains(path, "%") {
-			path = fmt.Sprintf(pathTemplate, i)
-		}
-		im := image.NewRGBA(image.Rect(0, 0, w, h))
-		copy(im.Pix, result.Pix)
-		go SavePNG(path, im)
+		go onIteration(pathTemplate, i, w, h, pixels, frame)
 	}
-	return nil
 }
