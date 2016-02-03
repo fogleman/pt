@@ -100,9 +100,9 @@ func IterativeRender(pathTemplate string, iterations int, scene *Scene, camera *
 		if strings.Contains(path, "%") {
 			path = fmt.Sprintf(pathTemplate, i)
 		}
-		if err := SavePNG(path, result); err != nil {
-			return err
-		}
+		im := image.NewRGBA(image.Rect(0, 0, w, h))
+		copy(im.Pix, result.Pix)
+		go SavePNG(path, im)
 	}
 	return nil
 }
