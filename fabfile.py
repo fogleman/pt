@@ -4,8 +4,7 @@ env.user = 'ubuntu'
 env.key_filename = '/Users/fogleman/home.pem'
 
 env.hosts = [
-    'a.name.com',
-    'b.name.com',
+    '127.0.0.1',
 ]
 
 def init():
@@ -17,13 +16,11 @@ def init():
     run('source .profile')
     run('go get github.com/fogleman/pt')
 
-def run():
-    i = env.hosts.index(env.host)
-    n = len(env.hosts)
-    print i, n
-
 def fetch():
+    i = env.hosts.index(env.host)
+    filename = 'fetch%d.tar.gz' % i
     with cd('~/go/src/github.com/fogleman/pt'):
         run('tar czf ~/fetch.tar.gz *.png')
-    get('fetch.tar.gz', 'fetch.tar.gz')
-    local('tar xzf fetch.tar.gz')
+    get('fetch.tar.gz', filename)
+    local('tar xzf ' + filename)
+    local('rm ' + filename)
