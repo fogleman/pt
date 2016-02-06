@@ -55,7 +55,9 @@ func sphere(scene *Scene, direction, anchor Vector, radius float64, depth, heigh
 	tt = math.Max(math.Min(tt/BounceDuration, 1), 0)
 	r := radius * easeOutElastic(tt)
 	if t > Duration1 {
-		r = radius * (1 - easeInQuint((t-Duration1)/FadeDuration))
+		u := (t-Duration1)/FadeDuration + float64(depth)*0.1 - 0.25
+		u = math.Max(math.Min(u, 1), 0)
+		r = radius * (1 - easeInQuint(u))
 	}
 	center := anchor.Add(direction.MulScalar(r))
 	material := materials[(height+6)%len(materials)]
@@ -129,7 +131,7 @@ func easeInQuint(t float64) float64 {
 }
 
 func main() {
-	for i := 0; i < Frames; i += 1 {
+	for i := 420; i < Frames; i += 1 {
 		frame(i)
 	}
 	time.Sleep(5 * time.Second)
