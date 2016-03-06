@@ -24,3 +24,10 @@ def fetch():
     get('fetch.tar.gz', filename)
     local('tar xzf ' + filename)
     local('rm ' + filename)
+
+def latest():
+    i = env.hosts.index(env.host)
+    filename = 'latest%d.png' % i
+    with cd('~/go/src/github.com/fogleman/pt'):
+        run('cp `ls out* | tail -n 2 | head -n 1` ~/latest.png')
+    get('latest.png', filename)
