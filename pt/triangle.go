@@ -68,7 +68,7 @@ func (t *Triangle) Intersect(r Ray) Hit {
 	if d < EPS {
 		return NoHit
 	}
-	return Hit{t, d}
+	return Hit{t, d, nil}
 }
 
 func (t *Triangle) Color(p Vector) Color {

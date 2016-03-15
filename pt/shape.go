@@ -1,8 +1,6 @@
 package pt
 
-import (
-	"math/rand"
-)
+import "math/rand"
 
 type Shape interface {
 	Compile()
@@ -29,28 +27,25 @@ func (s *TransformedShape) Box() Box {
 }
 
 func (s *TransformedShape) Intersect(r Ray) Hit {
-	hit := s.Shape.Intersect(s.inverse.MulRay(r))
+	shapeRay := s.inverse.MulRay(r)
+	hit := s.Shape.Intersect(shapeRay)
 	if !hit.Ok() {
 		return hit
 	}
-	// if s.Shape is a Mesh, the hit.Shape will be a Triangle in the Mesh
-	// we need to transform this Triangle, not the Mesh itself
-	shape := &TransformedShape{hit.Shape, s.matrix, s.inverse}
-	return Hit{shape, hit.T}
-}
-
-func (s *TransformedShape) Color(p Vector) Color {
-	return s.Shape.Color(s.inverse.MulPosition(p))
-}
-
-func (s *TransformedShape) Material(p Vector) Material {
-	return s.Shape.Material(s.inverse.MulPosition(p))
-}
-
-func (s *TransformedShape) Normal(p Vector) Vector {
-	return s.matrix.MulDirection(s.Shape.Normal(s.inverse.MulPosition(p)))
-}
-
-func (s *TransformedShape) RandomPoint(rnd *rand.Rand) Vector {
-	return s.matrix.MulPosition(s.Shape.RandomPoint(rnd))
+	shape := hit.Shape
+	shapePosition := shapeRay.Position(hit.T)
+	shapeNormal := shape.Normal(shapePosition)
+	position := s.matrix.MulPosition(shapePosition)
+	normal := s.inverse.Transpose().MulDirection(shapeNormal)
+	color := shape.Color(shapePosition)
+	material := shape.Material(shapePosition)
+	inside := false
+	if shapeNormal.Dot(shapeRay.Direction) > 0 {
+		normal = normal.MulScalar(-1)
+		inside = true
+	}
+	ray := Ray{position, normal}
+	info := HitInfo{shape, position, normal, ray, color, material, inside}
+	hit.HitInfo = &info
+	return hit
 }

@@ -1,8 +1,9 @@
 package pt
 
 type Hit struct {
-	Shape Shape
-	T     float64
+	Shape   Shape
+	T       float64
+	HitInfo *HitInfo
 }
 
 type HitInfo struct {
@@ -15,13 +16,16 @@ type HitInfo struct {
 	Inside   bool
 }
 
-var NoHit = Hit{nil, INF}
+var NoHit = Hit{nil, INF, nil}
 
 func (hit *Hit) Ok() bool {
 	return hit.T < INF
 }
 
 func (hit *Hit) Info(r Ray) HitInfo {
+	if hit.HitInfo != nil {
+		return *hit.HitInfo
+	}
 	shape := hit.Shape
 	position := r.Position(hit.T)
 	normal := shape.Normal(position)

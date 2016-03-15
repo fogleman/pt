@@ -35,7 +35,7 @@ func (s *Sphere) Intersect(r Ray) Hit {
 		d = math.Sqrt(d)
 		t1 := -b - d
 		if t1 > 0 {
-			return Hit{s, t1}
+			return Hit{s, t1, nil}
 		}
 		// t2 := -b + d
 		// if t2 > 0 {
