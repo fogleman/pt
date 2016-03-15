@@ -35,7 +35,7 @@ func (r Ray) WeightedBounce(u, v float64) Ray {
 	d = d.Add(s.MulScalar(m1 * math.Cos(a)))
 	d = d.Add(t.MulScalar(m1 * math.Sin(a)))
 	d = d.Add(r.Direction.MulScalar(m2))
-	return Ray{r.Origin, d}
+	return Ray{r.Origin, d.Normalize()}
 }
 
 func (r Ray) ConeBounce(theta, u, v float64) Ray {
