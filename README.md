@@ -46,9 +46,11 @@ Here are some resources that I have found useful.
 
 ### Samples
 
-![Dragon](http://i.imgur.com/woBoPFx.png)
+![HDRI](http://i.imgur.com/z1SUVrr.png)
 
 ![Sponza](http://i.imgur.com/wjNZJPT.png)
+
+![Dragon](http://i.imgur.com/woBoPFx.png)
 
 ![Cubes](http://i.imgur.com/Ypn3WCI.png)
 
