@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"image"
+	"math"
 	"path"
 	"strings"
 )
@@ -74,23 +75,41 @@ func NewTexture(im image.Image) Texture {
 	for y := 0; y < size.Y; y++ {
 		for x := 0; x < size.X; x++ {
 			index := y*size.X + x
-			data[index] = NewColor(im.At(x, y)).Pow(2.2)
+			data[index] = NewColor(im.At(x, y)) //.Pow(2.2)
 		}
 	}
 	return &ColorTexture{size.X, size.Y, data}
 }
 
+func (t *ColorTexture) bilinearSample(u, v float64) Color {
+	w := float64(t.width) - 1
+	h := float64(t.height) - 1
+	X, x := math.Modf(u * w)
+	Y, y := math.Modf(v * h)
+	x0 := int(X)
+	y0 := int(Y)
+	x1 := x0 + 1
+	y1 := y0 + 1
+	c00 := t.data[y0*t.width+x0]
+	c01 := t.data[y1*t.width+x0]
+	c10 := t.data[y0*t.width+x1]
+	c11 := t.data[y1*t.width+x1]
+	c := Color{}
+	c = c.Add(c00.MulScalar((1 - x) * (1 - y)))
+	c = c.Add(c10.MulScalar(x * (1 - y)))
+	c = c.Add(c01.MulScalar((1 - x) * y))
+	c = c.Add(c11.MulScalar(x * y))
+	return c
+}
+
 func (t *ColorTexture) Sample(u, v float64) Color {
 	u = Fract(Fract(u) + 1)
 	v = Fract(Fract(v) + 1)
-	v = 1 - v
-	x := int(u * float64(t.width))
-	y := int(v * float64(t.height))
-	return t.data[y*t.width+x]
+	return t.bilinearSample(u, 1-v)
 }
 
 func (t *ColorTexture) NormalSample(u, v float64) Vector {
-	c := t.Sample(u, v).Pow(1 / 2.2)
+	c := t.Sample(u, v)
 	return Vector{c.R*2 - 1, c.G*2 - 1, c.B*2 - 1}.Normalize()
 }
 

@@ -8,6 +8,7 @@ import (
 
 type Scene struct {
 	color      Color
+	texture    Texture
 	visibility float64
 	shapes     []Shape
 	lights     []Shape
@@ -17,6 +18,10 @@ type Scene struct {
 
 func (s *Scene) SetColor(color Color) {
 	s.color = color
+}
+
+func (s *Scene) SetTexture(texture Texture) {
+	s.texture = texture
 }
 
 func (s *Scene) SetVisibility(visibility float64) {
@@ -97,6 +102,14 @@ func (s *Scene) Sample(r Ray, emission bool, samples, depth int, rnd *rand.Rand)
 		}
 	}
 	if !hit.Ok() {
+		if s.texture != nil {
+			d := r.Direction
+			u := math.Atan2(d.Z, d.X)
+			v := math.Atan2(d.Y, Vector{d.X, 0, d.Z}.Length())
+			u = (u + math.Pi) / (2 * math.Pi)
+			v = (v + math.Pi/2) / math.Pi
+			return s.texture.Sample(u, v).MulScalar(3)
+		}
 		return s.color
 	}
 	info := hit.Info(r)

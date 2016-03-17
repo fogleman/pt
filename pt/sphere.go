@@ -52,7 +52,7 @@ func (s *Sphere) Color(p Vector) Color {
 	u := math.Atan2(p.Z, p.X)
 	v := math.Atan2(p.Y, Vector{p.X, 0, p.Z}.Length())
 	u = (u + math.Pi) / (2 * math.Pi)
-	v = 1 - (v+math.Pi/2)/math.Pi
+	v = (v + math.Pi/2) / math.Pi
 	return s.material.Texture.Sample(u, v)
 }
 
