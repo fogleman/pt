@@ -4,12 +4,12 @@ import . "github.com/fogleman/pt/pt"
 
 func main() {
 	scene := Scene{}
-	texture, err := LoadTexture("/Users/fogleman/Desktop/out.png")
+	texture, err := LoadTexture("examples/courtyard_ccby/courtyard_8k.png")
 	if err != nil {
 		panic(err)
 	}
 	scene.SetTexture(texture)
-	texture, err = LoadTexture("/Users/fogleman/Desktop/checker.png")
+	texture, err = LoadTexture("examples/checker.png")
 	if err != nil {
 		panic(err)
 	}

@@ -49,6 +49,7 @@ func (s *Sphere) Color(p Vector) Color {
 	if s.material.Texture == nil {
 		return s.material.Color
 	}
+	p = p.Sub(s.center)
 	u := math.Atan2(p.Z, p.X)
 	v := math.Atan2(p.Y, Vector{p.X, 0, p.Z}.Length())
 	u = (u + math.Pi) / (2 * math.Pi)
