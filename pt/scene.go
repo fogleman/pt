@@ -91,11 +91,7 @@ func (s *Scene) Sample(r Ray, emission bool, samples, depth int, rnd *rand.Rand)
 	if s.visibility > 0 {
 		t := math.Pow(rnd.Float64(), 0.5) * s.visibility
 		if t < hit.T {
-			x := rnd.Float64() - 0.5
-			y := rnd.Float64() - 0.5
-			z := rnd.Float64() - 0.5
-			d := Vector{x, y, z}
-			d = d.Normalize()
+			d := RandomUnitVector()
 			o := r.Position(t)
 			newRay := Ray{o, d}
 			return s.Sample(newRay, false, 1, depth-1, rnd)
