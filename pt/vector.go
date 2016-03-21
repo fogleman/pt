@@ -2,10 +2,23 @@ package pt
 
 import (
 	"math"
+	"math/rand"
 )
 
 type Vector struct {
 	X, Y, Z float64
+}
+
+func RandomUnitVector() Vector {
+	for {
+		x := rand.Float64()*2 - 1
+		y := rand.Float64()*2 - 1
+		z := rand.Float64()*2 - 1
+		if x*x+y*y+z*z > 1 {
+			continue
+		}
+		return Vector{x, y, z}.Normalize()
+	}
 }
 
 func (a Vector) Length() float64 {

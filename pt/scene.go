@@ -108,7 +108,7 @@ func (s *Scene) Sample(r Ray, emission bool, samples, depth int, rnd *rand.Rand)
 			v := math.Atan2(d.Y, Vector{d.X, 0, d.Z}.Length())
 			u = (u + math.Pi) / (2 * math.Pi)
 			v = (v + math.Pi/2) / math.Pi
-			return s.texture.Sample(u, v).MulScalar(3)
+			return s.texture.Sample(u, v).MulScalar(4)
 		}
 		return s.color
 	}
