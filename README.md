@@ -44,9 +44,11 @@ Here are some resources that I have found useful.
 * [Ray Tracing for Global Illumination - Nelson Max at UC Davis](https://www.youtube.com/playlist?list=PLslgisHe5tBPckSYyKoU3jEA4bqiFmNBJ)
 * [Physically Based Rendering - Matt Pharr, Greg Humphreys](http://www.amazon.com/Physically-Based-Rendering-Second-Edition/dp/0123750792)
 
-### Samples
+### Go<sup>2</sup>
 
-![HDRI](http://i.imgur.com/z1SUVrr.png)
+![Go](http://i.imgur.com/xRlhrll.png)
+
+### Samples
 
 ![Sponza](http://i.imgur.com/wjNZJPT.png)
 
@@ -55,6 +57,8 @@ Here are some resources that I have found useful.
 ![Cubes](http://i.imgur.com/Ypn3WCI.png)
 
 ![Suzanne](http://i.imgur.com/eI5yLu7.png)
+
+![HDRI](http://i.imgur.com/z1SUVrr.png)
 
 ![Cylinders](http://i.imgur.com/yVeil5G.png)
 
