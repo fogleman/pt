@@ -25,11 +25,11 @@ func showProgress(start time.Time, rays uint64, i, h int) {
 	fmt.Printf("] %s %s ", DurationString(elapsed), NumberString(rps))
 }
 
-func Render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, bounces int) image.Image {
+func render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, bounces int) []Color {
 	ncpu := runtime.NumCPU()
 	runtime.GOMAXPROCS(ncpu)
 	scene.Compile()
-	result := image.NewRGBA(image.Rect(0, 0, w, h))
+	pixels := make([]Color, w*h)
 	ch := make(chan int, h)
 	absCameraSamples := int(math.Abs(float64(cameraSamples)))
 	fmt.Printf("%d x %d pixels, %d x %d = %d samples, %d bounces, %d cores\n",
@@ -64,8 +64,7 @@ func Render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, bounc
 						}
 						c = c.DivScalar(float64(n * n))
 					}
-					c = c.Pow(1 / 2.2)
-					result.SetRGBA(x, y, c.RGBA())
+					pixels[y*w+x] = c
 				}
 				ch <- 1
 			}
@@ -77,20 +76,33 @@ func Render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, bounc
 		showProgress(start, scene.RayCount(), i+1, h)
 	}
 	fmt.Println()
-	return result
+	return pixels
 }
 
-func onIteration(pathTemplate string, i, w, h int, pixels []Color, frame image.Image) {
+func Render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, bounces int) image.Image {
+	pixels := render(scene, camera, w, h, cameraSamples, hitSamples, bounces)
+	return pixelsToImage(pixels, w, h, 1)
+}
+
+func pixelsToImage(pixels []Color, w, h int, scale float64) image.Image {
 	result := image.NewRGBA(image.Rect(0, 0, w, h))
 	for y := 0; y < h; y++ {
 		for x := 0; x < w; x++ {
-			index := y*w + x
-			c := NewColor(frame.At(x, y))
-			pixels[index] = pixels[index].Add(c)
-			avg := pixels[index].DivScalar(float64(i))
-			result.SetRGBA(x, y, avg.RGBA())
+			result.SetRGBA(x, y, pixels[y*w+x].MulScalar(scale).Pow(1/2.2).RGBA())
 		}
 	}
+	return result
+}
+
+func onIteration(pathTemplate string, i, w, h int, pixels []Color, frame []Color) {
+	for y := 0; y < h; y++ {
+		for x := 0; x < w; x++ {
+			index := y*w + x
+			pixels[index] = pixels[index].Add(frame[index])
+		}
+	}
+	scale := 1 / float64(i)
+	result := pixelsToImage(pixels, w, h, scale)
 	path := pathTemplate
 	if strings.Contains(path, "%") {
 		path = fmt.Sprintf(pathTemplate, i)
@@ -105,7 +117,7 @@ func IterativeRender(pathTemplate string, iterations int, scene *Scene, camera *
 	pixels := make([]Color, w*h)
 	for i := 1; i <= iterations; i++ {
 		fmt.Printf("\n[Iteration %d of %d]\n", i, iterations)
-		frame := Render(scene, camera, w, h, cameraSamples, hitSamples, bounces)
+		frame := render(scene, camera, w, h, cameraSamples, hitSamples, bounces)
 		go onIteration(pathTemplate, i, w, h, pixels, frame)
 	}
 }

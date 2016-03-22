@@ -50,6 +50,11 @@ func (a Box) Contains(b Vector) bool {
 		a.Min.Z <= b.Z && a.Max.Z >= b.Z
 }
 
+func (a Box) Intersects(b Box) bool {
+	return !(a.Min.X > b.Max.X || a.Max.X < b.Min.X || a.Min.Y > b.Max.Y ||
+		a.Max.Y < b.Min.Y || a.Min.Z > b.Max.Z || a.Max.Z < b.Min.Z)
+}
+
 func (b *Box) Intersect(r Ray) (float64, float64) {
 	x1 := (b.Min.X - r.Origin.X) / r.Direction.X
 	y1 := (b.Min.Y - r.Origin.Y) / r.Direction.Y
