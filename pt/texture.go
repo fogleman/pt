@@ -21,47 +21,47 @@ func init() {
 	textures = make(map[string]Texture)
 }
 
-func GetTexture(path string) Texture {
+func GetTexture(path string, gamma float64) Texture {
 	if texture, ok := textures[path]; ok {
 		return texture
 	}
-	if texture, err := LoadTexture(path); err == nil {
+	if texture, err := LoadTexture(path, gamma); err == nil {
 		textures[path] = texture
 		return texture
 	}
 	return nil
 }
 
-func LoadTexture(p string) (Texture, error) {
+func LoadTexture(p string, gamma float64) (Texture, error) {
 	ext := strings.ToLower(path.Ext(p))
 	switch ext {
 	case ".png":
-		return PNGTexture(p)
+		return PNGTexture(p, gamma)
 	case ".jpg":
-		return JPGTexture(p)
+		return JPGTexture(p, gamma)
 	case ".jpeg":
-		return JPGTexture(p)
+		return JPGTexture(p, gamma)
 	}
 	err := errors.New(fmt.Sprintf("Unrecognized texture extension: %s", p))
 	return nil, err
 }
 
-func PNGTexture(path string) (Texture, error) {
+func PNGTexture(path string, gamma float64) (Texture, error) {
 	fmt.Printf("Loading PNG: %s\n", path)
 	im, err := LoadPNG(path)
 	if err != nil {
 		return nil, err
 	}
-	return NewTexture(im), nil
+	return NewTexture(im, gamma), nil
 }
 
-func JPGTexture(path string) (Texture, error) {
+func JPGTexture(path string, gamma float64) (Texture, error) {
 	fmt.Printf("Loading JPG: %s\n", path)
 	im, err := LoadJPG(path)
 	if err != nil {
 		return nil, err
 	}
-	return NewTexture(im), nil
+	return NewTexture(im, gamma), nil
 }
 
 type ColorTexture struct {
@@ -69,13 +69,13 @@ type ColorTexture struct {
 	data          []Color
 }
 
-func NewTexture(im image.Image) Texture {
+func NewTexture(im image.Image, gamma float64) Texture {
 	size := im.Bounds().Max
 	data := make([]Color, size.X*size.Y)
 	for y := 0; y < size.Y; y++ {
 		for x := 0; x < size.X; x++ {
 			index := y*size.X + x
-			data[index] = NewColor(im.At(x, y)) //.Pow(2.2)
+			data[index] = NewColor(im.At(x, y)).Pow(gamma)
 		}
 	}
 	return &ColorTexture{size.X, size.Y, data}

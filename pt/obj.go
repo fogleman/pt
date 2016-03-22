@@ -121,10 +121,10 @@ func LoadMTL(path string, parent Material, materials map[string]*Material) error
 			material.Color = Color{c[0], c[1], c[2]}
 		case "map_Kd":
 			p := RelativePath(path, args[0])
-			material.Texture = GetTexture(p)
+			material.Texture = GetTexture(p, 2.2)
 		case "map_bump":
 			p := RelativePath(path, args[0])
-			material.NormalTexture = GetTexture(p)
+			material.NormalTexture = GetTexture(p, 1)
 		}
 	}
 	return scanner.Err()

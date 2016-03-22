@@ -37,7 +37,11 @@ func (c *Cube) Intersect(r Ray) Hit {
 }
 
 func (c *Cube) Color(p Vector) Color {
-	return c.material.Color
+	if c.material.Texture == nil {
+		return c.material.Color
+	}
+	p = p.Sub(c.min).Div(c.max.Sub(c.min))
+	return c.material.Texture.Sample(p.X, p.Z)
 }
 
 func (c *Cube) Material(p Vector) Material {
