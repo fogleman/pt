@@ -27,8 +27,8 @@ func intersects(scene *Scene, shape Shape) bool {
 
 func main() {
 	scene := Scene{}
-	black := GlossyMaterial(HexColor(0x111111), 1.6, Radians(45))
-	white := GlossyMaterial(HexColor(0xFFFFFF), 1.6, Radians(45))
+	black := GlossyMaterial(HexColor(0x111111), 1.5, Radians(45))
+	white := GlossyMaterial(HexColor(0xFFFFFF), 1.6, Radians(20))
 	for _, p := range blackPositions {
 		for {
 			m := Scale(Vector{0.48, 0.2, 0.48}).Translate(Vector{p[0] - 9.5, 0, p[1] - 9.5})
@@ -59,13 +59,13 @@ func main() {
 		scene.Add(NewCube(Vector{x - m, -1, -9.5}, Vector{x + m, -0.195, 8.5}, black))
 		scene.Add(NewCube(Vector{-9.5, -1, x - m}, Vector{8.5, -0.195, x + m}, black))
 	}
-	material := GlossyMaterial(HexColor(0xEFECCA), 1.1, Radians(45))
+	material := GlossyMaterial(HexColor(0xEFECCA), 1.2, Radians(30))
 	material.Texture = GetTexture("examples/wood.jpg", 2.2)
 	scene.Add(NewCube(Vector{-12, -12, -12}, Vector{12, -0.2, 12}, material))
 	// texture, err := LoadTexture("examples/river_rocks_ccyby/river_rocks_8k.png")
 	scene.SetTexture(GetTexture("examples/courtyard_ccby/courtyard_8k.png", 1))
 	camera := LookAt(Vector{-0.5, 5, 5}, Vector{-0.5, 0, 0.5}, Vector{0, 1, 0}, 50)
-	IterativeRender("out%03d.png", 10000, &scene, &camera, 2560/2, 1440/2, -1, 16, 4)
+	IterativeRender("out%03d.png", 10000, &scene, &camera, 2560, 1440, -1, 16, 4)
 }
 
 var blackPositions = [][]float64{
