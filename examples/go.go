@@ -15,37 +15,59 @@ func offset(stdev float64) Vector {
 	return Vector{x, 0, y}
 }
 
+func intersects(scene *Scene, shape Shape) bool {
+	box := shape.Box()
+	for _, other := range scene.Shapes() {
+		if box.Intersects(other.Box()) {
+			return true
+		}
+	}
+	return false
+}
+
 func main() {
 	scene := Scene{}
-	// scene.SetColor(Color{1, 1, 1})
+	black := GlossyMaterial(HexColor(0x111111), 1.6, Radians(45))
+	white := GlossyMaterial(HexColor(0xFFFFFF), 1.6, Radians(45))
+	for _, p := range blackPositions {
+		for {
+			m := Scale(Vector{0.48, 0.2, 0.48}).Translate(Vector{p[0] - 9.5, 0, p[1] - 9.5})
+			m = m.Translate(offset(0.02))
+			shape := NewTransformedShape(NewSphere(Vector{}, 1, black), m)
+			if intersects(&scene, shape) {
+				continue
+			}
+			scene.Add(shape)
+			break
+		}
+	}
+	for _, p := range whitePositions {
+		for {
+			m := Scale(Vector{0.48, 0.2, 0.48}).Translate(Vector{p[0] - 9.5, 0, p[1] - 9.5})
+			m = m.Translate(offset(0.02))
+			shape := NewTransformedShape(NewSphere(Vector{}, 1, white), m)
+			if intersects(&scene, shape) {
+				continue
+			}
+			scene.Add(shape)
+			break
+		}
+	}
+	for i := 0; i < 19; i++ {
+		x := float64(i) - 9.5
+		m := 0.015
+		scene.Add(NewCube(Vector{x - m, -1, -9.5}, Vector{x + m, -0.195, 8.5}, black))
+		scene.Add(NewCube(Vector{-9.5, -1, x - m}, Vector{8.5, -0.195, x + m}, black))
+	}
+	material := GlossyMaterial(HexColor(0xEFECCA), 1.1, Radians(45))
+	scene.Add(NewCube(Vector{-100, -100, -100}, Vector{100, -0.2, 100}, material))
 	// texture, err := LoadTexture("examples/river_rocks_ccyby/river_rocks_8k.png")
 	texture, err := LoadTexture("examples/courtyard_ccby/courtyard_8k.png")
 	if err != nil {
 		panic(err)
 	}
 	scene.SetTexture(texture)
-	black := GlossyMaterial(Color{0, 0, 0}, 2, Radians(30))
-	white := GlossyMaterial(Color{1, 1, 1}, 2, Radians(30))
-	for _, p := range blackPositions {
-		m := Scale(Vector{0.48, 0.2, 0.48}).Translate(Vector{p[0] - 9.5, 0, p[1] - 9.5})
-		m = m.Translate(offset(0.01))
-		scene.Add(NewTransformedShape(NewSphere(Vector{}, 1, black), m))
-	}
-	for _, p := range whitePositions {
-		m := Scale(Vector{0.48, 0.2, 0.48}).Translate(Vector{p[0] - 9.5, 0, p[1] - 9.5})
-		m = m.Translate(offset(0.01))
-		scene.Add(NewTransformedShape(NewSphere(Vector{}, 1, white), m))
-	}
-	for i := 0; i < 19; i++ {
-		x := float64(i) - 9.5
-		m := 0.01
-		scene.Add(NewCube(Vector{x - m, -1, -9.5}, Vector{x + m, -0.19, 8.5}, black))
-		scene.Add(NewCube(Vector{-9.5, -1, x - m}, Vector{8.5, -0.19, x + m}, black))
-	}
-	material := GlossyMaterial(HexColor(0xEFECCA), 1.1, Radians(45))
-	scene.Add(NewCube(Vector{-100, -100, -100}, Vector{100, -0.2, 100}, material))
-	// scene.Add(NewSphere(Vector{0, 50, 0}, 1, LightMaterial(Color{1, 1, 1}, 1, NoAttenuation)))
-	camera := LookAt(Vector{0, 5, 5}, Vector{0, 0, 0}, Vector{0, 1, 0}, 40)
+	camera := LookAt(Vector{0, 5, 5}, Vector{0, 0, 0.5}, Vector{0, 1, 0}, 50)
 	IterativeRender("out%03d.png", 10000, &scene, &camera, 2560, 1440, -1, 16, 4)
 }
 
