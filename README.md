@@ -46,7 +46,7 @@ Here are some resources that I have found useful.
 
 ### Go<sup>2</sup>
 
-![Go](http://i.imgur.com/uk2XpwN.jpg)
+![Go](http://i.imgur.com/5qETgLY.png)
 
 ### Samples
 
