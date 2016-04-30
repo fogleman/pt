@@ -9,6 +9,10 @@ type Vector struct {
 	X, Y, Z float64
 }
 
+func V(x, y, z float64) Vector {
+	return Vector{x, y, z}
+}
+
 func RandomUnitVector() Vector {
 	for {
 		x := rand.Float64()*2 - 1
