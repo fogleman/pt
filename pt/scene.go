@@ -12,6 +12,7 @@ type Scene struct {
 	visibility float64
 	shapes     []Shape
 	lights     []Shape
+	dlights    []DirectionalLight
 	tree       *Tree
 	rays       uint64
 }
@@ -30,6 +31,10 @@ func (s *Scene) SetTexture(texture Texture) {
 
 func (s *Scene) SetVisibility(visibility float64) {
 	s.visibility = visibility
+}
+
+func (s *Scene) AddDirectionalLight(d Vector, c Color) {
+	s.dlights = append(s.dlights, DirectionalLight{d.Normalize(), c})
 }
 
 func (s *Scene) Compile() {
@@ -110,7 +115,11 @@ func (s *Scene) Sample(r Ray, emission bool, samples, depth int, rnd *rand.Rand)
 			v = (v + math.Pi/2) / math.Pi
 			return s.texture.Sample(u, v).MulScalar(4)
 		}
-		return s.color
+		result := s.color
+		for _, d := range s.dlights {
+			result = result.Add(d.ColorForRay(r))
+		}
+		return result
 	}
 	info := hit.Info(r)
 	result := Color{}
