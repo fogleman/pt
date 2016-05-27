@@ -39,20 +39,7 @@ func (r Ray) WeightedBounce(u, v float64) Ray {
 }
 
 func (r Ray) ConeBounce(theta, u, v float64) Ray {
-	if theta < EPS {
-		return r
-	}
-	theta = theta * (1 - (2 * math.Acos(u) / math.Pi))
-	m1 := math.Sin(theta)
-	m2 := math.Cos(theta)
-	a := v * 2 * math.Pi
-	s := r.Direction.Cross(r.Direction.MinAxis())
-	t := r.Direction.Cross(s)
-	d := Vector{}
-	d = d.Add(s.MulScalar(m1 * math.Cos(a)))
-	d = d.Add(t.MulScalar(m1 * math.Sin(a)))
-	d = d.Add(r.Direction.MulScalar(m2))
-	return Ray{r.Origin, d}
+	return Ray{r.Origin, Cone(r.Direction, theta, u, v)}
 }
 
 func (i Ray) Bounce(info *HitInfo, p, u, v float64) (Ray, bool) {

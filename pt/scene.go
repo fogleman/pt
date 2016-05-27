@@ -33,8 +33,8 @@ func (s *Scene) SetVisibility(visibility float64) {
 	s.visibility = visibility
 }
 
-func (s *Scene) AddDirectionalLight(d Vector, c Color) {
-	s.dlights = append(s.dlights, DirectionalLight{d.Normalize(), c})
+func (s *Scene) AddDirectionalLight(c Color, d Vector, t float64) {
+	s.dlights = append(s.dlights, DirectionalLight{c, d.Normalize(), t})
 }
 
 func (s *Scene) Compile() {
@@ -68,7 +68,7 @@ func (s *Scene) Shadow(r Ray, light Shape, max float64) bool {
 }
 
 func (s *Scene) DirectLight(n Ray, rnd *rand.Rand) Color {
-	if len(s.lights) == 0 {
+	if len(s.lights)+len(s.dlights) == 0 {
 		return Color{}
 	}
 	color := Color{}
@@ -89,7 +89,19 @@ func (s *Scene) DirectLight(n Ray, rnd *rand.Rand) Color {
 		attenuation := material.Attenuation.Compute(distance)
 		color = color.Add(light.Color(p).MulScalar(diffuse * emittance * attenuation))
 	}
-	return color.DivScalar(float64(len(s.lights)))
+	for _, light := range s.dlights {
+		d := Cone(light.Direction, light.Theta, rnd.Float64(), rnd.Float64())
+		lr := Ray{n.Origin, d}
+		diffuse := lr.Direction.Dot(n.Direction)
+		if diffuse <= 0 {
+			continue
+		}
+		if s.Shadow(lr, nil, INF-1) {
+			continue
+		}
+		color = color.Add(light.Color.MulScalar(diffuse))
+	}
+	return color.DivScalar(float64(len(s.lights) + len(s.dlights)))
 }
 
 func (s *Scene) Sample(r Ray, emission bool, samples, depth int, rnd *rand.Rand) Color {
@@ -115,11 +127,7 @@ func (s *Scene) Sample(r Ray, emission bool, samples, depth int, rnd *rand.Rand)
 			v = (v + math.Pi/2) / math.Pi
 			return s.texture.Sample(u, v).MulScalar(4)
 		}
-		result := s.color
-		for _, d := range s.dlights {
-			result = result.Add(d.ColorForRay(r))
-		}
-		return result
+		return s.color
 	}
 	info := hit.Info(r)
 	result := Color{}

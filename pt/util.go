@@ -22,6 +22,23 @@ func Degrees(radians float64) float64 {
 	return radians * 180 / math.Pi
 }
 
+func Cone(direction Vector, theta, u, v float64) Vector {
+	if theta < EPS {
+		return direction
+	}
+	theta = theta * (1 - (2 * math.Acos(u) / math.Pi))
+	m1 := math.Sin(theta)
+	m2 := math.Cos(theta)
+	a := v * 2 * math.Pi
+	s := direction.Cross(direction.MinAxis())
+	t := direction.Cross(s)
+	d := Vector{}
+	d = d.Add(s.MulScalar(m1 * math.Cos(a)))
+	d = d.Add(t.MulScalar(m1 * math.Sin(a)))
+	d = d.Add(direction.MulScalar(m2))
+	return d
+}
+
 func SavePNG(path string, im image.Image) error {
 	// fmt.Printf("Writing %s... ", path)
 	// defer fmt.Println("OK")
