@@ -90,7 +90,7 @@ func (s *Scene) DirectLight(n Ray, rnd *rand.Rand) Color {
 		color = color.Add(light.Color(p).MulScalar(diffuse * emittance * attenuation))
 	}
 	for _, light := range s.dlights {
-		d := Cone(light.Direction, light.Theta, rnd.Float64(), rnd.Float64())
+		d := Cone(light.Direction, light.Theta, rnd.Float64(), rnd.Float64(), rnd)
 		lr := Ray{n.Origin, d}
 		diffuse := lr.Direction.Dot(n.Direction)
 		if diffuse <= 0 {
@@ -112,7 +112,7 @@ func (s *Scene) Sample(r Ray, emission bool, samples, depth int, rnd *rand.Rand)
 	if s.visibility > 0 {
 		t := math.Pow(rnd.Float64(), 0.5) * s.visibility
 		if t < hit.T {
-			d := RandomUnitVector()
+			d := RandomUnitVector(rnd)
 			o := r.Position(t)
 			newRay := Ray{o, d}
 			return s.Sample(newRay, false, 1, depth-1, rnd)
@@ -141,10 +141,9 @@ func (s *Scene) Sample(r Ray, emission bool, samples, depth int, rnd *rand.Rand)
 	n := int(math.Sqrt(float64(samples)))
 	for u := 0; u < n; u++ {
 		for v := 0; v < n; v++ {
-			p := rnd.Float64()
 			fu := (float64(u) + rnd.Float64()) / float64(n)
 			fv := (float64(v) + rnd.Float64()) / float64(n)
-			newRay, reflected := r.Bounce(&info, p, fu, fv)
+			newRay, reflected := r.Bounce(&info, fu, fv, rnd)
 			indirect := s.Sample(newRay, reflected, 1, depth-1, rnd)
 			if reflected {
 				tinted := indirect.Mix(info.Color.Mul(indirect), info.Material.Tint)

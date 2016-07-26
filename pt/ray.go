@@ -2,6 +2,7 @@ package pt
 
 import (
 	"math"
+	"math/rand"
 )
 
 type Ray struct {
@@ -24,11 +25,11 @@ func (n Ray) Reflectance(i Ray, n1, n2 float64) float64 {
 	return n.Direction.Reflectance(i.Direction, n1, n2)
 }
 
-func (r Ray) WeightedBounce(u, v float64) Ray {
+func (r Ray) WeightedBounce(u, v float64, rnd *rand.Rand) Ray {
 	m1 := math.Sqrt(u)
 	m2 := math.Sqrt(1 - u)
 	a := v * 2 * math.Pi
-	q := Vector{u - 0.5, v - 0.5, u + v - 1}
+	q := RandomUnitVector(rnd)
 	s := r.Direction.Cross(q.Normalize())
 	t := r.Direction.Cross(s)
 	d := Vector{}
@@ -38,23 +39,23 @@ func (r Ray) WeightedBounce(u, v float64) Ray {
 	return Ray{r.Origin, d.Normalize()}
 }
 
-func (r Ray) ConeBounce(theta, u, v float64) Ray {
-	return Ray{r.Origin, Cone(r.Direction, theta, u, v)}
+func (r Ray) ConeBounce(theta, u, v float64, rnd *rand.Rand) Ray {
+	return Ray{r.Origin, Cone(r.Direction, theta, u, v, rnd)}
 }
 
-func (i Ray) Bounce(info *HitInfo, p, u, v float64) (Ray, bool) {
+func (i Ray) Bounce(info *HitInfo, u, v float64, rnd *rand.Rand) (Ray, bool) {
 	n := info.Ray
 	n1, n2 := 1.0, info.Material.Index
 	if info.Inside {
 		n1, n2 = n2, n1
 	}
-	if p < n.Reflectance(i, n1, n2) {
+	if rnd.Float64() < n.Reflectance(i, n1, n2) {
 		reflected := n.Reflect(i)
-		return reflected.ConeBounce(info.Material.Gloss, u, v), true
+		return reflected.ConeBounce(info.Material.Gloss, u, v, rnd), true
 	} else if info.Material.Transparent {
 		refracted := n.Refract(i, n1, n2)
-		return refracted.ConeBounce(info.Material.Gloss, u, v), true
+		return refracted.ConeBounce(info.Material.Gloss, u, v, rnd), true
 	} else {
-		return n.WeightedBounce(u, v), false
+		return n.WeightedBounce(u, v, rnd), false
 	}
 }

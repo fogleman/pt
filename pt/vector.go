@@ -13,11 +13,11 @@ func V(x, y, z float64) Vector {
 	return Vector{x, y, z}
 }
 
-func RandomUnitVector() Vector {
+func RandomUnitVector(rnd *rand.Rand) Vector {
 	for {
-		x := rand.Float64()*2 - 1
-		y := rand.Float64()*2 - 1
-		z := rand.Float64()*2 - 1
+		x := rnd.Float64()*2 - 1
+		y := rnd.Float64()*2 - 1
+		z := rnd.Float64()*2 - 1
 		if x*x+y*y+z*z > 1 {
 			continue
 		}

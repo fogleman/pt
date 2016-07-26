@@ -6,6 +6,7 @@ import (
 	"image/jpeg"
 	"image/png"
 	"math"
+	"math/rand"
 	"os"
 	"path"
 	"strconv"
@@ -22,7 +23,7 @@ func Degrees(radians float64) float64 {
 	return radians * 180 / math.Pi
 }
 
-func Cone(direction Vector, theta, u, v float64) Vector {
+func Cone(direction Vector, theta, u, v float64, rnd *rand.Rand) Vector {
 	if theta < EPS {
 		return direction
 	}
@@ -30,7 +31,8 @@ func Cone(direction Vector, theta, u, v float64) Vector {
 	m1 := math.Sin(theta)
 	m2 := math.Cos(theta)
 	a := v * 2 * math.Pi
-	s := direction.Cross(direction.MinAxis())
+	q := RandomUnitVector(rnd)
+	s := direction.Cross(q)
 	t := direction.Cross(s)
 	d := Vector{}
 	d = d.Add(s.MulScalar(m1 * math.Cos(a)))
