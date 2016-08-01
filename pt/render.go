@@ -25,15 +25,14 @@ func showProgress(start time.Time, rays uint64, i, h int) {
 	fmt.Printf("] %s %s ", DurationString(elapsed), NumberString(rps))
 }
 
-func render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, bounces int) []Color {
+func render(scene *Scene, camera *Camera, sampler Sampler, w, h, samplesPerPixel int) []Color {
 	ncpu := runtime.NumCPU()
 	runtime.GOMAXPROCS(ncpu)
 	scene.Compile()
 	pixels := make([]Color, w*h)
 	ch := make(chan int, h)
-	absCameraSamples := int(math.Abs(float64(cameraSamples)))
-	fmt.Printf("%d x %d pixels, %d x %d = %d samples, %d bounces, %d cores\n",
-		w, h, absCameraSamples, hitSamples, absCameraSamples*hitSamples, bounces, ncpu)
+	absSamples := int(math.Abs(float64(samplesPerPixel)))
+	fmt.Printf("%d x %d pixels, %d spp, %d cores\n", w, h, absSamples, ncpu)
 	start := time.Now()
 	scene.rays = 0
 	for i := 0; i < ncpu; i++ {
@@ -42,24 +41,24 @@ func render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, bounc
 			for y := i; y < h; y += ncpu {
 				for x := 0; x < w; x++ {
 					c := Color{}
-					if cameraSamples <= 0 {
+					if samplesPerPixel <= 0 {
 						// random subsampling
-						for i := 0; i < absCameraSamples; i++ {
+						for i := 0; i < absSamples; i++ {
 							fu := rnd.Float64()
 							fv := rnd.Float64()
 							ray := camera.CastRay(x, y, w, h, fu, fv, rnd)
-							c = c.Add(scene.Sample(ray, true, hitSamples, bounces, rnd))
+							c = c.Add(sampler.Sample(scene, ray, rnd))
 						}
-						c = c.DivScalar(float64(absCameraSamples))
+						c = c.DivScalar(float64(absSamples))
 					} else {
 						// stratified subsampling
-						n := int(math.Sqrt(float64(cameraSamples)))
+						n := int(math.Sqrt(float64(samplesPerPixel)))
 						for u := 0; u < n; u++ {
 							for v := 0; v < n; v++ {
 								fu := (float64(u) + 0.5) / float64(n)
 								fv := (float64(v) + 0.5) / float64(n)
 								ray := camera.CastRay(x, y, w, h, fu, fv, rnd)
-								c = c.Add(scene.Sample(ray, true, hitSamples, bounces, rnd))
+								c = c.Add(sampler.Sample(scene, ray, rnd))
 							}
 						}
 						c = c.DivScalar(float64(n * n))
@@ -79,8 +78,8 @@ func render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, bounc
 	return pixels
 }
 
-func Render(scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, bounces int) image.Image {
-	pixels := render(scene, camera, w, h, cameraSamples, hitSamples, bounces)
+func Render(scene *Scene, camera *Camera, sampler Sampler, w, h, samplesPerPixel int) image.Image {
+	pixels := render(scene, camera, sampler, w, h, samplesPerPixel)
 	return pixelsToImage(pixels, w, h, 1)
 }
 
@@ -112,12 +111,12 @@ func onIteration(pathTemplate string, i, w, h int, pixels []Color, frame []Color
 	}
 }
 
-func IterativeRender(pathTemplate string, iterations int, scene *Scene, camera *Camera, w, h, cameraSamples, hitSamples, bounces int) {
+func IterativeRender(pathTemplate string, iterations int, scene *Scene, camera *Camera, sampler Sampler, w, h, samplesPerPixel int) {
 	scene.Compile()
 	pixels := make([]Color, w*h)
 	for i := 1; i <= iterations; i++ {
 		fmt.Printf("\n[Iteration %d of %d]\n", i, iterations)
-		frame := render(scene, camera, w, h, cameraSamples, hitSamples, bounces)
+		frame := render(scene, camera, sampler, w, h, samplesPerPixel)
 		go onIteration(pathTemplate, i, w, h, pixels, frame)
 	}
 }
