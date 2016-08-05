@@ -34,14 +34,13 @@ func main() {
 	scene := Scene{}
 	scene.SetColor(Color{1, 1, 1})
 
-	scene.Add(NewVolume(images, 0.18, 0.20, GlossyMaterial(HexColor(0x334D5C), 1.3, Radians(0))))
-	scene.Add(NewVolume(images, 0.33, 0.38, GlossyMaterial(HexColor(0xEFC94C), 1.3, Radians(0))))
+	scene.Add(NewVolume(images, 0.18, 0.20, GlossyMaterial(HexColor(0x334D5C), 1.3, Radians(20))))
+	scene.Add(NewVolume(images, 0.33, 0.38, GlossyMaterial(HexColor(0xEFC94C), 1.3, Radians(20))))
 
 	// light := LightMaterial(Color{1, 1, 1}, 3, NoAttenuation)
 	// scene.Add(NewCube(V(-2, -2, 3), V(2, 2, 3.1), light))
 
 	camera := LookAt(V(2, -2, 0), V(0, -0.25, 0), V(0, 0, 1), 32)
-	sampler := DefaultSampler{1, 4}
+	sampler := DefaultSampler{4, 4}
 	IterativeRender("out%03d.png", 1000, &scene, &camera, &sampler, 1024, 1024, -1)
-
 }

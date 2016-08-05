@@ -97,7 +97,7 @@ func (v *Volume) Sign(a Vector) int {
 
 func (v *Volume) Intersect(ray Ray) Hit {
 	start := math.Max(0, ray.Origin.Length()-1)
-	step := 1.0 / 512
+	step := 1.0 / 1024
 	sign := 0
 	for t := start; t < start+2; t += step {
 		p := ray.Position(t)
@@ -130,7 +130,7 @@ func (v *Volume) Material(p Vector) Material {
 }
 
 func (v *Volume) Normal(p Vector) Vector {
-	eps := 0.01
+	eps := 0.001
 	n := Vector{
 		v.Sample(p.X-eps, p.Y, p.Z, true) - v.Sample(p.X+eps, p.Y, p.Z, true),
 		v.Sample(p.X, p.Y-eps, p.Z, true) - v.Sample(p.X, p.Y+eps, p.Z, true),
