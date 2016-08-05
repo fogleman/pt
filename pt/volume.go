@@ -88,7 +88,7 @@ func (v *Volume) Contains(a Vector) bool {
 
 func (v *Volume) Intersect(ray Ray) Hit {
 	start := math.Max(0, ray.Origin.Length()-1)
-	step := 1.0 / 256
+	step := 1.0 / 1024
 	for t := start; t < start+2; t += step {
 		if v.Contains(ray.Position(t)) {
 			t -= step

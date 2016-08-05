@@ -9,6 +9,15 @@ type Sampler interface {
 	Sample(scene *Scene, ray Ray, rnd *rand.Rand) Color
 }
 
+/*
+pick a random light
+cast from camera N times, store hits
+cast from light M times, store hits
+cast shadow ray for all pairs
+compute probability based on cos a, cos a
+combine
+*/
+
 type DefaultSampler struct {
 	HitSamples int
 	Bounces    int
