@@ -105,14 +105,14 @@ func (v *Volume) Sign(a Vector) int {
 func (v *Volume) Intersect(ray Ray) Hit {
 	step := 1.0 / 1024
 	start := math.Max(step, ray.Origin.Length()-1)
-	sign := v.Sign(ray.Origin)
+	sign := -1
 	for t := start; t < start+2; t += step {
 		p := ray.Position(t)
 		if !v.BoundingBox.Contains(p) {
 			continue
 		}
 		s := v.Sign(p)
-		if s == 0 || s != sign {
+		if s == 0 || (sign >= 0 && s != sign) {
 			t -= step
 			step /= 64
 			t += step
