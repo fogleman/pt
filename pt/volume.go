@@ -32,14 +32,17 @@ func NewVolume(images []image.Image, lo, hi float64, material Material) *Volume 
 	return &Volume{w, h, d, data, lo, hi, material, box}
 }
 
-func (v *Volume) Get(x, y, z int) float64 {
+func (v *Volume) Get(x, y, z int, normal bool) float64 {
 	if x < 0 || y < 0 || z < 0 || x >= v.W || y >= v.H || z >= v.D {
+		return 0
+	}
+	if normal && x >= v.W/2-1 {
 		return 0
 	}
 	return v.Data[x+y*v.W+z*v.W*v.H]
 }
 
-func (v *Volume) Sample(x, y, z float64) float64 {
+func (v *Volume) Sample(x, y, z float64, normal bool) float64 {
 	z /= 0.625
 	x = ((x + 1) / 2) * float64(v.W)
 	y = ((y + 1) / 2) * float64(v.H)
@@ -50,14 +53,14 @@ func (v *Volume) Sample(x, y, z float64) float64 {
 	x1 := x0 + 1
 	y1 := y0 + 1
 	z1 := z0 + 1
-	v000 := v.Get(x0, y0, z0)
-	v001 := v.Get(x0, y0, z1)
-	v010 := v.Get(x0, y1, z0)
-	v011 := v.Get(x0, y1, z1)
-	v100 := v.Get(x1, y0, z0)
-	v101 := v.Get(x1, y0, z1)
-	v110 := v.Get(x1, y1, z0)
-	v111 := v.Get(x1, y1, z1)
+	v000 := v.Get(x0, y0, z0, normal)
+	v001 := v.Get(x0, y0, z1, normal)
+	v010 := v.Get(x0, y1, z0, normal)
+	v011 := v.Get(x0, y1, z1, normal)
+	v100 := v.Get(x1, y0, z0, normal)
+	v101 := v.Get(x1, y0, z1, normal)
+	v110 := v.Get(x1, y1, z0, normal)
+	v111 := v.Get(x1, y1, z1, normal)
 	x -= float64(x0)
 	y -= float64(y0)
 	z -= float64(z0)
@@ -78,29 +81,42 @@ func (v *Volume) Box() Box {
 	return v.box
 }
 
-func (v *Volume) Contains(a Vector) bool {
+func (v *Volume) Sign(a Vector) int {
 	if !v.box.Contains(a) {
-		return false
+		return -1
 	}
-	s := v.Sample(a.X, a.Y, a.Z)
-	return s >= v.Lo && s <= v.Hi
+	s := v.Sample(a.X, a.Y, a.Z, false)
+	if s < v.Lo {
+		return -1
+	}
+	if s > v.Hi {
+		return 1
+	}
+	return 0
 }
 
 func (v *Volume) Intersect(ray Ray) Hit {
 	start := math.Max(0, ray.Origin.Length()-1)
-	step := 1.0 / 1024
+	step := 1.0 / 512
+	sign := 0
 	for t := start; t < start+2; t += step {
-		if v.Contains(ray.Position(t)) {
+		p := ray.Position(t)
+		if !v.box.Contains(p) {
+			continue
+		}
+		s := v.Sign(p)
+		if s == 0 || s == -sign {
 			t -= step
 			step /= 64
 			t += step
 			for i := 0; i < 64; i++ {
-				if v.Contains(ray.Position(t)) {
+				if v.Sign(ray.Position(t)) == 0 {
 					return Hit{v, t - step, nil}
 				}
 				t += step
 			}
 		}
+		sign = s
 	}
 	return NoHit
 }
@@ -116,9 +132,9 @@ func (v *Volume) Material(p Vector) Material {
 func (v *Volume) Normal(p Vector) Vector {
 	eps := 0.01
 	n := Vector{
-		v.Sample(p.X-eps, p.Y, p.Z) - v.Sample(p.X+eps, p.Y, p.Z),
-		v.Sample(p.X, p.Y-eps, p.Z) - v.Sample(p.X, p.Y+eps, p.Z),
-		v.Sample(p.X, p.Y, p.Z-eps) - v.Sample(p.X, p.Y, p.Z+eps),
+		v.Sample(p.X-eps, p.Y, p.Z, true) - v.Sample(p.X+eps, p.Y, p.Z, true),
+		v.Sample(p.X, p.Y-eps, p.Z, true) - v.Sample(p.X, p.Y+eps, p.Z, true),
+		v.Sample(p.X, p.Y, p.Z-eps, true) - v.Sample(p.X, p.Y, p.Z+eps, true),
 	}
 	return n.Normalize()
 }
