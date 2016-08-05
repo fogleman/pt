@@ -34,7 +34,7 @@ func (hit *Hit) Info(r Ray) HitInfo {
 	inside := false
 	if normal.Dot(r.Direction) > 0 {
 		normal = normal.MulScalar(-1)
-		inside = true
+		// inside = true
 	}
 	ray := Ray{position, normal}
 	return HitInfo{shape, position, normal, ray, color, material, inside}

@@ -7,17 +7,24 @@ import (
 )
 
 type Volume struct {
-	W, H, D  int
-	Data     []float64
-	Lo, Hi   float64
-	material Material
-	box      Box
+	W, H, D     int
+	ZScale      float64
+	Data        []float64
+	Windows     []VolumeWindow
+	BoundingBox Box
 }
 
-func NewVolume(images []image.Image, lo, hi float64, material Material) *Volume {
+type VolumeWindow struct {
+	Lo, Hi   float64
+	Material Material
+}
+
+func NewVolume(images []image.Image, sliceSpacing float64, windows []VolumeWindow) *Volume {
 	w := images[0].Bounds().Size().X
 	h := images[0].Bounds().Size().Y
 	d := len(images)
+	// TODO: w/h aspect ratio
+	zs := (sliceSpacing * float64(d)) / float64(w)
 	data := make([]float64, w*h*d)
 	for z, im := range images {
 		for y := 0; y < h; y++ {
@@ -29,7 +36,7 @@ func NewVolume(images []image.Image, lo, hi float64, material Material) *Volume 
 		}
 	}
 	box := Box{Vector{-1, -1, -1}, Vector{0, 1, 1}}
-	return &Volume{w, h, d, data, lo, hi, material, box}
+	return &Volume{w, h, d, zs, data, windows, box}
 }
 
 func (v *Volume) Get(x, y, z int, normal bool) float64 {
@@ -43,7 +50,7 @@ func (v *Volume) Get(x, y, z int, normal bool) float64 {
 }
 
 func (v *Volume) Sample(x, y, z float64, normal bool) float64 {
-	z /= 0.625
+	z /= v.ZScale
 	x = ((x + 1) / 2) * float64(v.W)
 	y = ((y + 1) / 2) * float64(v.H)
 	z = ((z + 1) / 2) * float64(v.D)
@@ -78,34 +85,34 @@ func (v *Volume) Compile() {
 }
 
 func (v *Volume) Box() Box {
-	return v.box
+	return v.BoundingBox
 }
 
 func (v *Volume) Sign(a Vector) int {
-	if !v.box.Contains(a) {
-		return -1
-	}
 	s := v.Sample(a.X, a.Y, a.Z, false)
-	if s < v.Lo {
-		return -1
+	for i, window := range v.Windows {
+		if s < window.Lo {
+			return i + 1
+		}
+		if s > window.Hi {
+			continue
+		}
+		return 0
 	}
-	if s > v.Hi {
-		return 1
-	}
-	return 0
+	return len(v.Windows) + 1
 }
 
 func (v *Volume) Intersect(ray Ray) Hit {
-	start := math.Max(0, ray.Origin.Length()-1)
 	step := 1.0 / 1024
-	sign := 0
+	start := math.Max(step, ray.Origin.Length()-1)
+	sign := v.Sign(ray.Origin)
 	for t := start; t < start+2; t += step {
 		p := ray.Position(t)
-		if !v.box.Contains(p) {
+		if !v.BoundingBox.Contains(p) {
 			continue
 		}
 		s := v.Sign(p)
-		if s == 0 || s == -sign {
+		if s == 0 || s != sign {
 			t -= step
 			step /= 64
 			t += step
@@ -122,11 +129,25 @@ func (v *Volume) Intersect(ray Ray) Hit {
 }
 
 func (v *Volume) Color(p Vector) Color {
-	return v.material.Color
+	return v.Material(p).Color
 }
 
 func (v *Volume) Material(p Vector) Material {
-	return v.material
+	be := 1e9
+	bm := Material{}
+	s := v.Sample(p.X, p.Y, p.Z, false)
+	for _, window := range v.Windows {
+		if s >= window.Lo && s <= window.Hi {
+			return window.Material
+		}
+		e := math.Min(math.Abs(s-window.Lo), math.Abs(s-window.Hi))
+		if e < be {
+			be = e
+			bm = window.Material
+		}
+	}
+	return bm
+
 }
 
 func (v *Volume) Normal(p Vector) Vector {
