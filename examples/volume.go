@@ -1,0 +1,48 @@
+package main
+
+import (
+	"fmt"
+	"image"
+	"io/ioutil"
+	"os"
+	"path"
+
+	. "github.com/fogleman/pt/pt"
+)
+
+func main() {
+	args := os.Args[1:]
+	if len(args) != 1 {
+		fmt.Println("Usage: go run volume.go DIRECTORY")
+		return
+	}
+	dirname := args[0]
+	infos, err := ioutil.ReadDir(dirname)
+	if err != nil {
+		panic(err)
+	}
+	var images []image.Image
+	for _, info := range infos {
+		filename := path.Join(dirname, info.Name())
+		im, err := LoadPNG(filename)
+		if err != nil {
+			panic(err)
+		}
+		images = append(images, im)
+	}
+
+	scene := Scene{}
+	scene.SetColor(Color{1, 1, 1})
+
+	material := GlossyMaterial(HexColor(0xFFFFFF), 1.3, Radians(0))
+	volume := NewVolume(images, 0.28, 0.30, material)
+	scene.Add(volume)
+
+	// light := LightMaterial(Color{1, 1, 1}, 3, NoAttenuation)
+	// scene.Add(NewCube(V(-2, -2, 3), V(2, 2, 3.1), light))
+
+	camera := LookAt(V(2, -2, 0), V(0, -0.25, 0), V(0, 0, 1), 40)
+	sampler := DefaultSampler{4, 4}
+	IterativeRender("out%03d.png", 1000, &scene, &camera, &sampler, 1024, 1024, -1)
+
+}
