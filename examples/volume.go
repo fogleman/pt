@@ -31,20 +31,37 @@ func main() {
 		images = append(images, im)
 	}
 
+	images = append(images[138:], images[:138]...)
+
 	scene := Scene{}
 	scene.SetColor(Color{1, 1, 1})
 
-	windows := []VolumeWindow{
-		VolumeWindow{0.10, 0.15, GlossyMaterial(HexColor(0x334D5C), 1.2, Radians(20))},
-		VolumeWindow{0.33, 0.38, GlossyMaterial(HexColor(0xEFC94C), 1.2, Radians(20))},
+	colors := []Color{
+		HexColor(0x004358),
+		HexColor(0x1F8A70),
+		HexColor(0xBEDB39),
+		HexColor(0xFFE11A),
+		HexColor(0xFD7400),
 	}
-	scene.Add(NewVolume(images, 2, windows))
+	const (
+		start = 0.1
+		size  = 0.02
+		step  = 0.1
+	)
+	var windows []VolumeWindow
+	for i := 0; i < len(colors); i++ {
+		lo := start + step*float64(i)
+		hi := lo + size
+		material := GlossyMaterial(colors[i], 1.2, Radians(20))
+		w := VolumeWindow{lo, hi, material}
+		windows = append(windows, w)
+	}
+	volume := NewVolume(images, 1, windows)
+	scene.Add(volume)
 
-	// light := LightMaterial(Color{1, 1, 1}, 10, NoAttenuation)
-	// scene.Add(NewCube(V(-2, -2, 3), V(2, 2, 3.1), light))
-	// scene.Add(NewSphere(V(4, 0, 2), 2, light))
+	fmt.Println(volume.W, volume.H, volume.D)
 
-	camera := LookAt(V(2, -2, 0), V(0, -0.25, 0), V(0, 0, 1), 32)
-	sampler := DefaultSampler{4, 4}
-	IterativeRender("out%03d.png", 1000, &scene, &camera, &sampler, 512, 512, -1)
+	camera := LookAt(V(-1, -2.5, 0), V(-0.1, 0, 0), V(0, -1, 0), 35)
+	sampler := DefaultSampler{16, 4}
+	IterativeRender("out%03d.png", 1000, &scene, &camera, &sampler, 1024, 1024, -1)
 }
