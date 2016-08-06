@@ -35,18 +35,12 @@ func NewVolume(images []image.Image, sliceSpacing float64, windows []VolumeWindo
 			}
 		}
 	}
-	box := Box{Vector{-1, 0, -1}, Vector{1, 1, 1}}
+	box := Box{Vector{-1, -1, -1}, Vector{1, 1, 0}}
 	return &Volume{w, h, d, zs, data, windows, box}
 }
 
 func (v *Volume) Get(x, y, z int, normal bool) float64 {
 	if x < 0 || y < 0 || z < 0 || x >= v.W || y >= v.H || z >= v.D {
-		return 0
-	}
-	// if normal && x >= v.W/2-1 {
-	// 	return 0
-	// }
-	if normal && y <= v.H/2+1 {
 		return 0
 	}
 	return v.Data[x+y*v.W+z*v.W*v.H]

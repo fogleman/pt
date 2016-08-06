@@ -31,7 +31,8 @@ func main() {
 		images = append(images, im)
 	}
 
-	images = append(images[138:], images[:138]...)
+	// images = append(images[138:], images[:138]...)
+	// images = images[len(images)/2:]
 
 	scene := Scene{}
 	scene.SetColor(Color{1, 1, 1})
@@ -45,7 +46,7 @@ func main() {
 	}
 	const (
 		start = 0.1
-		size  = 0.02
+		size  = 0.001
 		step  = 0.1
 	)
 	var windows []VolumeWindow
@@ -56,12 +57,12 @@ func main() {
 		w := VolumeWindow{lo, hi, material}
 		windows = append(windows, w)
 	}
-	volume := NewVolume(images, 1, windows)
+	volume := NewVolume(images, 6.5/0.429689, windows)
 	scene.Add(volume)
 
 	fmt.Println(volume.W, volume.H, volume.D)
 
-	camera := LookAt(V(-1, -2.5, 0), V(-0.1, 0, 0), V(0, -1, 0), 35)
-	sampler := DefaultSampler{16, 4}
-	IterativeRender("out%03d.png", 1000, &scene, &camera, &sampler, 1024, 1024, -1)
+	camera := LookAt(V(0, 0, 3), V(0, 0, 0), V(0, -1, 0), 40)
+	sampler := DefaultSampler{4, 4}
+	IterativeRender("out%03d.png", 1000, &scene, &camera, &sampler, 2048, 2048, -1)
 }
