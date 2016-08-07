@@ -26,25 +26,43 @@ func main() {
 		filename := path.Join(dirname, info.Name())
 		im, err := LoadPNG(filename)
 		if err != nil {
-			panic(err)
+			continue
+			// panic(err)
 		}
 		images = append(images, im)
 	}
 
 	scene := Scene{}
-	scene.SetColor(Color{1, 1, 1})
+	// scene.SetColor(Color{1, 1, 1})
 
 	colors := []Color{
-		HexColor(0x004358),
-		HexColor(0x1F8A70),
-		HexColor(0xBEDB39),
-		HexColor(0xFFE11A),
-		HexColor(0xFD7400),
+		HexColor(0xFFF8E3),
+
+		// HexColor(0x004358),
+		// HexColor(0x1F8A70),
+		// HexColor(0xBEDB39),
+		// HexColor(0xFFE11A),
+		// HexColor(0xFD7400),
+
+		// HexColor(0xFFE11A),
+		// HexColor(0xBEDB39),
+		// HexColor(0x1F8A70),
+		// HexColor(0x004358),
+
+		// Color{1, 1, 1},
+		// Color{1, 1, 1},
+		// Color{1, 1, 1},
+		// Color{1, 1, 1},
+		// Color{1, 1, 1},
+		// Color{1, 1, 1},
+		// Color{1, 1, 1},
+		// Color{1, 1, 1},
+		// Color{1, 1, 1},
 	}
 	const (
-		start = 0.1
-		size  = 0.001
-		step  = 0.1
+		start = 0.8
+		size  = 0.25
+		step  = 0.02
 	)
 	var windows []VolumeWindow
 	for i := 0; i < len(colors); i++ {
@@ -54,13 +72,19 @@ func main() {
 		w := VolumeWindow{lo, hi, material}
 		windows = append(windows, w)
 	}
-	box := Box{Vector{-1, -1, -1}, Vector{1, 1, 0.1}}
-	volume := NewVolume(box, images, 6.5/0.429689, windows)
+	box := Box{Vector{-1, -1, -3}, Vector{1, 0.65, 3}}
+	volume := NewVolume(box, images, 3.4/0.9765625, windows)
 	scene.Add(volume)
+
+	wall := GlossyMaterial(Color{1, 1, 1}, 1.1, Radians(20))
+	scene.Add(NewCube(V(-10, 0.65, -10), V(10, 10, 10), wall))
+
+	light := LightMaterial(Color{1, 1, 1}, 10, NoAttenuation)
+	scene.Add(NewSphere(V(0, -5, -1), 1, light))
 
 	fmt.Println(volume.W, volume.H, volume.D)
 
-	camera := LookAt(V(1, 0, 3), V(0, 0, 0), V(0, -1, 0), 40)
+	camera := LookAt(V(2, -5, 0), V(0, 0, 0), V(0, 0, -1), 32)
 	sampler := DefaultSampler{4, 4}
-	IterativeRender("out%03d.png", 1000, &scene, &camera, &sampler, 1024, 1024, -1)
+	IterativeRender("out%03d.png", 1000, &scene, &camera, &sampler, 2048/4, 2048/4, -1)
 }
