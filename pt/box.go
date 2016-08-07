@@ -38,6 +38,7 @@ func (a Box) Center() Vector {
 
 func (a Box) Radius() float64 {
 	return a.Min.Sub(a.Center()).Length()
+	// return a.Center().Sub(a.Min).MaxComponent()
 }
 
 func (a Box) Size() Vector {

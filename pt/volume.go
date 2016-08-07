@@ -99,14 +99,12 @@ func (v *Volume) Sign(a Vector) int {
 }
 
 func (v *Volume) Intersect(ray Ray) Hit {
+	tmin, tmax := v.BoundingBox.Intersect(ray)
 	step := 1.0 / 512
-	start := math.Max(step, ray.Origin.Length()-1.75)
+	start := math.Max(step, tmin)
 	sign := -1
-	for t := start; t < start+3.5; t += step {
+	for t := start; t <= tmax; t += step {
 		p := ray.Position(t)
-		if !v.BoundingBox.Contains(p) {
-			continue
-		}
 		s := v.Sign(p)
 		if s == 0 || (sign >= 0 && s != sign) {
 			t -= step
