@@ -26,16 +26,15 @@ func (n Ray) Reflectance(i Ray, n1, n2 float64) float64 {
 }
 
 func (r Ray) WeightedBounce(u, v float64, rnd *rand.Rand) Ray {
-	m1 := math.Sqrt(u)
-	m2 := math.Sqrt(1 - u)
-	a := v * 2 * math.Pi
-	s := r.Direction.Cross(RandomUnitVector(rnd))
+	radius := math.Sqrt(u)
+	theta := 2 * math.Pi * v
+	s := r.Direction.Cross(RandomUnitVector(rnd)).Normalize()
 	t := r.Direction.Cross(s)
 	d := Vector{}
-	d = d.Add(s.MulScalar(m1 * math.Cos(a)))
-	d = d.Add(t.MulScalar(m1 * math.Sin(a)))
-	d = d.Add(r.Direction.MulScalar(m2))
-	return Ray{r.Origin, d.Normalize()}
+	d = d.Add(s.MulScalar(radius * math.Cos(theta)))
+	d = d.Add(t.MulScalar(radius * math.Sin(theta)))
+	d = d.Add(r.Direction.MulScalar(math.Sqrt(1 - u)))
+	return Ray{r.Origin, d}
 }
 
 func (r Ray) ConeBounce(theta, u, v float64, rnd *rand.Rand) Ray {
