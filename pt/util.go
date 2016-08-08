@@ -38,6 +38,7 @@ func Cone(direction Vector, theta, u, v float64, rnd *rand.Rand) Vector {
 	d = d.Add(s.MulScalar(m1 * math.Cos(a)))
 	d = d.Add(t.MulScalar(m1 * math.Sin(a)))
 	d = d.Add(direction.MulScalar(m2))
+	d = d.Normalize()
 	return d
 }
 

@@ -29,8 +29,7 @@ func (r Ray) WeightedBounce(u, v float64, rnd *rand.Rand) Ray {
 	m1 := math.Sqrt(u)
 	m2 := math.Sqrt(1 - u)
 	a := v * 2 * math.Pi
-	q := RandomUnitVector(rnd)
-	s := r.Direction.Cross(q.Normalize())
+	s := r.Direction.Cross(RandomUnitVector(rnd))
 	t := r.Direction.Cross(s)
 	d := Vector{}
 	d = d.Add(s.MulScalar(m1 * math.Cos(a)))

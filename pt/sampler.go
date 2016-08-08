@@ -32,15 +32,6 @@ func (s *DefaultSampler) sample(scene *Scene, ray Ray, samples, depth int, rnd *
 		return Color{}
 	}
 	hit := scene.Intersect(ray)
-	if scene.visibility > 0 {
-		t := math.Pow(rnd.Float64(), 0.5) * scene.visibility
-		if t < hit.T {
-			d := RandomUnitVector(rnd)
-			o := ray.Position(t)
-			newRay := Ray{o, d}
-			return s.sample(scene, newRay, 1, depth-1, rnd)
-		}
-	}
 	if !hit.Ok() {
 		if scene.texture != nil {
 			d := ray.Direction
