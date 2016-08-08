@@ -24,10 +24,10 @@ type DefaultSampler struct {
 }
 
 func (s *DefaultSampler) Sample(scene *Scene, ray Ray, rnd *rand.Rand) Color {
-	return s.sample(scene, ray, s.HitSamples, s.Bounces, rnd)
+	return s.sample(scene, ray, true, s.HitSamples, s.Bounces, rnd)
 }
 
-func (s *DefaultSampler) sample(scene *Scene, ray Ray, samples, depth int, rnd *rand.Rand) Color {
+func (s *DefaultSampler) sample(scene *Scene, ray Ray, emission bool, samples, depth int, rnd *rand.Rand) Color {
 	if depth < 0 {
 		return Color{}
 	}
@@ -46,7 +46,7 @@ func (s *DefaultSampler) sample(scene *Scene, ray Ray, samples, depth int, rnd *
 	info := hit.Info(ray)
 	result := Color{}
 	emittance := info.Material.Emittance
-	if emittance > 0 {
+	if emission && emittance > 0 {
 		attenuation := info.Material.Attenuation.Compute(hit.T)
 		result = result.Add(info.Color.MulScalar(emittance * attenuation * float64(samples)))
 	}
@@ -56,14 +56,47 @@ func (s *DefaultSampler) sample(scene *Scene, ray Ray, samples, depth int, rnd *
 			fu := (float64(u) + rnd.Float64()) / float64(n)
 			fv := (float64(v) + rnd.Float64()) / float64(n)
 			newRay, reflected := ray.Bounce(&info, fu, fv, rnd)
-			indirect := s.sample(scene, newRay, 1, depth-1, rnd)
+			indirect := s.sample(scene, newRay, reflected, 1, depth-1, rnd)
 			if reflected {
 				tinted := indirect.Mix(info.Color.Mul(indirect), info.Material.Tint)
 				result = result.Add(tinted)
 			} else {
-				result = result.Add(info.Color.Mul(indirect))
+				direct := s.directLight(scene, info.Ray, rnd)
+				result = result.Add(info.Color.Mul(direct.Add(indirect)))
 			}
 		}
 	}
 	return result.DivScalar(float64(n * n))
+}
+
+func (s *DefaultSampler) directLight(scene *Scene, n Ray, rnd *rand.Rand) Color {
+	nLights := len(scene.lights)
+	if nLights == 0 {
+		return Color{}
+	}
+	light := scene.lights[rand.Intn(nLights)]
+	// TODO: get bounding sphere, get random point, see if hits shape
+	p := light.RandomPoint(rnd)
+	d := p.Sub(n.Origin)
+	lr := Ray{n.Origin, d.Normalize()}
+	diffuse := lr.Direction.Dot(n.Direction)
+	if diffuse <= 0 {
+		return Color{}
+	}
+	// distance := light.(*Sphere).center.Sub(n.Origin).Length()
+	distance := light.Intersect(lr).T
+	// distance := d.Length()
+	if scene.Shadow(lr, light, distance) {
+		return Color{}
+	}
+	material := light.Material(p)
+	emittance := material.Emittance
+	attenuation := material.Attenuation.Compute(distance)
+	color := light.Color(p).MulScalar(diffuse * emittance * attenuation)
+
+	// r := light.Box().Radius()
+	r := light.(*Sphere).radius
+	a := math.Atan2(r, distance)
+	f := 1 - math.Cos(a)
+	return color.MulScalar(f * float64(nLights))
 }
