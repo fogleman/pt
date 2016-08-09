@@ -92,6 +92,10 @@ func (a Vector) MinComponent() float64 {
 	return math.Min(math.Min(a.X, a.Y), a.Z)
 }
 
+func (a Vector) MaxComponent() float64 {
+	return math.Max(math.Max(a.X, a.Y), a.Z)
+}
+
 func (n Vector) Reflect(i Vector) Vector {
 	return i.Sub(n.MulScalar(2 * n.Dot(i)))
 }

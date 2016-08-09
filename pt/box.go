@@ -10,9 +10,9 @@ func BoxForShapes(shapes []Shape) Box {
 	if len(shapes) == 0 {
 		return Box{}
 	}
-	box := shapes[0].Box()
+	box := shapes[0].BoundingBox()
 	for _, shape := range shapes {
-		box = box.Extend(shape.Box())
+		box = box.Extend(shape.BoundingBox())
 	}
 	return box
 }
@@ -21,9 +21,9 @@ func BoxForTriangles(shapes []*Triangle) Box {
 	if len(shapes) == 0 {
 		return Box{}
 	}
-	box := shapes[0].Box()
+	box := shapes[0].BoundingBox()
 	for _, shape := range shapes {
-		box = box.Extend(shape.Box())
+		box = box.Extend(shape.BoundingBox())
 	}
 	return box
 }
@@ -34,6 +34,14 @@ func (a Box) Anchor(anchor Vector) Vector {
 
 func (a Box) Center() Vector {
 	return a.Anchor(Vector{0.5, 0.5, 0.5})
+}
+
+func (a Box) OuterRadius() float64 {
+	return a.Min.Sub(a.Center()).Length()
+}
+
+func (a Box) InnerRadius() float64 {
+	return a.Center().Sub(a.Min).MaxComponent()
 }
 
 func (a Box) Size() Vector {

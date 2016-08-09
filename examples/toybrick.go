@@ -3,26 +3,26 @@ package main
 import (
 	"math/rand"
 
-	"github.com/fogleman/pt/pt"
+	. "github.com/fogleman/pt/pt"
 )
 
 const H = 1.46875
 
-func CreateBrick(color int) *pt.Mesh {
-	material := pt.GlossyMaterial(pt.HexColor(Colors[color]), 1.3, pt.Radians(20))
-	mesh, err := pt.LoadSTL("examples/toybrick.stl", material)
+func CreateBrick(color int) *Mesh {
+	material := GlossyMaterial(HexColor(Colors[color]), 1.3, Radians(20))
+	mesh, err := LoadSTL("examples/toybrick.stl", material)
 	if err != nil {
 		panic(err)
 	}
-	mesh.SmoothNormalsThreshold(pt.Radians(20))
-	mesh.FitInside(pt.Box{pt.Vector{}, pt.Vector{2, 4, 10}}, pt.Vector{0, 0, 0})
+	mesh.SmoothNormalsThreshold(Radians(20))
+	mesh.FitInside(Box{Vector{}, Vector{2, 4, 10}}, Vector{0, 0, 0})
 	return mesh
 }
 
 func main() {
-	scene := pt.Scene{}
-	scene.SetColor(pt.Color{1, 1, 1})
-	meshes := []*pt.Mesh{
+	scene := Scene{}
+	scene.Color = Color{1, 1, 1}
+	meshes := []*Mesh{
 		CreateBrick(1),  // white
 		CreateBrick(21), // bright red
 		CreateBrick(23), // bright blue
@@ -40,15 +40,16 @@ func main() {
 				}
 				z := float64(i) * H
 				mesh := meshes[rand.Intn(len(meshes))]
-				m := pt.Translate(pt.Vector{float64(x), float64(y + dy), z})
-				scene.Add(pt.NewTransformedShape(mesh, m))
+				m := Translate(Vector{float64(x), float64(y + dy), z})
+				scene.Add(NewTransformedShape(mesh, m))
 			}
 		}
 	}
-	// light := pt.LightMaterial(pt.Color{0.2, 0.2, 0.2}, 10, pt.QuadraticAttenuation(0.01))
-	// scene.Add(pt.NewSphere(pt.Vector{0, 0, 25}, 1, light))
-	camera := pt.LookAt(pt.Vector{-23, 13, 20}, pt.Vector{0, 0, 0}, pt.Vector{0, 0, 1}, 45)
-	pt.IterativeRender("out%03d.png", 1000, &scene, &camera, 2560, 1440, -1, 4, 4)
+	// light := LightMaterial(Color{0.2, 0.2, 0.2}, 10, QuadraticAttenuation(0.01))
+	// scene.Add(NewSphere(Vector{0, 0, 25}, 1, light))
+	camera := LookAt(Vector{-23, 13, 20}, Vector{0, 0, 0}, Vector{0, 0, 1}, 45)
+	sampler := NewSampler(4, 4)
+	IterativeRender("out%03d.png", 1000, &scene, &camera, sampler, 1920/2, 1080/2, -1)
 }
 
 var Colors = map[int]int{

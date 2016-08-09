@@ -1,15 +1,12 @@
 package pt
 
-import (
-	"math"
-	"math/rand"
-)
+import "math"
 
 type Cube struct {
-	min      Vector
-	max      Vector
-	material Material
-	box      Box
+	Min      Vector
+	Max      Vector
+	Material Material
+	Box      Box
 }
 
 func NewCube(min, max Vector, material Material) Shape {
@@ -20,13 +17,13 @@ func NewCube(min, max Vector, material Material) Shape {
 func (c *Cube) Compile() {
 }
 
-func (c *Cube) Box() Box {
-	return c.box
+func (c *Cube) BoundingBox() Box {
+	return c.Box
 }
 
 func (c *Cube) Intersect(r Ray) Hit {
-	n := c.min.Sub(r.Origin).Div(r.Direction)
-	f := c.max.Sub(r.Origin).Div(r.Direction)
+	n := c.Min.Sub(r.Origin).Div(r.Direction)
+	f := c.Max.Sub(r.Origin).Div(r.Direction)
 	n, f = n.Min(f), n.Max(f)
 	t0 := math.Max(math.Max(n.X, n.Y), n.Z)
 	t1 := math.Min(math.Min(f.X, f.Y), f.Z)
@@ -36,39 +33,32 @@ func (c *Cube) Intersect(r Ray) Hit {
 	return NoHit
 }
 
-func (c *Cube) Color(p Vector) Color {
-	if c.material.Texture == nil {
-		return c.material.Color
+func (c *Cube) ColorAt(p Vector) Color {
+	if c.Material.Texture == nil {
+		return c.Material.Color
 	}
-	p = p.Sub(c.min).Div(c.max.Sub(c.min))
-	return c.material.Texture.Sample(p.X, p.Z)
+	p = p.Sub(c.Min).Div(c.Max.Sub(c.Min))
+	return c.Material.Texture.Sample(p.X, p.Z)
 }
 
-func (c *Cube) Material(p Vector) Material {
-	return c.material
+func (c *Cube) MaterialAt(p Vector) Material {
+	return c.Material
 }
 
-func (c *Cube) Normal(p Vector) Vector {
+func (c *Cube) NormalAt(p Vector) Vector {
 	switch {
-	case p.X < c.min.X+EPS:
+	case p.X < c.Min.X+EPS:
 		return Vector{-1, 0, 0}
-	case p.X > c.max.X-EPS:
+	case p.X > c.Max.X-EPS:
 		return Vector{1, 0, 0}
-	case p.Y < c.min.Y+EPS:
+	case p.Y < c.Min.Y+EPS:
 		return Vector{0, -1, 0}
-	case p.Y > c.max.Y-EPS:
+	case p.Y > c.Max.Y-EPS:
 		return Vector{0, 1, 0}
-	case p.Z < c.min.Z+EPS:
+	case p.Z < c.Min.Z+EPS:
 		return Vector{0, 0, -1}
-	case p.Z > c.max.Z-EPS:
+	case p.Z > c.Max.Z-EPS:
 		return Vector{0, 0, 1}
 	}
 	return Vector{0, 1, 0}
-}
-
-func (c *Cube) RandomPoint(rnd *rand.Rand) Vector {
-	x := c.min.X + rnd.Float64()*(c.max.X-c.min.X)
-	y := c.min.Y + rnd.Float64()*(c.max.Y-c.min.Y)
-	z := c.min.Z + rnd.Float64()*(c.max.Z-c.min.Z)
-	return Vector{x, y, z}
 }

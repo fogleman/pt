@@ -1,44 +1,41 @@
 package pt
 
-import "math/rand"
-
 type Shape interface {
 	Compile()
-	Box() Box
+	BoundingBox() Box
 	Intersect(Ray) Hit
-	Color(Vector) Color
-	Material(Vector) Material
-	Normal(Vector) Vector
-	RandomPoint(*rand.Rand) Vector
+	ColorAt(Vector) Color
+	MaterialAt(Vector) Material
+	NormalAt(Vector) Vector
 }
 
 type TransformedShape struct {
 	Shape
-	matrix  Matrix
-	inverse Matrix
+	Matrix  Matrix
+	Inverse Matrix
 }
 
 func NewTransformedShape(s Shape, m Matrix) Shape {
 	return &TransformedShape{s, m, m.Inverse()}
 }
 
-func (s *TransformedShape) Box() Box {
-	return s.matrix.MulBox(s.Shape.Box())
+func (s *TransformedShape) BoundingBox() Box {
+	return s.Matrix.MulBox(s.Shape.BoundingBox())
 }
 
 func (s *TransformedShape) Intersect(r Ray) Hit {
-	shapeRay := s.inverse.MulRay(r)
+	shapeRay := s.Inverse.MulRay(r)
 	hit := s.Shape.Intersect(shapeRay)
 	if !hit.Ok() {
 		return hit
 	}
 	shape := hit.Shape
 	shapePosition := shapeRay.Position(hit.T)
-	shapeNormal := shape.Normal(shapePosition)
-	position := s.matrix.MulPosition(shapePosition)
-	normal := s.inverse.Transpose().MulDirection(shapeNormal)
-	color := shape.Color(shapePosition)
-	material := shape.Material(shapePosition)
+	shapeNormal := shape.NormalAt(shapePosition)
+	position := s.Matrix.MulPosition(shapePosition)
+	normal := s.Inverse.Transpose().MulDirection(shapeNormal)
+	color := shape.ColorAt(shapePosition)
+	material := shape.MaterialAt(shapePosition)
 	inside := false
 	if shapeNormal.Dot(shapeRay.Direction) > 0 {
 		normal = normal.MulScalar(-1)

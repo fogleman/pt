@@ -1,15 +1,12 @@
 package pt
 
-import (
-	"math"
-	"math/rand"
-)
+import "math"
 
 type Sphere struct {
-	center   Vector
-	radius   float64
-	material Material
-	box      Box
+	Center   Vector
+	Radius   float64
+	Material Material
+	Box      Box
 }
 
 func NewSphere(center Vector, radius float64, material Material) Shape {
@@ -22,14 +19,14 @@ func NewSphere(center Vector, radius float64, material Material) Shape {
 func (s *Sphere) Compile() {
 }
 
-func (s *Sphere) Box() Box {
-	return s.box
+func (s *Sphere) BoundingBox() Box {
+	return s.Box
 }
 
 func (s *Sphere) Intersect(r Ray) Hit {
-	to := r.Origin.Sub(s.center)
+	to := r.Origin.Sub(s.Center)
 	b := to.Dot(r.Direction)
-	c := to.Dot(to) - s.radius*s.radius
+	c := to.Dot(to) - s.Radius*s.Radius
 	d := b*b - c
 	if d > 0 {
 		d = math.Sqrt(d)
@@ -45,34 +42,22 @@ func (s *Sphere) Intersect(r Ray) Hit {
 	return NoHit
 }
 
-func (s *Sphere) Color(p Vector) Color {
-	if s.material.Texture == nil {
-		return s.material.Color
+func (s *Sphere) ColorAt(p Vector) Color {
+	if s.Material.Texture == nil {
+		return s.Material.Color
 	}
-	p = p.Sub(s.center)
+	p = p.Sub(s.Center)
 	u := math.Atan2(p.Z, p.X)
 	v := math.Atan2(p.Y, Vector{p.X, 0, p.Z}.Length())
 	u = (u + math.Pi) / (2 * math.Pi)
 	v = (v + math.Pi/2) / math.Pi
-	return s.material.Texture.Sample(u, v)
+	return s.Material.Texture.Sample(u, v)
 }
 
-func (s *Sphere) Material(p Vector) Material {
-	return s.material
+func (s *Sphere) MaterialAt(p Vector) Material {
+	return s.Material
 }
 
-func (s *Sphere) Normal(p Vector) Vector {
-	return p.Sub(s.center).Normalize()
-}
-
-func (s *Sphere) RandomPoint(rnd *rand.Rand) Vector {
-	for {
-		x := rnd.Float64()*2 - 1
-		y := rnd.Float64()*2 - 1
-		z := rnd.Float64()*2 - 1
-		v := Vector{x, y, z}
-		if v.Length() <= 1 {
-			return v.MulScalar(s.radius).Add(s.center)
-		}
-	}
+func (s *Sphere) NormalAt(p Vector) Vector {
+	return p.Sub(s.Center).Normalize()
 }

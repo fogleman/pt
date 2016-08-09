@@ -1,24 +1,26 @@
 package main
 
-import "github.com/fogleman/pt/pt"
+import . "github.com/fogleman/pt/pt"
 
 func main() {
-	white := pt.DiffuseMaterial(pt.Color{0.740, 0.742, 0.734})
-	red := pt.DiffuseMaterial(pt.Color{0.366, 0.037, 0.042})
-	green := pt.DiffuseMaterial(pt.Color{0.163, 0.409, 0.083})
-	light := pt.LightMaterial(pt.Color{0.780, 0.780, 0.776}, 10, pt.QuadraticAttenuation(0.1))
-	scene := pt.Scene{}
+	white := DiffuseMaterial(Color{0.740, 0.742, 0.734})
+	red := DiffuseMaterial(Color{0.366, 0.037, 0.042})
+	green := DiffuseMaterial(Color{0.163, 0.409, 0.083})
+	light := LightMaterial(Color{0.780, 0.780, 0.776}, 20, NoAttenuation)
+	scene := Scene{}
 	n := 10.0
-	scene.Add(pt.NewCube(pt.Vector{-n, -11, -n}, pt.Vector{n, -10, n}, white))
-	scene.Add(pt.NewCube(pt.Vector{-n, 10, -n}, pt.Vector{n, 11, n}, white))
-	scene.Add(pt.NewCube(pt.Vector{-n, -n, 10}, pt.Vector{n, n, 11}, white))
-	scene.Add(pt.NewCube(pt.Vector{-11, -n, -n}, pt.Vector{-10, n, n}, red))
-	scene.Add(pt.NewCube(pt.Vector{10, -n, -n}, pt.Vector{11, n, n}, green))
-	scene.Add(pt.NewSphere(pt.Vector{3, -7, -3}, 3, white))
-	cube := pt.NewCube(pt.Vector{-3, -4, -3}, pt.Vector{3, 4, 3}, white)
-	transform := pt.Rotate(pt.Vector{0, 1, 0}, pt.Radians(30)).Translate(pt.Vector{-3, -6, 4})
-	scene.Add(pt.NewTransformedShape(cube, transform))
-	scene.Add(pt.NewCube(pt.Vector{-2, 9.8, -2}, pt.Vector{2, 10, 2}, light))
-	camera := pt.LookAt(pt.Vector{0, 0, -20}, pt.Vector{0, 0, 1}, pt.Vector{0, 1, 0}, 65)
-	pt.IterativeRender("out%03d.png", 10, &scene, &camera, 512, 512, -1, 16, 4)
+	scene.Add(NewCube(V(-n, -11, -n), V(n, -10, n), white))
+	scene.Add(NewCube(V(-n, 10, -n), V(n, 11, n), white))
+	scene.Add(NewCube(V(-n, -n, 10), V(n, n, 11), white))
+	scene.Add(NewCube(V(-11, -n, -n), V(-10, n, n), red))
+	scene.Add(NewCube(V(10, -n, -n), V(11, n, n), green))
+	scene.Add(NewSphere(V(3, -7, -3), 3, white))
+	cube := NewCube(V(-3, -4, -3), V(3, 4, 3), white)
+	transform := Rotate(V(0, 1, 0), Radians(30)).Translate(V(-3, -6, 4))
+	scene.Add(NewTransformedShape(cube, transform))
+	// scene.Add(NewSphere(V(0, 7.75, 0), 2, light))
+	scene.Add(NewCube(V(-2, 9.8, -2), V(2, 10, 2), light))
+	camera := LookAt(V(0, 0, -20), V(0, 0, 1), V(0, 1, 0), 65)
+	sampler := NewSampler(4, 4)
+	IterativeRender("out%03d.png", 1000, &scene, &camera, sampler, 512, 512, -1)
 }

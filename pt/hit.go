@@ -28,13 +28,17 @@ func (hit *Hit) Info(r Ray) HitInfo {
 	}
 	shape := hit.Shape
 	position := r.Position(hit.T)
-	normal := shape.Normal(position)
-	color := shape.Color(position)
-	material := shape.Material(position)
+	normal := shape.NormalAt(position)
+	color := shape.ColorAt(position)
+	material := shape.MaterialAt(position)
 	inside := false
 	if normal.Dot(r.Direction) > 0 {
 		normal = normal.MulScalar(-1)
 		inside = true
+		switch shape.(type) {
+		case *Volume:
+			inside = false
+		}
 	}
 	ray := Ray{position, normal}
 	return HitInfo{shape, position, normal, ray, color, material, inside}
