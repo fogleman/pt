@@ -72,19 +72,19 @@ func main() {
 		w := VolumeWindow{lo, hi, material}
 		windows = append(windows, w)
 	}
-	box := Box{Vector{-1, -1, -3}, Vector{1, 0.65, 3}}
+	box := Box{Vector{-1, -0.5, -1.3}, Vector{1, 0.65, 1.3}}
 	volume := NewVolume(box, images, 3.4/0.9765625, windows)
 	scene.Add(volume)
 
 	wall := GlossyMaterial(Color{1, 1, 1}, 1.1, Radians(20))
 	scene.Add(NewCube(V(-10, 0.65, -10), V(10, 10, 10), wall))
 
-	light := LightMaterial(Color{1, 1, 1}, 10, NoAttenuation)
-	scene.Add(NewSphere(V(0, -5, -1), 1, light))
+	light := LightMaterial(Color{1, 1, 1}, 20, NoAttenuation)
+	scene.Add(NewSphere(V(1, -5, -1), 1, light))
 
 	fmt.Println(volume.W, volume.H, volume.D)
 
-	camera := LookAt(V(2, -5, 0), V(0, 0, 0), V(0, 0, -1), 32)
+	camera := LookAt(V(0, -5, 0), V(0, 0, 0), V(0, 0, -1), 35)
 	sampler := DefaultSampler{4, 4}
-	IterativeRender("out%03d.png", 1000, &scene, &camera, &sampler, 2048/4, 2048/4, -1)
+	IterativeRender("out%03d.png", 1000, &scene, &camera, &sampler, 1600, 1600, -1)
 }

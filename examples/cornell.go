@@ -18,7 +18,8 @@ func main() {
 	cube := NewCube(V(-3, -4, -3), V(3, 4, 3), white)
 	transform := Rotate(V(0, 1, 0), Radians(30)).Translate(V(-3, -6, 4))
 	scene.Add(NewTransformedShape(cube, transform))
-	scene.Add(NewSphere(V(0, 7.75, 0), 2, light))
+	// scene.Add(NewSphere(V(0, 7.75, 0), 2, light))
+	scene.Add(NewCube(V(-2, 9.8, -2), V(2, 10, 2), light))
 	camera := LookAt(V(0, 0, -20), V(0, 0, 1), V(0, 1, 0), 65)
 	sampler := DefaultSampler{16, 16}
 	IterativeRender("out%03d.png", 1000, &scene, &camera, &sampler, 512, 512, -1)
