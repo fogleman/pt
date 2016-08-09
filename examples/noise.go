@@ -20,14 +20,15 @@ func main() {
 				w := noise.Eval3(x*m, y*m, z*m)
 				w = (w + 0.8) / 1.6
 				if w <= 0.2 {
-					shape := NewSphere(Vector{x, y, z}, 0.333, material)
+					shape := NewSphere(V(x, y, z), 0.333, material)
 					scene.Add(shape)
 				}
 			}
 		}
 	}
-	light := NewSphere(Vector{100, 0, 50}, 5, LightMaterial(Color{1, 1, 1}, 1, NoAttenuation))
+	light := NewSphere(V(100, 0, 50), 5, LightMaterial(Color{1, 1, 1}, 300, NoAttenuation))
 	scene.Add(light)
-	camera := LookAt(Vector{0, 0, -20}, Vector{}, Vector{0, 1, 0}, 30)
-	IterativeRender("out%03d.png", 1000, &scene, &camera, 2560, 1440, -1, 4, 4)
+	camera := LookAt(V(0, 0, -20), V(0, 0, 0), V(0, 1, 0), 30)
+	sampler := NewSampler(4, 4)
+	IterativeRender("out%03d.png", 1000, &scene, &camera, sampler, 1920/2, 1080/2, -1)
 }

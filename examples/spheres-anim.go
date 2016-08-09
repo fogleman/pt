@@ -100,12 +100,14 @@ func frame(i int) {
 	x := math.Cos(a) * 5
 	y := math.Sin(a) * 5
 	scene := Scene{}
-	scene.SetColor(HexColor(0xFFFFFF))
+	scene.Color = HexColor(0xFFFFFF)
 	sphere(&scene, Vector{}, Vector{}, 1, 0, 7, t)
 	scene.Add(NewSphere(Vector{0, 0, 6}, 0.5, LightMaterial(Color{1, 1, 1}, 1, NoAttenuation)))
 	camera := LookAt(Vector{x, y, 1}, Vector{0, 0, 0}, Vector{0, 0, 1}, 30)
 	template := fmt.Sprintf("out%03d.png", i)
-	IterativeRender(template, 1, &scene, &camera, 1920, 1080, 16, 16, 4)
+	// IterativeRender(template, 1, &scene, &camera, 1920, 1080, 16, 16, 4)
+	sampler := NewSampler(16, 16)
+	IterativeRender(template, 1, &scene, &camera, sampler, 1920/2, 1080/2, 4)
 }
 
 func easeInOutCubic(t float64) float64 {
@@ -131,7 +133,7 @@ func easeInQuint(t float64) float64 {
 }
 
 func main() {
-	for i := 420; i < Frames; i += 1 {
+	for i := 240; i < Frames; i += 1 {
 		frame(i)
 	}
 	time.Sleep(5 * time.Second)

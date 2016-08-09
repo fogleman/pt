@@ -1,23 +1,19 @@
 package main
 
-import (
-	"log"
-
-	"github.com/fogleman/pt/pt"
-)
+import . "github.com/fogleman/pt/pt"
 
 func main() {
-	scene := pt.Scene{}
-	material := pt.DiffuseMaterial(pt.HexColor(0x334D5C))
-	scene.Add(pt.NewSphere(pt.Vector{0.5, 1, 3}, 1, pt.LightMaterial(pt.Color{1, 1, 1}, 10, pt.NoAttenuation)))
-	// scene.Add(pt.NewSphere(pt.Vector{1.5, 1, 3}, 1, pt.LightMaterial(pt.Color{1, 1, 1}, 10, pt.NoAttenuation)))
-	scene.Add(pt.NewCube(pt.Vector{-5, -5, -2}, pt.Vector{5, 5, -1}, material))
-	mesh, err := pt.LoadOBJ("examples/suzanne.obj", pt.SpecularMaterial(pt.HexColor(0xEFC94C), 1.3))
+	scene := Scene{}
+	material := DiffuseMaterial(HexColor(0x334D5C))
+	scene.Add(NewSphere(Vector{0.5, 1, 3}, 1, LightMaterial(Color{1, 1, 1}, 10, NoAttenuation)))
+	// scene.Add(NewSphere(Vector{1.5, 1, 3}, 1, LightMaterial(Color{1, 1, 1}, 10, NoAttenuation)))
+	scene.Add(NewCube(Vector{-5, -5, -2}, Vector{5, 5, -1}, material))
+	mesh, err := LoadOBJ("examples/suzanne.obj", SpecularMaterial(HexColor(0xEFC94C), 1.3))
 	if err != nil {
-		log.Fatalln("LoadOBJ error:", err)
+		panic(err)
 	}
 	scene.Add(mesh)
-	camera := pt.LookAt(pt.Vector{1, -0.45, 4}, pt.Vector{1, -0.6, 0.4}, pt.Vector{0, 1, 0}, 45)
-	sampler := pt.DefaultSampler{16, 4}
-	pt.IterativeRender("out%03d.png", 1000, &scene, &camera, &sampler, 1024, 1024, -1)
+	camera := LookAt(Vector{1, -0.45, 4}, Vector{1, -0.6, 0.4}, Vector{0, 1, 0}, 45)
+	sampler := NewSampler(4, 4)
+	IterativeRender("out%03d.png", 1000, &scene, &camera, sampler, 1920/2, 1080/2, -1)
 }

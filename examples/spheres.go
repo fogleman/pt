@@ -47,9 +47,10 @@ func sphere(scene *Scene, previous, center Vector, radius float64, depth int) {
 
 func main() {
 	scene := Scene{}
-	scene.SetColor(HexColor(0xFFFFFF))
+	scene.Color = HexColor(0xFFFFFF)
 	sphere(&scene, Vector{}, Vector{}, 1, 8)
 	scene.Add(NewSphere(Vector{0, 0, 6}, 0.5, LightMaterial(Color{1, 1, 1}, 1, NoAttenuation)))
 	camera := LookAt(Vector{3, 1.75, 1}, Vector{0.75, 0.5, 0}, Vector{0, 0, 1}, 30)
-	IterativeRender("out%03d.png", 10000, &scene, &camera, 2560, 1440, -1, 4, 4)
+	sampler := NewSampler(4, 4)
+	IterativeRender("out%03d.png", 1000, &scene, &camera, sampler, 1920/2, 1080/2, -1)
 }
