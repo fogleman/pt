@@ -1,8 +1,9 @@
 language: go
 
 go:
+  - 1.4.3
+  - 1.5.4
   - 1.6.3
-  - tip
 
 install: go get -v -t github.com/fogleman/pt/pt
 
@@ -11,7 +12,6 @@ script:
   - go build examples/beads.go
   - go build examples/bunny.go
   - go build examples/cornell.go
-  - go build examples/counties.go
   - go build examples/craft.go
   - go build examples/cube.go
   - go build examples/cylinder.go
@@ -26,9 +26,7 @@ script:
   - go build examples/love.go
   - go build examples/materials.go
   - go build examples/maze.go
-  - go build examples/noise.go
   - go build examples/qbert.go
-  - go build examples/spheres-anim.go
   - go build examples/spheres.go
   - go build examples/sponza.go
   - go build examples/suzanne.go
