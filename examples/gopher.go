@@ -1,24 +1,21 @@
 package main
 
-import (
-	"log"
-
-	"github.com/fogleman/pt/pt"
-)
+import . "github.com/fogleman/pt/pt"
 
 func main() {
-	scene := pt.Scene{}
-	wall := pt.SpecularMaterial(pt.HexColor(0xFCFAE1), 2)
-	scene.Add(pt.NewSphere(pt.Vector{4, 7, 3}, 2, pt.LightMaterial(pt.Color{1, 1, 1}, 1, pt.NoAttenuation)))
-	scene.Add(pt.NewCube(pt.Vector{-30, -1, -30}, pt.Vector{-8, 10, 30}, wall))
-	scene.Add(pt.NewCube(pt.Vector{-30, -1, -30}, pt.Vector{30, 0.376662, 30}, wall))
-	material := pt.GlossyMaterial(pt.Color{}, 1.5, pt.Radians(30))
-	mesh, err := pt.LoadOBJ("examples/gopher.obj", material)
+	scene := Scene{}
+	wall := SpecularMaterial(HexColor(0xFCFAE1), 2)
+	scene.Add(NewSphere(V(4, 7, 3), 2, LightMaterial(Color{1, 1, 1}, 10, NoAttenuation)))
+	scene.Add(NewCube(V(-30, -1, -30), V(-8, 10, 30), wall))
+	scene.Add(NewCube(V(-30, -1, -30), V(30, 0.376662, 30), wall))
+	material := GlossyMaterial(Color{}, 1.5, Radians(30))
+	mesh, err := LoadOBJ("examples/gopher.obj", material)
 	if err != nil {
-		log.Fatalln("LoadOBJ error:", err)
+		panic(err)
 	}
 	mesh.SmoothNormals()
 	scene.Add(mesh)
-	camera := pt.LookAt(pt.Vector{8, 3, 0.5}, pt.Vector{-1, 2.5, 0.5}, pt.Vector{0, 1, 0}, 45)
-	pt.IterativeRender("out%03d.png", 10, &scene, &camera, 2560/4, 1440/4, -1, 16, 4)
+	camera := LookAt(V(8, 3, 0.5), V(-1, 2.5, 0.5), V(0, 1, 0), 45)
+	sampler := NewSampler(4, 4)
+	IterativeRender("out%03d.png", 1000, &scene, &camera, sampler, 1920/2, 1080/2, -1)
 }

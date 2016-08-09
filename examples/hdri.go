@@ -4,24 +4,18 @@ import . "github.com/fogleman/pt/pt"
 
 func main() {
 	scene := Scene{}
-	texture, err := LoadTexture("examples/courtyard_ccby/courtyard_8k.png")
-	if err != nil {
-		panic(err)
-	}
-	scene.SetTexture(texture)
-	texture, err = LoadTexture("examples/checker.png")
-	if err != nil {
-		panic(err)
-	}
+	scene.Color = Color{1, 1, 1}
+	scene.Texture = GetTexture("examples/courtyard_ccby/courtyard_8k.png", 1)
 	material := GlossyMaterial(Color{1, 1, 1}, 2, Radians(0))
-	material.Texture = texture
-	scene.Add(NewSphere(Vector{0, 0, 0}, 1, material))
-	scene.Add(NewSphere(Vector{-2.5, 0, 0}, 1, material))
-	scene.Add(NewSphere(Vector{2.5, 0, 0}, 1, material))
-	scene.Add(NewSphere(Vector{0, 0, -2.5}, 1, material))
-	scene.Add(NewSphere(Vector{0, 0, 2.5}, 1, material))
+	material.Texture = GetTexture("examples/checker.png", 2.2)
+	scene.Add(NewSphere(V(0, 0, 0), 1, material))
+	scene.Add(NewSphere(V(-2.5, 0, 0), 1, material))
+	scene.Add(NewSphere(V(2.5, 0, 0), 1, material))
+	scene.Add(NewSphere(V(0, 0, -2.5), 1, material))
+	scene.Add(NewSphere(V(0, 0, 2.5), 1, material))
 	material = GlossyMaterial(HexColor(0xEFECCA), 1.1, Radians(45))
-	scene.Add(NewCube(Vector{-100, -100, -100}, Vector{100, -1, 100}, material))
-	camera := LookAt(Vector{2, 3, 4}, Vector{0, 0, 0}, Vector{0, 1, 0}, 40)
-	IterativeRender("out%03d.png", 10000, &scene, &camera, 1920, 1080, -1, 16, 4)
+	scene.Add(NewCube(V(-100, -100, -100), V(100, -1, 100), material))
+	camera := LookAt(V(2, 3, 4), V(0, 0, 0), V(0, 1, 0), 40)
+	sampler := NewSampler(4, 4)
+	IterativeRender("out%03d.png", 1000, &scene, &camera, sampler, 1920/2, 1080/2, -1)
 }
