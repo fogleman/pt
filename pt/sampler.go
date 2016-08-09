@@ -14,17 +14,21 @@ pick a random light
 cast from camera N times, store hits
 cast from light M times, store hits
 cast shadow ray for all pairs
-compute probability based on cos a, cos a
+compute probability based on cos a, cos a?
 combine
 */
 
+func NewSampler(firstHitSamples, maxBounces int) Sampler {
+	return &DefaultSampler{firstHitSamples, maxBounces}
+}
+
 type DefaultSampler struct {
-	HitSamples int
-	Bounces    int
+	FirstHitSamples int
+	MaxBounces      int
 }
 
 func (s *DefaultSampler) Sample(scene *Scene, ray Ray, rnd *rand.Rand) Color {
-	return s.sample(scene, ray, true, s.HitSamples, s.Bounces, rnd)
+	return s.sample(scene, ray, true, s.FirstHitSamples, s.MaxBounces, rnd)
 }
 
 func (s *DefaultSampler) sample(scene *Scene, ray Ray, emission bool, samples, depth int, rnd *rand.Rand) Color {
