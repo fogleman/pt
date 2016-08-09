@@ -19,12 +19,13 @@ combine
 */
 
 func NewSampler(firstHitSamples, maxBounces int) Sampler {
-	return &DefaultSampler{firstHitSamples, maxBounces}
+	return &DefaultSampler{firstHitSamples, maxBounces, true}
 }
 
 type DefaultSampler struct {
 	FirstHitSamples int
 	MaxBounces      int
+	DirectLighting  bool
 }
 
 func (s *DefaultSampler) Sample(scene *Scene, ray Ray, rnd *rand.Rand) Color {
@@ -51,7 +52,7 @@ func (s *DefaultSampler) sample(scene *Scene, ray Ray, emission bool, samples, d
 	result := Color{}
 	emittance := info.Material.Emittance
 	if emittance > 0 {
-		if !emission {
+		if s.DirectLighting && !emission {
 			return Color{}
 		}
 		attenuation := info.Material.Attenuation.Compute(hit.T)
@@ -68,7 +69,10 @@ func (s *DefaultSampler) sample(scene *Scene, ray Ray, emission bool, samples, d
 				tinted := indirect.Mix(info.Color.Mul(indirect), info.Material.Tint)
 				result = result.Add(tinted)
 			} else {
-				direct := s.directLight(scene, info.Ray, rnd)
+				direct := Color{}
+				if s.DirectLighting {
+					direct = s.directLight(scene, info.Ray, rnd)
+				}
 				result = result.Add(info.Color.Mul(direct.Add(indirect)))
 			}
 		}
