@@ -46,7 +46,10 @@ func (s *DefaultSampler) sample(scene *Scene, ray Ray, emission bool, samples, d
 	info := hit.Info(ray)
 	result := Color{}
 	emittance := info.Material.Emittance
-	if emission && emittance > 0 {
+	if emittance > 0 {
+		if !emission {
+			return Color{}
+		}
 		attenuation := info.Material.Attenuation.Compute(hit.T)
 		result = result.Add(info.Color.MulScalar(emittance * attenuation * float64(samples)))
 	}
@@ -74,29 +77,58 @@ func (s *DefaultSampler) directLight(scene *Scene, n Ray, rnd *rand.Rand) Color 
 	if nLights == 0 {
 		return Color{}
 	}
+
+	// pick a random light
 	light := scene.lights[rand.Intn(nLights)]
-	// TODO: get bounding sphere, get random point, see if hits shape
-	p := light.RandomPoint(rnd)
-	d := p.Sub(n.Origin)
-	lr := Ray{n.Origin, d.Normalize()}
-	diffuse := lr.Direction.Dot(n.Direction)
+
+	// get bounding sphere center and radius
+	var center Vector
+	var radius float64
+	switch t := light.(type) {
+	case *Sphere:
+		radius = t.radius
+		center = t.center
+	default:
+		// get bounding sphere from bounding box
+		box := t.Box()
+		radius = box.OuterRadius()
+		center = box.Center()
+	}
+
+	// get random point on sphere surface
+	// TODO: use disk instead, this is biased?
+	point := RandomUnitVector(rnd).MulScalar(radius).Add(center)
+
+	// construct ray toward light point
+	ray := Ray{n.Origin, point.Sub(n.Origin).Normalize()}
+
+	// get cosine term
+	diffuse := ray.Direction.Dot(n.Direction)
 	if diffuse <= 0 {
 		return Color{}
 	}
-	// distance := light.(*Sphere).center.Sub(n.Origin).Length()
-	distance := light.Intersect(lr).T
-	// distance := d.Length()
-	if scene.Shadow(lr, light, distance) {
+
+	// check for light visibility
+	hit := scene.Intersect(ray)
+	if !hit.Ok() || hit.Shape != light {
 		return Color{}
 	}
-	material := light.Material(p)
-	emittance := material.Emittance
-	attenuation := material.Attenuation.Compute(distance)
-	color := light.Color(p).MulScalar(diffuse * emittance * attenuation)
 
-	// r := light.Box().Radius()
-	r := light.(*Sphere).radius
-	a := math.Atan2(r, distance)
-	f := 1 - math.Cos(a)
-	return color.MulScalar(f * float64(nLights))
+	// get material properties from light
+	material := light.Material(point)
+	color := light.Color(point)
+	emittance := material.Emittance
+	attenuation := material.Attenuation.Compute(hit.T)
+
+	// compute solid angle (hemisphere coverage)
+	hyp := center.Sub(n.Origin).Length()
+	opp := radius
+	theta := math.Asin(opp / hyp)
+	adj := opp / math.Tan(theta)
+	d := math.Cos(theta) * adj
+	r := math.Sin(theta) * adj
+	coverage := (r * r) / (d * d)
+
+	m := diffuse * emittance * attenuation * coverage * float64(nLights)
+	return color.MulScalar(m)
 }
