@@ -1,7 +1,5 @@
 package pt
 
-import "math/rand"
-
 type Triangle struct {
 	material   *Material
 	box        Box
@@ -19,7 +17,7 @@ func NewTriangle(v1, v2, v3, t1, t2, t3 Vector, material Material) *Triangle {
 	t.t2 = t2
 	t.t3 = t3
 	t.material = &material
-	t.UpdateBox()
+	t.UpdateBoundingBox()
 	t.FixNormals()
 	return &t
 }
@@ -31,7 +29,7 @@ func (t *Triangle) Vertices() (Vector, Vector, Vector) {
 func (t *Triangle) Compile() {
 }
 
-func (t *Triangle) Box() Box {
+func (t *Triangle) BoundingBox() Box {
 	return t.box
 }
 
@@ -71,7 +69,7 @@ func (t *Triangle) Intersect(r Ray) Hit {
 	return Hit{t, d, nil}
 }
 
-func (t *Triangle) Color(p Vector) Color {
+func (t *Triangle) ColorAt(p Vector) Color {
 	if t.material.Texture == nil {
 		return t.material.Color
 	}
@@ -83,11 +81,11 @@ func (t *Triangle) Color(p Vector) Color {
 	return t.material.Texture.Sample(n.X, n.Y)
 }
 
-func (t *Triangle) Material(p Vector) Material {
+func (t *Triangle) MaterialAt(p Vector) Material {
 	return *t.material
 }
 
-func (t *Triangle) Normal(p Vector) Vector {
+func (t *Triangle) NormalAt(p Vector) Vector {
 	u, v, w := t.Barycentric(p)
 	n := Vector{}
 	n = n.Add(t.n1.MulScalar(u))
@@ -133,10 +131,6 @@ func (t *Triangle) Normal(p Vector) Vector {
 	return n
 }
 
-func (t *Triangle) RandomPoint(rnd *rand.Rand) Vector {
-	return Vector{} // TODO: fix
-}
-
 func (t *Triangle) Area() float64 {
 	e1 := t.v2.Sub(t.v1)
 	e2 := t.v3.Sub(t.v1)
@@ -160,7 +154,7 @@ func (t *Triangle) Barycentric(p Vector) (u, v, w float64) {
 	return
 }
 
-func (t *Triangle) UpdateBox() {
+func (t *Triangle) UpdateBoundingBox() {
 	min := t.v1.Min(t.v2).Min(t.v3)
 	max := t.v1.Max(t.v2).Max(t.v3)
 	t.box = Box{min, max}

@@ -41,7 +41,7 @@ func LoadBinarySTL(path string, material Material) (*Mesh, error) {
 		t.v1 = Vector{float64(d.V1[0]), float64(d.V1[1]), float64(d.V1[2])}
 		t.v2 = Vector{float64(d.V2[0]), float64(d.V2[1]), float64(d.V2[2])}
 		t.v3 = Vector{float64(d.V3[0]), float64(d.V3[1]), float64(d.V3[2])}
-		t.UpdateBox()
+		t.UpdateBoundingBox()
 		t.FixNormals()
 		triangles[i] = &t
 	}
@@ -102,7 +102,7 @@ func LoadSTL(path string, material Material) (*Mesh, error) {
 		t.v1 = vertexes[i+0]
 		t.v2 = vertexes[i+1]
 		t.v3 = vertexes[i+2]
-		t.UpdateBox()
+		t.UpdateBoundingBox()
 		t.FixNormals()
 		triangles = append(triangles, &t)
 	}

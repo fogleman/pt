@@ -16,9 +16,9 @@ func offset(stdev float64) Vector {
 }
 
 func intersects(scene *Scene, shape Shape) bool {
-	box := shape.Box()
+	box := shape.BoundingBox()
 	for _, other := range scene.Shapes() {
-		if box.Intersects(other.Box()) {
+		if box.Intersects(other.BoundingBox()) {
 			return true
 		}
 	}

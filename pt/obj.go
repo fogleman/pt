@@ -84,7 +84,7 @@ func LoadOBJ(path string, parent Material) (*Mesh, error) {
 				t.n1 = vns[fvns[i1]]
 				t.n2 = vns[fvns[i2]]
 				t.n3 = vns[fvns[i3]]
-				t.UpdateBox()
+				t.UpdateBoundingBox()
 				t.FixNormals()
 				triangles = append(triangles, &t)
 			}

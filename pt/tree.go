@@ -96,7 +96,7 @@ func (node *Node) IntersectShapes(r Ray) Hit {
 func (node *Node) PartitionScore(axis Axis, point float64) int {
 	left, right := 0, 0
 	for _, shape := range node.shapes {
-		box := shape.Box()
+		box := shape.BoundingBox()
 		l, r := box.Partition(axis, point)
 		if l {
 			left++
@@ -116,7 +116,7 @@ func (node *Node) Partition(size int, axis Axis, point float64) (left, right []S
 	left = make([]Shape, 0, size)
 	right = make([]Shape, 0, size)
 	for _, shape := range node.shapes {
-		box := shape.Box()
+		box := shape.BoundingBox()
 		l, r := box.Partition(axis, point)
 		if l {
 			left = append(left, shape)
@@ -136,7 +136,7 @@ func (node *Node) Split(depth int) {
 	ys := make([]float64, 0, len(node.shapes)*2)
 	zs := make([]float64, 0, len(node.shapes)*2)
 	for _, shape := range node.shapes {
-		box := shape.Box()
+		box := shape.BoundingBox()
 		xs = append(xs, box.Min.X)
 		xs = append(xs, box.Max.X)
 		ys = append(ys, box.Min.Y)

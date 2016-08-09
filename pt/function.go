@@ -1,7 +1,5 @@
 package pt
 
-import "math/rand"
-
 type Func func(x, y float64) float64
 
 type Function struct {
@@ -17,7 +15,7 @@ func NewFunction(function Func, box Box, material Material) Shape {
 func (f *Function) Compile() {
 }
 
-func (f *Function) Box() Box {
+func (f *Function) BoundingBox() Box {
 	return f.box
 }
 
@@ -37,7 +35,7 @@ func (f *Function) Intersect(ray Ray) Hit {
 	return NoHit
 }
 
-func (f *Function) Color(p Vector) Color {
+func (f *Function) ColorAt(p Vector) Color {
 	if f.material.Texture == nil {
 		return f.material.Color
 	}
@@ -48,11 +46,11 @@ func (f *Function) Color(p Vector) Color {
 	return f.material.Texture.Sample(u, v)
 }
 
-func (f *Function) Material(p Vector) Material {
+func (f *Function) MaterialAt(p Vector) Material {
 	return f.material
 }
 
-func (f *Function) Normal(p Vector) Vector {
+func (f *Function) NormalAt(p Vector) Vector {
 	eps := 1e-3
 	v := Vector{
 		f.function(p.X-eps, p.Y) - f.function(p.X+eps, p.Y),
@@ -60,8 +58,4 @@ func (f *Function) Normal(p Vector) Vector {
 		2 * eps,
 	}
 	return v.Normalize()
-}
-
-func (f *Function) RandomPoint(rnd *rand.Rand) Vector {
-	return Vector{}
 }

@@ -90,7 +90,7 @@ func (s *DefaultSampler) directLight(scene *Scene, n Ray, rnd *rand.Rand) Color 
 		center = t.center
 	default:
 		// get bounding sphere from bounding box
-		box := t.Box()
+		box := t.BoundingBox()
 		radius = box.OuterRadius()
 		center = box.Center()
 	}
@@ -115,8 +115,8 @@ func (s *DefaultSampler) directLight(scene *Scene, n Ray, rnd *rand.Rand) Color 
 	}
 
 	// get material properties from light
-	material := light.Material(point)
-	color := light.Color(point)
+	material := light.MaterialAt(point)
+	color := light.ColorAt(point)
 	emittance := material.Emittance
 	attenuation := material.Attenuation.Compute(hit.T)
 

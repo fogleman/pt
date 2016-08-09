@@ -1,9 +1,6 @@
 package pt
 
-import (
-	"math"
-	"math/rand"
-)
+import "math"
 
 type Cube struct {
 	min      Vector
@@ -20,7 +17,7 @@ func NewCube(min, max Vector, material Material) Shape {
 func (c *Cube) Compile() {
 }
 
-func (c *Cube) Box() Box {
+func (c *Cube) BoundingBox() Box {
 	return c.box
 }
 
@@ -36,7 +33,7 @@ func (c *Cube) Intersect(r Ray) Hit {
 	return NoHit
 }
 
-func (c *Cube) Color(p Vector) Color {
+func (c *Cube) ColorAt(p Vector) Color {
 	if c.material.Texture == nil {
 		return c.material.Color
 	}
@@ -44,11 +41,11 @@ func (c *Cube) Color(p Vector) Color {
 	return c.material.Texture.Sample(p.X, p.Z)
 }
 
-func (c *Cube) Material(p Vector) Material {
+func (c *Cube) MaterialAt(p Vector) Material {
 	return c.material
 }
 
-func (c *Cube) Normal(p Vector) Vector {
+func (c *Cube) NormalAt(p Vector) Vector {
 	switch {
 	case p.X < c.min.X+EPS:
 		return Vector{-1, 0, 0}
@@ -64,11 +61,4 @@ func (c *Cube) Normal(p Vector) Vector {
 		return Vector{0, 0, 1}
 	}
 	return Vector{0, 1, 0}
-}
-
-func (c *Cube) RandomPoint(rnd *rand.Rand) Vector {
-	x := c.min.X + rnd.Float64()*(c.max.X-c.min.X)
-	y := c.min.Y + rnd.Float64()*(c.max.Y-c.min.Y)
-	z := c.min.Z + rnd.Float64()*(c.max.Z-c.min.Z)
-	return Vector{x, y, z}
 }

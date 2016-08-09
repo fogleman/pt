@@ -44,7 +44,7 @@ func (s *Scene) Compile() {
 
 func (s *Scene) Add(shape Shape) {
 	s.shapes = append(s.shapes, shape)
-	if shape.Material(Vector{}).Emittance > 0 {
+	if shape.MaterialAt(Vector{}).Emittance > 0 {
 		s.lights = append(s.lights, shape)
 	}
 }

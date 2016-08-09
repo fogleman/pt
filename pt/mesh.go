@@ -1,9 +1,6 @@
 package pt
 
-import (
-	"math"
-	"math/rand"
-)
+import "math"
 
 type Mesh struct {
 	box       Box
@@ -30,7 +27,7 @@ func (m *Mesh) Compile() {
 	}
 }
 
-func (m *Mesh) Box() Box {
+func (m *Mesh) BoundingBox() Box {
 	return m.box
 }
 
@@ -38,23 +35,19 @@ func (m *Mesh) Intersect(r Ray) Hit {
 	return m.tree.Intersect(r)
 }
 
-func (m *Mesh) Color(p Vector) Color {
+func (m *Mesh) ColorAt(p Vector) Color {
 	return Color{} // not implemented
 }
 
-func (m *Mesh) Material(p Vector) Material {
+func (m *Mesh) MaterialAt(p Vector) Material {
 	return Material{} // not implemented
 }
 
-func (m *Mesh) Normal(p Vector) Vector {
+func (m *Mesh) NormalAt(p Vector) Vector {
 	return Vector{} // not implemented
 }
 
-func (m *Mesh) RandomPoint(rnd *rand.Rand) Vector {
-	return Vector{} // not implemented
-}
-
-func (m *Mesh) UpdateBox() {
+func (m *Mesh) UpdateBoundingBox() {
 	m.box = BoxForTriangles(m.triangles)
 }
 
@@ -111,10 +104,10 @@ func (m *Mesh) MoveTo(position, anchor Vector) {
 }
 
 func (m *Mesh) FitInside(box Box, anchor Vector) {
-	scale := box.Size().Div(m.Box().Size()).MinComponent()
-	extra := box.Size().Sub(m.Box().Size().MulScalar(scale))
+	scale := box.Size().Div(m.BoundingBox().Size()).MinComponent()
+	extra := box.Size().Sub(m.BoundingBox().Size().MulScalar(scale))
 	matrix := Identity()
-	matrix = matrix.Translate(m.Box().Min.MulScalar(-1))
+	matrix = matrix.Translate(m.BoundingBox().Min.MulScalar(-1))
 	matrix = matrix.Scale(Vector{scale, scale, scale})
 	matrix = matrix.Translate(box.Min.Add(extra.Mul(anchor)))
 	m.Transform(matrix)
@@ -128,9 +121,9 @@ func (m *Mesh) Transform(matrix Matrix) {
 		t.n1 = matrix.MulDirection(t.n1)
 		t.n2 = matrix.MulDirection(t.n2)
 		t.n3 = matrix.MulDirection(t.n3)
-		t.UpdateBox()
+		t.UpdateBoundingBox()
 	}
-	m.UpdateBox()
+	m.UpdateBoundingBox()
 	m.tree = nil // dirty
 }
 

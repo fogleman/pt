@@ -1,9 +1,6 @@
 package pt
 
-import (
-	"math"
-	"math/rand"
-)
+import "math"
 
 type Sphere struct {
 	center   Vector
@@ -22,7 +19,7 @@ func NewSphere(center Vector, radius float64, material Material) Shape {
 func (s *Sphere) Compile() {
 }
 
-func (s *Sphere) Box() Box {
+func (s *Sphere) BoundingBox() Box {
 	return s.box
 }
 
@@ -45,7 +42,7 @@ func (s *Sphere) Intersect(r Ray) Hit {
 	return NoHit
 }
 
-func (s *Sphere) Color(p Vector) Color {
+func (s *Sphere) ColorAt(p Vector) Color {
 	if s.material.Texture == nil {
 		return s.material.Color
 	}
@@ -57,15 +54,10 @@ func (s *Sphere) Color(p Vector) Color {
 	return s.material.Texture.Sample(u, v)
 }
 
-func (s *Sphere) Material(p Vector) Material {
+func (s *Sphere) MaterialAt(p Vector) Material {
 	return s.material
 }
 
-func (s *Sphere) Normal(p Vector) Vector {
+func (s *Sphere) NormalAt(p Vector) Vector {
 	return p.Sub(s.center).Normalize()
-}
-
-func (s *Sphere) RandomPoint(rnd *rand.Rand) Vector {
-	v := RandomUnitVector(rnd)
-	return v.MulScalar(s.radius).Add(s.center)
 }

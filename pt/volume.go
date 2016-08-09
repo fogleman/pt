@@ -3,15 +3,14 @@ package pt
 import (
 	"image"
 	"math"
-	"math/rand"
 )
 
 type Volume struct {
-	W, H, D     int
-	ZScale      float64
-	Data        []float64
-	Windows     []VolumeWindow
-	BoundingBox Box
+	W, H, D int
+	ZScale  float64
+	Data    []float64
+	Windows []VolumeWindow
+	Box     Box
 }
 
 type VolumeWindow struct {
@@ -80,8 +79,8 @@ func (v *Volume) Sample(x, y, z float64) float64 {
 func (v *Volume) Compile() {
 }
 
-func (v *Volume) Box() Box {
-	return v.BoundingBox
+func (v *Volume) BoundingBox() Box {
+	return v.Box
 }
 
 func (v *Volume) Sign(a Vector) int {
@@ -99,7 +98,7 @@ func (v *Volume) Sign(a Vector) int {
 }
 
 func (v *Volume) Intersect(ray Ray) Hit {
-	tmin, tmax := v.BoundingBox.Intersect(ray)
+	tmin, tmax := v.Box.Intersect(ray)
 	step := 1.0 / 512
 	start := math.Max(step, tmin)
 	sign := -1
@@ -122,11 +121,11 @@ func (v *Volume) Intersect(ray Ray) Hit {
 	return NoHit
 }
 
-func (v *Volume) Color(p Vector) Color {
-	return v.Material(p).Color
+func (v *Volume) ColorAt(p Vector) Color {
+	return v.MaterialAt(p).Color
 }
 
-func (v *Volume) Material(p Vector) Material {
+func (v *Volume) MaterialAt(p Vector) Material {
 	be := 1e9
 	bm := Material{}
 	s := v.Sample(p.X, p.Y, p.Z)
@@ -144,7 +143,7 @@ func (v *Volume) Material(p Vector) Material {
 
 }
 
-func (v *Volume) Normal(p Vector) Vector {
+func (v *Volume) NormalAt(p Vector) Vector {
 	eps := 0.001
 	n := Vector{
 		v.Sample(p.X-eps, p.Y, p.Z) - v.Sample(p.X+eps, p.Y, p.Z),
@@ -152,8 +151,4 @@ func (v *Volume) Normal(p Vector) Vector {
 		v.Sample(p.X, p.Y, p.Z-eps) - v.Sample(p.X, p.Y, p.Z+eps),
 	}
 	return n.Normalize()
-}
-
-func (v *Volume) RandomPoint(rnd *rand.Rand) Vector {
-	return Vector{}
 }
