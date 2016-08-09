@@ -1,12 +1,10 @@
-### Summary
+# pt: a golang path tracer
 
 [![Build Status](https://travis-ci.org/fogleman/pt.png?branch=master)](https://travis-ci.org/fogleman/pt) [![GoDoc](https://godoc.org/github.com/fogleman/pt/pt?status.svg)](https://godoc.org/github.com/fogleman/pt/pt)
 
-I am writing a [path tracer](http://en.wikipedia.org/wiki/Path_tracing) in Go. The Go gopher below was rendered using it, and [here's the code](https://github.com/fogleman/pt/blob/master/examples/gopher.go) that was used to do it. It's 2560x1440px... so you can make it your wallpaper! The gopher 3D model was found [here](https://github.com/golang-samples/gopher-3d).
+This is a [path tracing](http://en.wikipedia.org/wiki/Path_tracing) renderer written in Go. The Go gopher below was rendered using it, and [here's the code](https://github.com/fogleman/pt/blob/master/examples/gopher.go) that was used to do it. The gopher 3D model was found [here](https://github.com/golang-samples/gopher-3d).
 
-Disclaimer: This is my first time using Go.
-
-![Go Gopher](http://i.imgur.com/buSF7m5.png)
+![Go Gopher](http://i.imgur.com/PhUUcTe.png)
 
     go run examples/gopher.go
 
@@ -14,6 +12,7 @@ Disclaimer: This is my first time using Go.
 
 * Supports OBJ, Binary STL and ASCII STL
 * Supports textures, bump maps and normal maps
+* Supports volume rendering from image slices
 * Uses k-d trees to accelerate ray intersection tests
 * Supports various material properties
 * Light sources with configurable attenuation
@@ -23,13 +22,12 @@ Disclaimer: This is my first time using Go.
 
 ### TODO
 
-Here are things that I'm planning, or at least hoping, to do.
+Here are things that I'm hoping to add.
 
+* bidirectional path tracing
 * subsurface scattering
 * atmosphere
 * constructive solid geometry
-* input files to define scene
-* animation support?
 
 ### Links
 
