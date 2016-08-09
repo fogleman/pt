@@ -13,8 +13,6 @@ import (
 	"time"
 )
 
-// TODO: don't export this stuff
-
 func Radians(degrees float64) float64 {
 	return degrees * math.Pi / 180
 }

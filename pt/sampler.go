@@ -33,15 +33,15 @@ func (s *DefaultSampler) sample(scene *Scene, ray Ray, emission bool, samples, d
 	}
 	hit := scene.Intersect(ray)
 	if !hit.Ok() {
-		if scene.texture != nil {
+		if scene.Texture != nil {
 			d := ray.Direction
 			u := math.Atan2(d.Z, d.X)
 			v := math.Atan2(d.Y, Vector{d.X, 0, d.Z}.Length())
 			u = (u + math.Pi) / (2 * math.Pi)
 			v = (v + math.Pi/2) / math.Pi
-			return scene.texture.Sample(u, v)
+			return scene.Texture.Sample(u, v)
 		}
-		return scene.color
+		return scene.Color
 	}
 	info := hit.Info(ray)
 	result := Color{}
@@ -73,21 +73,21 @@ func (s *DefaultSampler) sample(scene *Scene, ray Ray, emission bool, samples, d
 }
 
 func (s *DefaultSampler) directLight(scene *Scene, n Ray, rnd *rand.Rand) Color {
-	nLights := len(scene.lights)
+	nLights := len(scene.Lights)
 	if nLights == 0 {
 		return Color{}
 	}
 
 	// pick a random light
-	light := scene.lights[rand.Intn(nLights)]
+	light := scene.Lights[rand.Intn(nLights)]
 
 	// get bounding sphere center and radius
 	var center Vector
 	var radius float64
 	switch t := light.(type) {
 	case *Sphere:
-		radius = t.radius
-		center = t.center
+		radius = t.Radius
+		center = t.Center
 	default:
 		// get bounding sphere from bounding box
 		box := t.BoundingBox()

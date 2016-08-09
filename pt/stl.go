@@ -37,10 +37,10 @@ func LoadBinarySTL(path string, material Material) (*Mesh, error) {
 			return nil, err
 		}
 		t := Triangle{}
-		t.material = &material
-		t.v1 = Vector{float64(d.V1[0]), float64(d.V1[1]), float64(d.V1[2])}
-		t.v2 = Vector{float64(d.V2[0]), float64(d.V2[1]), float64(d.V2[2])}
-		t.v3 = Vector{float64(d.V3[0]), float64(d.V3[1]), float64(d.V3[2])}
+		t.Material = &material
+		t.V1 = Vector{float64(d.V1[0]), float64(d.V1[1]), float64(d.V1[2])}
+		t.V2 = Vector{float64(d.V2[0]), float64(d.V2[1]), float64(d.V2[2])}
+		t.V3 = Vector{float64(d.V3[0]), float64(d.V3[1]), float64(d.V3[2])}
 		t.UpdateBoundingBox()
 		t.FixNormals()
 		triangles[i] = &t
@@ -55,21 +55,21 @@ func SaveBinarySTL(path string, mesh *Mesh) error {
 	}
 	defer file.Close()
 	header := STLHeader{}
-	header.Count = uint32(len(mesh.triangles))
+	header.Count = uint32(len(mesh.Triangles))
 	if err := binary.Write(file, binary.LittleEndian, &header); err != nil {
 		return err
 	}
-	for _, triangle := range mesh.triangles {
+	for _, triangle := range mesh.Triangles {
 		d := STLTriangle{}
-		d.V1[0] = float32(triangle.v1.X)
-		d.V1[1] = float32(triangle.v1.Y)
-		d.V1[2] = float32(triangle.v1.Z)
-		d.V2[0] = float32(triangle.v2.X)
-		d.V2[1] = float32(triangle.v2.Y)
-		d.V2[2] = float32(triangle.v2.Z)
-		d.V3[0] = float32(triangle.v3.X)
-		d.V3[1] = float32(triangle.v3.Y)
-		d.V3[2] = float32(triangle.v3.Z)
+		d.V1[0] = float32(triangle.V1.X)
+		d.V1[1] = float32(triangle.V1.Y)
+		d.V1[2] = float32(triangle.V1.Z)
+		d.V2[0] = float32(triangle.V2.X)
+		d.V2[1] = float32(triangle.V2.Y)
+		d.V2[2] = float32(triangle.V2.Z)
+		d.V3[0] = float32(triangle.V3.X)
+		d.V3[1] = float32(triangle.V3.Y)
+		d.V3[2] = float32(triangle.V3.Z)
 		if err := binary.Write(file, binary.LittleEndian, &d); err != nil {
 			return err
 		}
@@ -98,10 +98,10 @@ func LoadSTL(path string, material Material) (*Mesh, error) {
 	var triangles []*Triangle
 	for i := 0; i < len(vertexes); i += 3 {
 		t := Triangle{}
-		t.material = &material
-		t.v1 = vertexes[i+0]
-		t.v2 = vertexes[i+1]
-		t.v3 = vertexes[i+2]
+		t.Material = &material
+		t.V1 = vertexes[i+0]
+		t.V2 = vertexes[i+1]
+		t.V3 = vertexes[i+2]
 		t.UpdateBoundingBox()
 		t.FixNormals()
 		triangles = append(triangles, &t)

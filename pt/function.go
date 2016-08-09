@@ -3,9 +3,9 @@ package pt
 type Func func(x, y float64) float64
 
 type Function struct {
-	function Func
-	box      Box
-	material Material
+	Function Func
+	Box      Box
+	Material Material
 }
 
 func NewFunction(function Func, box Box, material Material) Shape {
@@ -16,11 +16,11 @@ func (f *Function) Compile() {
 }
 
 func (f *Function) BoundingBox() Box {
-	return f.box
+	return f.Box
 }
 
 func (f *Function) Contains(v Vector) bool {
-	return v.Z < f.function(v.X, v.Y)
+	return v.Z < f.Function(v.X, v.Y)
 }
 
 func (f *Function) Intersect(ray Ray) Hit {
@@ -28,7 +28,7 @@ func (f *Function) Intersect(ray Ray) Hit {
 	sign := f.Contains(ray.Position(step))
 	for t := step; t < 12; t += step {
 		v := ray.Position(t)
-		if f.Contains(v) != sign && f.box.Contains(v) {
+		if f.Contains(v) != sign && f.Box.Contains(v) {
 			return Hit{f, t - step, nil}
 		}
 	}
@@ -36,25 +36,25 @@ func (f *Function) Intersect(ray Ray) Hit {
 }
 
 func (f *Function) ColorAt(p Vector) Color {
-	if f.material.Texture == nil {
-		return f.material.Color
+	if f.Material.Texture == nil {
+		return f.Material.Color
 	}
-	x1, x2 := f.box.Min.X, f.box.Max.X
-	y1, y2 := f.box.Min.Y, f.box.Max.Y
+	x1, x2 := f.Box.Min.X, f.Box.Max.X
+	y1, y2 := f.Box.Min.Y, f.Box.Max.Y
 	u := (p.X - x1) / (x2 - x1)
 	v := (p.Y - y1) / (y2 - y1)
-	return f.material.Texture.Sample(u, v)
+	return f.Material.Texture.Sample(u, v)
 }
 
 func (f *Function) MaterialAt(p Vector) Material {
-	return f.material
+	return f.Material
 }
 
 func (f *Function) NormalAt(p Vector) Vector {
 	eps := 1e-3
 	v := Vector{
-		f.function(p.X-eps, p.Y) - f.function(p.X+eps, p.Y),
-		f.function(p.X, p.Y-eps) - f.function(p.X, p.Y+eps),
+		f.Function(p.X-eps, p.Y) - f.Function(p.X+eps, p.Y),
+		f.Function(p.X, p.Y-eps) - f.Function(p.X, p.Y+eps),
 		2 * eps,
 	}
 	return v.Normalize()

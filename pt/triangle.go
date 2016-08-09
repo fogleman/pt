@@ -1,45 +1,45 @@
 package pt
 
 type Triangle struct {
-	material   *Material
-	box        Box
-	v1, v2, v3 Vector
-	n1, n2, n3 Vector
-	t1, t2, t3 Vector
+	Material   *Material
+	Box        Box
+	V1, V2, V3 Vector
+	N1, N2, N3 Vector
+	T1, T2, T3 Vector
 }
 
 func NewTriangle(v1, v2, v3, t1, t2, t3 Vector, material Material) *Triangle {
 	t := Triangle{}
-	t.v1 = v1
-	t.v2 = v2
-	t.v3 = v3
-	t.t1 = t1
-	t.t2 = t2
-	t.t3 = t3
-	t.material = &material
+	t.V1 = v1
+	t.V2 = v2
+	t.V3 = v3
+	t.T1 = t1
+	t.T2 = t2
+	t.T3 = t3
+	t.Material = &material
 	t.UpdateBoundingBox()
 	t.FixNormals()
 	return &t
 }
 
 func (t *Triangle) Vertices() (Vector, Vector, Vector) {
-	return t.v1, t.v2, t.v3
+	return t.V1, t.V2, t.V3
 }
 
 func (t *Triangle) Compile() {
 }
 
 func (t *Triangle) BoundingBox() Box {
-	return t.box
+	return t.Box
 }
 
 func (t *Triangle) Intersect(r Ray) Hit {
-	e1x := t.v2.X - t.v1.X
-	e1y := t.v2.Y - t.v1.Y
-	e1z := t.v2.Z - t.v1.Z
-	e2x := t.v3.X - t.v1.X
-	e2y := t.v3.Y - t.v1.Y
-	e2z := t.v3.Z - t.v1.Z
+	e1x := t.V2.X - t.V1.X
+	e1y := t.V2.Y - t.V1.Y
+	e1z := t.V2.Z - t.V1.Z
+	e2x := t.V3.X - t.V1.X
+	e2y := t.V3.Y - t.V1.Y
+	e2z := t.V3.Z - t.V1.Z
 	px := r.Direction.Y*e2z - r.Direction.Z*e2y
 	py := r.Direction.Z*e2x - r.Direction.X*e2z
 	pz := r.Direction.X*e2y - r.Direction.Y*e2x
@@ -48,9 +48,9 @@ func (t *Triangle) Intersect(r Ray) Hit {
 		return NoHit
 	}
 	inv := 1 / det
-	tx := r.Origin.X - t.v1.X
-	ty := r.Origin.Y - t.v1.Y
-	tz := r.Origin.Z - t.v1.Z
+	tx := r.Origin.X - t.V1.X
+	ty := r.Origin.Y - t.V1.Y
+	tz := r.Origin.Z - t.V1.Z
 	u := (tx*px + ty*py + tz*pz) * inv
 	if u < 0 || u > 1 {
 		return NoHit
@@ -70,38 +70,38 @@ func (t *Triangle) Intersect(r Ray) Hit {
 }
 
 func (t *Triangle) ColorAt(p Vector) Color {
-	if t.material.Texture == nil {
-		return t.material.Color
+	if t.Material.Texture == nil {
+		return t.Material.Color
 	}
 	u, v, w := t.Barycentric(p)
 	n := Vector{}
-	n = n.Add(t.t1.MulScalar(u))
-	n = n.Add(t.t2.MulScalar(v))
-	n = n.Add(t.t3.MulScalar(w))
-	return t.material.Texture.Sample(n.X, n.Y)
+	n = n.Add(t.T1.MulScalar(u))
+	n = n.Add(t.T2.MulScalar(v))
+	n = n.Add(t.T3.MulScalar(w))
+	return t.Material.Texture.Sample(n.X, n.Y)
 }
 
 func (t *Triangle) MaterialAt(p Vector) Material {
-	return *t.material
+	return *t.Material
 }
 
 func (t *Triangle) NormalAt(p Vector) Vector {
 	u, v, w := t.Barycentric(p)
 	n := Vector{}
-	n = n.Add(t.n1.MulScalar(u))
-	n = n.Add(t.n2.MulScalar(v))
-	n = n.Add(t.n3.MulScalar(w))
+	n = n.Add(t.N1.MulScalar(u))
+	n = n.Add(t.N2.MulScalar(v))
+	n = n.Add(t.N3.MulScalar(w))
 	n = n.Normalize()
-	if t.material.NormalTexture != nil {
+	if t.Material.NormalTexture != nil {
 		b := Vector{}
-		b = b.Add(t.t1.MulScalar(u))
-		b = b.Add(t.t2.MulScalar(v))
-		b = b.Add(t.t3.MulScalar(w))
-		ns := t.material.NormalTexture.NormalSample(b.X, b.Y)
-		dv1 := t.v2.Sub(t.v1)
-		dv2 := t.v3.Sub(t.v1)
-		dt1 := t.t2.Sub(t.t1)
-		dt2 := t.t3.Sub(t.t1)
+		b = b.Add(t.T1.MulScalar(u))
+		b = b.Add(t.T2.MulScalar(v))
+		b = b.Add(t.T3.MulScalar(w))
+		ns := t.Material.NormalTexture.NormalSample(b.X, b.Y)
+		dv1 := t.V2.Sub(t.V1)
+		dv2 := t.V3.Sub(t.V1)
+		dt1 := t.T2.Sub(t.T1)
+		dt2 := t.T3.Sub(t.T1)
 		T := dv1.MulScalar(dt2.Y).Sub(dv2.MulScalar(dt1.Y)).Normalize()
 		B := dv2.MulScalar(dt1.X).Sub(dv1.MulScalar(dt2.X)).Normalize()
 		N := T.Cross(B)
@@ -112,36 +112,36 @@ func (t *Triangle) NormalAt(p Vector) Vector {
 			0, 0, 0, 1}
 		n = matrix.MulDirection(ns)
 	}
-	if t.material.BumpTexture != nil {
+	if t.Material.BumpTexture != nil {
 		b := Vector{}
-		b = b.Add(t.t1.MulScalar(u))
-		b = b.Add(t.t2.MulScalar(v))
-		b = b.Add(t.t3.MulScalar(w))
-		bump := t.material.BumpTexture.BumpSample(b.X, b.Y)
-		dv1 := t.v2.Sub(t.v1)
-		dv2 := t.v3.Sub(t.v1)
-		dt1 := t.t2.Sub(t.t1)
-		dt2 := t.t3.Sub(t.t1)
+		b = b.Add(t.T1.MulScalar(u))
+		b = b.Add(t.T2.MulScalar(v))
+		b = b.Add(t.T3.MulScalar(w))
+		bump := t.Material.BumpTexture.BumpSample(b.X, b.Y)
+		dv1 := t.V2.Sub(t.V1)
+		dv2 := t.V3.Sub(t.V1)
+		dt1 := t.T2.Sub(t.T1)
+		dt2 := t.T3.Sub(t.T1)
 		tangent := dv1.MulScalar(dt2.Y).Sub(dv2.MulScalar(dt1.Y)).Normalize()
 		bitangent := dv2.MulScalar(dt1.X).Sub(dv1.MulScalar(dt2.X)).Normalize()
-		n = n.Add(tangent.MulScalar(bump.X * t.material.BumpMultiplier))
-		n = n.Add(bitangent.MulScalar(bump.Y * t.material.BumpMultiplier))
+		n = n.Add(tangent.MulScalar(bump.X * t.Material.BumpMultiplier))
+		n = n.Add(bitangent.MulScalar(bump.Y * t.Material.BumpMultiplier))
 	}
 	n = n.Normalize()
 	return n
 }
 
 func (t *Triangle) Area() float64 {
-	e1 := t.v2.Sub(t.v1)
-	e2 := t.v3.Sub(t.v1)
+	e1 := t.V2.Sub(t.V1)
+	e2 := t.V3.Sub(t.V1)
 	n := e1.Cross(e2)
 	return n.Length() / 2
 }
 
 func (t *Triangle) Barycentric(p Vector) (u, v, w float64) {
-	v0 := t.v2.Sub(t.v1)
-	v1 := t.v3.Sub(t.v1)
-	v2 := p.Sub(t.v1)
+	v0 := t.V2.Sub(t.V1)
+	v1 := t.V3.Sub(t.V1)
+	v2 := p.Sub(t.V1)
 	d00 := v0.Dot(v0)
 	d01 := v0.Dot(v1)
 	d11 := v1.Dot(v1)
@@ -155,23 +155,23 @@ func (t *Triangle) Barycentric(p Vector) (u, v, w float64) {
 }
 
 func (t *Triangle) UpdateBoundingBox() {
-	min := t.v1.Min(t.v2).Min(t.v3)
-	max := t.v1.Max(t.v2).Max(t.v3)
-	t.box = Box{min, max}
+	min := t.V1.Min(t.V2).Min(t.V3)
+	max := t.V1.Max(t.V2).Max(t.V3)
+	t.Box = Box{min, max}
 }
 
 func (t *Triangle) FixNormals() {
-	e1 := t.v2.Sub(t.v1)
-	e2 := t.v3.Sub(t.v1)
+	e1 := t.V2.Sub(t.V1)
+	e2 := t.V3.Sub(t.V1)
 	n := e1.Cross(e2).Normalize()
 	zero := Vector{}
-	if t.n1 == zero {
-		t.n1 = n
+	if t.N1 == zero {
+		t.N1 = n
 	}
-	if t.n2 == zero {
-		t.n2 = n
+	if t.N2 == zero {
+		t.N2 = n
 	}
-	if t.n3 == zero {
-		t.n3 = n
+	if t.N3 == zero {
+		t.N3 = n
 	}
 }

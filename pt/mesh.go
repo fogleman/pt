@@ -3,8 +3,8 @@ package pt
 import "math"
 
 type Mesh struct {
-	box       Box
-	triangles []*Triangle
+	Box       Box
+	Triangles []*Triangle
 	tree      *Tree
 }
 
@@ -13,14 +13,10 @@ func NewMesh(triangles []*Triangle) *Mesh {
 	return &Mesh{box, triangles, nil}
 }
 
-func (m *Mesh) Triangles() []*Triangle {
-	return m.triangles
-}
-
 func (m *Mesh) Compile() {
 	if m.tree == nil {
-		shapes := make([]Shape, len(m.triangles))
-		for i, triangle := range m.triangles {
+		shapes := make([]Shape, len(m.Triangles))
+		for i, triangle := range m.Triangles {
 			shapes[i] = triangle
 		}
 		m.tree = NewTree(shapes)
@@ -28,7 +24,7 @@ func (m *Mesh) Compile() {
 }
 
 func (m *Mesh) BoundingBox() Box {
-	return m.box
+	return m.Box
 }
 
 func (m *Mesh) Intersect(r Ray) Hit {
@@ -48,7 +44,7 @@ func (m *Mesh) NormalAt(p Vector) Vector {
 }
 
 func (m *Mesh) UpdateBoundingBox() {
-	m.box = BoxForTriangles(m.triangles)
+	m.Box = BoxForTriangles(m.Triangles)
 }
 
 func smoothNormalsThreshold(normal Vector, normals []Vector, threshold float64) Vector {
@@ -64,32 +60,32 @@ func smoothNormalsThreshold(normal Vector, normals []Vector, threshold float64) 
 func (m *Mesh) SmoothNormalsThreshold(radians float64) {
 	threshold := math.Cos(radians)
 	lookup := make(map[Vector][]Vector)
-	for _, t := range m.triangles {
-		lookup[t.v1] = append(lookup[t.v1], t.n1)
-		lookup[t.v2] = append(lookup[t.v2], t.n2)
-		lookup[t.v3] = append(lookup[t.v3], t.n3)
+	for _, t := range m.Triangles {
+		lookup[t.V1] = append(lookup[t.V1], t.N1)
+		lookup[t.V2] = append(lookup[t.V2], t.N2)
+		lookup[t.V3] = append(lookup[t.V3], t.N3)
 	}
-	for _, t := range m.triangles {
-		t.n1 = smoothNormalsThreshold(t.n1, lookup[t.v1], threshold)
-		t.n2 = smoothNormalsThreshold(t.n2, lookup[t.v2], threshold)
-		t.n3 = smoothNormalsThreshold(t.n3, lookup[t.v3], threshold)
+	for _, t := range m.Triangles {
+		t.N1 = smoothNormalsThreshold(t.N1, lookup[t.V1], threshold)
+		t.N2 = smoothNormalsThreshold(t.N2, lookup[t.V2], threshold)
+		t.N3 = smoothNormalsThreshold(t.N3, lookup[t.V3], threshold)
 	}
 }
 
 func (m *Mesh) SmoothNormals() {
 	lookup := make(map[Vector]Vector)
-	for _, t := range m.triangles {
-		lookup[t.v1] = lookup[t.v1].Add(t.n1)
-		lookup[t.v2] = lookup[t.v2].Add(t.n2)
-		lookup[t.v3] = lookup[t.v3].Add(t.n3)
+	for _, t := range m.Triangles {
+		lookup[t.V1] = lookup[t.V1].Add(t.N1)
+		lookup[t.V2] = lookup[t.V2].Add(t.N2)
+		lookup[t.V3] = lookup[t.V3].Add(t.N3)
 	}
 	for k, v := range lookup {
 		lookup[k] = v.Normalize()
 	}
-	for _, t := range m.triangles {
-		t.n1 = lookup[t.v1]
-		t.n2 = lookup[t.v2]
-		t.n3 = lookup[t.v3]
+	for _, t := range m.Triangles {
+		t.N1 = lookup[t.V1]
+		t.N2 = lookup[t.V2]
+		t.N3 = lookup[t.V3]
 	}
 }
 
@@ -99,7 +95,7 @@ func (m *Mesh) UnitCube() {
 }
 
 func (m *Mesh) MoveTo(position, anchor Vector) {
-	matrix := Translate(position.Sub(m.box.Anchor(anchor)))
+	matrix := Translate(position.Sub(m.Box.Anchor(anchor)))
 	m.Transform(matrix)
 }
 
@@ -114,13 +110,13 @@ func (m *Mesh) FitInside(box Box, anchor Vector) {
 }
 
 func (m *Mesh) Transform(matrix Matrix) {
-	for _, t := range m.triangles {
-		t.v1 = matrix.MulPosition(t.v1)
-		t.v2 = matrix.MulPosition(t.v2)
-		t.v3 = matrix.MulPosition(t.v3)
-		t.n1 = matrix.MulDirection(t.n1)
-		t.n2 = matrix.MulDirection(t.n2)
-		t.n3 = matrix.MulDirection(t.n3)
+	for _, t := range m.Triangles {
+		t.V1 = matrix.MulPosition(t.V1)
+		t.V2 = matrix.MulPosition(t.V2)
+		t.V3 = matrix.MulPosition(t.V3)
+		t.N1 = matrix.MulDirection(t.N1)
+		t.N2 = matrix.MulDirection(t.N2)
+		t.N3 = matrix.MulDirection(t.N3)
 		t.UpdateBoundingBox()
 	}
 	m.UpdateBoundingBox()

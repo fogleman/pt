@@ -7,8 +7,8 @@ import (
 )
 
 type Tree struct {
-	box  Box
-	root *Node
+	Box  Box
+	Root *Node
 }
 
 func NewTree(shapes []Shape) *Tree {
@@ -21,19 +21,19 @@ func NewTree(shapes []Shape) *Tree {
 }
 
 func (tree *Tree) Intersect(r Ray) Hit {
-	tmin, tmax := tree.box.Intersect(r)
+	tmin, tmax := tree.Box.Intersect(r)
 	if tmax < tmin || tmax <= 0 {
 		return NoHit
 	}
-	return tree.root.Intersect(r, tmin, tmax)
+	return tree.Root.Intersect(r, tmin, tmax)
 }
 
 type Node struct {
-	axis   Axis
-	point  float64
-	shapes []Shape
-	left   *Node
-	right  *Node
+	Axis   Axis
+	Point  float64
+	Shapes []Shape
+	Left   *Node
+	Right  *Node
 }
 
 func NewNode(shapes []Shape) *Node {
@@ -43,26 +43,26 @@ func NewNode(shapes []Shape) *Node {
 func (node *Node) Intersect(r Ray, tmin, tmax float64) Hit {
 	var tsplit float64
 	var leftFirst bool
-	switch node.axis {
+	switch node.Axis {
 	case AxisNone:
 		return node.IntersectShapes(r)
 	case AxisX:
-		tsplit = (node.point - r.Origin.X) / r.Direction.X
-		leftFirst = (r.Origin.X < node.point) || (r.Origin.X == node.point && r.Direction.X <= 0)
+		tsplit = (node.Point - r.Origin.X) / r.Direction.X
+		leftFirst = (r.Origin.X < node.Point) || (r.Origin.X == node.Point && r.Direction.X <= 0)
 	case AxisY:
-		tsplit = (node.point - r.Origin.Y) / r.Direction.Y
-		leftFirst = (r.Origin.Y < node.point) || (r.Origin.Y == node.point && r.Direction.Y <= 0)
+		tsplit = (node.Point - r.Origin.Y) / r.Direction.Y
+		leftFirst = (r.Origin.Y < node.Point) || (r.Origin.Y == node.Point && r.Direction.Y <= 0)
 	case AxisZ:
-		tsplit = (node.point - r.Origin.Z) / r.Direction.Z
-		leftFirst = (r.Origin.Z < node.point) || (r.Origin.Z == node.point && r.Direction.Z <= 0)
+		tsplit = (node.Point - r.Origin.Z) / r.Direction.Z
+		leftFirst = (r.Origin.Z < node.Point) || (r.Origin.Z == node.Point && r.Direction.Z <= 0)
 	}
 	var first, second *Node
 	if leftFirst {
-		first = node.left
-		second = node.right
+		first = node.Left
+		second = node.Right
 	} else {
-		first = node.right
-		second = node.left
+		first = node.Right
+		second = node.Left
 	}
 	if tsplit > tmax || tsplit <= 0 {
 		return first.Intersect(r, tmin, tmax)
@@ -84,7 +84,7 @@ func (node *Node) Intersect(r Ray, tmin, tmax float64) Hit {
 
 func (node *Node) IntersectShapes(r Ray) Hit {
 	hit := NoHit
-	for _, shape := range node.shapes {
+	for _, shape := range node.Shapes {
 		h := shape.Intersect(r)
 		if h.T < hit.T {
 			hit = h
@@ -95,7 +95,7 @@ func (node *Node) IntersectShapes(r Ray) Hit {
 
 func (node *Node) PartitionScore(axis Axis, point float64) int {
 	left, right := 0, 0
-	for _, shape := range node.shapes {
+	for _, shape := range node.Shapes {
 		box := shape.BoundingBox()
 		l, r := box.Partition(axis, point)
 		if l {
@@ -115,7 +115,7 @@ func (node *Node) PartitionScore(axis Axis, point float64) int {
 func (node *Node) Partition(size int, axis Axis, point float64) (left, right []Shape) {
 	left = make([]Shape, 0, size)
 	right = make([]Shape, 0, size)
-	for _, shape := range node.shapes {
+	for _, shape := range node.Shapes {
 		box := shape.BoundingBox()
 		l, r := box.Partition(axis, point)
 		if l {
@@ -129,13 +129,13 @@ func (node *Node) Partition(size int, axis Axis, point float64) (left, right []S
 }
 
 func (node *Node) Split(depth int) {
-	if len(node.shapes) < 8 {
+	if len(node.Shapes) < 8 {
 		return
 	}
-	xs := make([]float64, 0, len(node.shapes)*2)
-	ys := make([]float64, 0, len(node.shapes)*2)
-	zs := make([]float64, 0, len(node.shapes)*2)
-	for _, shape := range node.shapes {
+	xs := make([]float64, 0, len(node.Shapes)*2)
+	ys := make([]float64, 0, len(node.Shapes)*2)
+	zs := make([]float64, 0, len(node.Shapes)*2)
+	for _, shape := range node.Shapes {
 		box := shape.BoundingBox()
 		xs = append(xs, box.Min.X)
 		xs = append(xs, box.Max.X)
@@ -148,7 +148,7 @@ func (node *Node) Split(depth int) {
 	sort.Float64s(ys)
 	sort.Float64s(zs)
 	mx, my, mz := Median(xs), Median(ys), Median(zs)
-	best := int(float64(len(node.shapes)) * 0.85)
+	best := int(float64(len(node.Shapes)) * 0.85)
 	bestAxis := AxisNone
 	bestPoint := 0.0
 	sx := node.PartitionScore(AxisX, mx)
@@ -173,11 +173,11 @@ func (node *Node) Split(depth int) {
 		return
 	}
 	l, r := node.Partition(best, bestAxis, bestPoint)
-	node.axis = bestAxis
-	node.point = bestPoint
-	node.left = NewNode(l)
-	node.right = NewNode(r)
-	node.left.Split(depth + 1)
-	node.right.Split(depth + 1)
-	node.shapes = nil // only needed at leaf nodes
+	node.Axis = bestAxis
+	node.Point = bestPoint
+	node.Left = NewNode(l)
+	node.Right = NewNode(r)
+	node.Left.Split(depth + 1)
+	node.Right.Split(depth + 1)
+	node.Shapes = nil // only needed at leaf nodes
 }

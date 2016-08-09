@@ -65,8 +65,8 @@ func JPGTexture(path string, gamma float64) (Texture, error) {
 }
 
 type ColorTexture struct {
-	width, height int
-	data          []Color
+	Width, Height int
+	Data          []Color
 }
 
 func NewTexture(im image.Image, gamma float64) Texture {
@@ -82,18 +82,18 @@ func NewTexture(im image.Image, gamma float64) Texture {
 }
 
 func (t *ColorTexture) bilinearSample(u, v float64) Color {
-	w := float64(t.width) - 1
-	h := float64(t.height) - 1
+	w := float64(t.Width) - 1
+	h := float64(t.Height) - 1
 	X, x := math.Modf(u * w)
 	Y, y := math.Modf(v * h)
 	x0 := int(X)
 	y0 := int(Y)
 	x1 := x0 + 1
 	y1 := y0 + 1
-	c00 := t.data[y0*t.width+x0]
-	c01 := t.data[y1*t.width+x0]
-	c10 := t.data[y0*t.width+x1]
-	c11 := t.data[y1*t.width+x1]
+	c00 := t.Data[y0*t.Width+x0]
+	c01 := t.Data[y1*t.Width+x0]
+	c10 := t.Data[y0*t.Width+x1]
+	c11 := t.Data[y1*t.Width+x1]
 	c := Color{}
 	c = c.Add(c00.MulScalar((1 - x) * (1 - y)))
 	c = c.Add(c10.MulScalar(x * (1 - y)))
@@ -117,11 +117,11 @@ func (t *ColorTexture) BumpSample(u, v float64) Vector {
 	u = Fract(Fract(u) + 1)
 	v = Fract(Fract(v) + 1)
 	v = 1 - v
-	x := int(u * float64(t.width))
-	y := int(v * float64(t.height))
-	x1, x2 := ClampInt(x-1, 0, t.width-1), ClampInt(x+1, 0, t.width-1)
-	y1, y2 := ClampInt(y-1, 0, t.height-1), ClampInt(y+1, 0, t.height-1)
-	cx := t.data[y*t.width+x1].Sub(t.data[y*t.width+x2])
-	cy := t.data[y1*t.width+x].Sub(t.data[y2*t.width+x])
+	x := int(u * float64(t.Width))
+	y := int(v * float64(t.Height))
+	x1, x2 := ClampInt(x-1, 0, t.Width-1), ClampInt(x+1, 0, t.Width-1)
+	y1, y2 := ClampInt(y-1, 0, t.Height-1), ClampInt(y+1, 0, t.Height-1)
+	cx := t.Data[y*t.Width+x1].Sub(t.Data[y*t.Width+x2])
+	cy := t.Data[y1*t.Width+x].Sub(t.Data[y2*t.Width+x])
 	return Vector{cx.R, cy.R, 0}
 }
