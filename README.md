@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/fogleman/pt.png?branch=master)](https://travis-ci.org/fogleman/pt) [![GoDoc](https://godoc.org/github.com/fogleman/pt/pt?status.svg)](https://godoc.org/github.com/fogleman/pt/pt)
 
-This is a [path tracing](http://en.wikipedia.org/wiki/Path_tracing) renderer written in Go. The Go gopher below was rendered using it, and [here's the code](https://github.com/fogleman/pt/blob/master/examples/gopher.go) that was used to do it. The gopher 3D model was found [here](https://github.com/golang-samples/gopher-3d).
+This is a CPU-only [path tracing](http://en.wikipedia.org/wiki/Path_tracing) engine written in Go. The Go gopher below was rendered using it, and [here's the code](https://github.com/fogleman/pt/blob/master/examples/gopher.go) that was used to do it. The gopher 3D model was found [here](https://github.com/golang-samples/gopher-3d).
 
 ![Go Gopher](http://i.imgur.com/PhUUcTe.png)
 
@@ -42,11 +42,9 @@ Here are some resources that I have found useful.
 * [Ray Tracing for Global Illumination - Nelson Max at UC Davis](https://www.youtube.com/playlist?list=PLslgisHe5tBPckSYyKoU3jEA4bqiFmNBJ)
 * [Physically Based Rendering - Matt Pharr, Greg Humphreys](http://www.amazon.com/Physically-Based-Rendering-Second-Edition/dp/0123750792)
 
-### Go<sup>2</sup>
+### Samples
 
 ![Go](http://i.imgur.com/5qETgLY.png)
-
-### Samples
 
 ![Sponza](http://i.imgur.com/wjNZJPT.png)
 
