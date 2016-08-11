@@ -51,7 +51,7 @@ func (s *Sphere) ColorAt(p Vector) Color {
 	v := math.Atan2(p.Y, Vector{p.X, 0, p.Z}.Length())
 	u = (u + math.Pi) / (2 * math.Pi)
 	v = (v + math.Pi/2) / math.Pi
-	return s.Material.Texture.Sample(u, v)
+	return s.Material.Texture.Sample(1-u, v)
 }
 
 func (s *Sphere) MaterialAt(p Vector) Material {
