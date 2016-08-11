@@ -6,7 +6,7 @@ func main() {
 	white := DiffuseMaterial(Color{0.740, 0.742, 0.734})
 	red := DiffuseMaterial(Color{0.366, 0.037, 0.042})
 	green := DiffuseMaterial(Color{0.163, 0.409, 0.083})
-	light := LightMaterial(Color{0.780, 0.780, 0.776}, 20, NoAttenuation)
+	light := LightMaterial(Color{0.780, 0.780, 0.776}, 20)
 	scene := Scene{}
 	n := 10.0
 	scene.Add(NewCube(V(-n, -11, -n), V(n, -10, n), white))

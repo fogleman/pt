@@ -4,8 +4,8 @@ import . "github.com/fogleman/pt/pt"
 
 func main() {
 	scene := Scene{}
-	scene.Add(NewSphere(Vector{-2, 5, -3}, 0.5, LightMaterial(Color{1, 1, 1}, 50, NoAttenuation)))
-	scene.Add(NewSphere(Vector{5, 5, -3}, 0.5, LightMaterial(Color{1, 1, 1}, 50, NoAttenuation)))
+	scene.Add(NewSphere(Vector{-2, 5, -3}, 0.5, LightMaterial(Color{1, 1, 1}, 50)))
+	scene.Add(NewSphere(Vector{5, 5, -3}, 0.5, LightMaterial(Color{1, 1, 1}, 50)))
 	scene.Add(NewCube(Vector{-30, -1, -30}, Vector{30, 0, 30}, SpecularMaterial(HexColor(0xFCFAE1), 2)))
 	mesh, err := LoadOBJ("examples/teapot.obj", SpecularMaterial(HexColor(0xB9121B), 2))
 	if err != nil {

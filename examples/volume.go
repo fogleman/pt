@@ -79,7 +79,7 @@ func main() {
 	// wall := GlossyMaterial(Color{1, 1, 1}, 1.1, Radians(20))
 	// scene.Add(NewCube(V(-10, 0.65, -10), V(10, 10, 10), wall))
 
-	// light := LightMaterial(Color{1, 1, 1}, 20, NoAttenuation)
+	// light := LightMaterial(Color{1, 1, 1}, 20)
 	// scene.Add(NewSphere(V(1, -5, -1), 1, light))
 
 	fmt.Println(volume.W, volume.H, volume.D)

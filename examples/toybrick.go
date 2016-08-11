@@ -45,8 +45,6 @@ func main() {
 			}
 		}
 	}
-	// light := LightMaterial(Color{0.2, 0.2, 0.2}, 10, QuadraticAttenuation(0.01))
-	// scene.Add(NewSphere(Vector{0, 0, 25}, 1, light))
 	camera := LookAt(Vector{-23, 13, 20}, Vector{0, 0, 0}, Vector{0, 0, 1}, 45)
 	sampler := NewSampler(4, 4)
 	IterativeRender("out%03d.png", 1000, &scene, &camera, sampler, 1920/2, 1080/2, -1)

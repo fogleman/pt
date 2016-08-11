@@ -13,11 +13,10 @@ This is a CPU-only [path tracing](http://en.wikipedia.org/wiki/Path_tracing) eng
 * Supports OBJ, Binary STL and ASCII STL
 * Supports textures, bump maps and normal maps
 * Supports volume rendering from image slices
-* Uses k-d trees to accelerate ray intersection tests
 * Supports various material properties
-* Light sources with configurable attenuation
 * Supports configurable depth of field
 * Supports iterative rendering
+* Uses k-d trees to accelerate ray intersection tests
 * Uses all CPU cores in parallel
 
 ### TODO

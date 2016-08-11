@@ -61,7 +61,7 @@ func LoadTriangles(path string) []*Triangle {
 func main() {
 	rand.Seed(6)
 	floor := GlossyMaterial(HexColor(0xFCFFF5), 1.5, Radians(20))
-	light := LightMaterial(HexColor(0xFFFFFF), 1, QuadraticAttenuation(0.002))
+	light := LightMaterial(HexColor(0xFFFFFF), 1)
 	triangles := LoadTriangles("examples/counties.csv")
 	mesh := NewMesh(triangles)
 	mesh.FitInside(Box{V(-1, -1, 0), V(1, 1, 1)}, V(0.5, 0.5, 0))

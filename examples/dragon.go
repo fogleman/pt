@@ -17,7 +17,7 @@ func main() {
 	scene.Add(mesh)
 	floor := GlossyMaterial(HexColor(0xD8CAA8), 1.2, Radians(20))
 	scene.Add(NewCube(Vector{-1000, -1000, -1000}, Vector{1000, 0, 1000}, floor))
-	scene.Add(NewSphere(Vector{0, 10, 0}, 1, LightMaterial(Color{1, 1, 1}, 20, NoAttenuation)))
+	scene.Add(NewSphere(Vector{0, 10, 0}, 1, LightMaterial(Color{1, 1, 1}, 20)))
 	camera := LookAt(Vector{-3, 2, -1}, Vector{0, 0.5, 0}, Vector{0, 1, 0}, 35)
 	sampler := NewSampler(4, 4)
 	IterativeRender("out%03d.png", 1000, &scene, &camera, sampler, 1920/4, 1080/4, -1)

@@ -102,7 +102,7 @@ func frame(i int) {
 	scene := Scene{}
 	scene.Color = HexColor(0xFFFFFF)
 	sphere(&scene, Vector{}, Vector{}, 1, 0, 7, t)
-	scene.Add(NewSphere(Vector{0, 0, 6}, 0.5, LightMaterial(Color{1, 1, 1}, 1, NoAttenuation)))
+	scene.Add(NewSphere(Vector{0, 0, 6}, 0.5, LightMaterial(Color{1, 1, 1}, 1)))
 	camera := LookAt(Vector{x, y, 1}, Vector{0, 0, 0}, Vector{0, 0, 1}, 30)
 	template := fmt.Sprintf("out%03d.png", i)
 	// IterativeRender(template, 1, &scene, &camera, 1920, 1080, 16, 16, 4)

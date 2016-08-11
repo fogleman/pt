@@ -40,7 +40,7 @@ func frame(path string, t float64) {
 			scene.Add(sphere)
 		}
 	}
-	scene.Add(NewSphere(V(4, 4, 20), 2, LightMaterial(HexColor(0xFFFFFF), 30, NoAttenuation)))
+	scene.Add(NewSphere(V(4, 4, 20), 2, LightMaterial(HexColor(0xFFFFFF), 30)))
 	fovy := 40.0
 	camera := LookAt(eye, center, up, fovy)
 	sampler := NewSampler(4, 4)

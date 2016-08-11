@@ -55,8 +55,7 @@ func (s *DefaultSampler) sample(scene *Scene, ray Ray, emission bool, samples, d
 		if s.DirectLighting && !emission {
 			return Color{}
 		}
-		attenuation := info.Material.Attenuation.Compute(hit.T)
-		result = result.Add(info.Color.MulScalar(emittance * attenuation * float64(samples)))
+		result = result.Add(info.Color.MulScalar(emittance * float64(samples)))
 	}
 	n := int(math.Sqrt(float64(samples)))
 	for u := 0; u < n; u++ {
@@ -126,7 +125,6 @@ func (s *DefaultSampler) directLight(scene *Scene, n Ray, rnd *rand.Rand) Color 
 	material := light.MaterialAt(point)
 	color := light.ColorAt(point)
 	emittance := material.Emittance
-	attenuation := material.Attenuation.Compute(hit.T)
 
 	// compute solid angle (hemisphere coverage)
 	hyp := center.Sub(n.Origin).Length()
@@ -138,6 +136,6 @@ func (s *DefaultSampler) directLight(scene *Scene, n Ray, rnd *rand.Rand) Color 
 	r := math.Sin(theta) * adj
 	coverage := (r * r) / (d * d)
 
-	m := diffuse * emittance * attenuation * coverage * float64(nLights)
+	m := diffuse * emittance * coverage * float64(nLights)
 	return color.MulScalar(m)
 }

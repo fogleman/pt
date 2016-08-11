@@ -26,7 +26,7 @@ func main() {
 			}
 		}
 	}
-	light := NewSphere(V(100, 0, 50), 5, LightMaterial(Color{1, 1, 1}, 300, NoAttenuation))
+	light := NewSphere(V(100, 0, 50), 5, LightMaterial(Color{1, 1, 1}, 300))
 	scene.Add(light)
 	camera := LookAt(V(0, 0, -20), V(0, 0, 0), V(0, 1, 0), 30)
 	sampler := NewSampler(4, 4)
