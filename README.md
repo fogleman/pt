@@ -18,12 +18,14 @@ This is a CPU-only [path tracing](http://en.wikipedia.org/wiki/Path_tracing) eng
 * Supports iterative rendering
 * Uses k-d trees to accelerate ray intersection tests
 * Uses all CPU cores in parallel
+* 100% pure Go with no dependencies besides the standard library
 
 ### TODO
 
 Here are things that I'm hoping to add.
 
 * bidirectional path tracing
+* true BRDFs
 * subsurface scattering
 * atmosphere
 * constructive solid geometry
