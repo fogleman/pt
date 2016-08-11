@@ -24,7 +24,7 @@ func main() {
 	var images []image.Image
 	for _, info := range infos {
 		filename := path.Join(dirname, info.Name())
-		im, err := LoadPNG(filename)
+		im, err := LoadImage(filename)
 		if err != nil {
 			continue
 			// panic(err)

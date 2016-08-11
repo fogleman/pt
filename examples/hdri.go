@@ -5,9 +5,9 @@ import . "github.com/fogleman/pt/pt"
 func main() {
 	scene := Scene{}
 	scene.Color = Color{1, 1, 1}
-	scene.Texture = GetTexture("examples/courtyard_ccby/courtyard_8k.png", 1)
+	scene.Texture = GetTexture("examples/courtyard_ccby/courtyard_8k.png")
 	material := GlossyMaterial(Color{1, 1, 1}, 2, Radians(0))
-	material.Texture = GetTexture("examples/checker.png", 2.2)
+	material.Texture = GetTexture("examples/checker.png")
 	scene.Add(NewSphere(V(0, 0, 0), 1, material))
 	scene.Add(NewSphere(V(-2.5, 0, 0), 1, material))
 	scene.Add(NewSphere(V(2.5, 0, 0), 1, material))

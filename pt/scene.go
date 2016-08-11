@@ -3,13 +3,13 @@ package pt
 import "sync/atomic"
 
 type Scene struct {
-	Color      Color
-	Texture    Texture
-	Visibility float64
-	Shapes     []Shape
-	Lights     []Shape
-	tree       *Tree
-	rays       uint64
+	Color        Color
+	Texture      Texture
+	TextureAngle float64
+	Shapes       []Shape
+	Lights       []Shape
+	tree         *Tree
+	rays         uint64
 }
 
 func (s *Scene) Compile() {

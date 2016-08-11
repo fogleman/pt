@@ -1,18 +1,17 @@
 package pt
 
 import (
-	"errors"
 	"fmt"
 	"image"
 	"math"
-	"path"
-	"strings"
 )
 
 type Texture interface {
 	Sample(u, v float64) Color
 	NormalSample(u, v float64) Vector
 	BumpSample(u, v float64) Vector
+	Pow(a float64) Texture
+	MulScalar(a float64) Texture
 }
 
 var textures map[string]Texture
@@ -21,64 +20,56 @@ func init() {
 	textures = make(map[string]Texture)
 }
 
-func GetTexture(path string, gamma float64) Texture {
+func GetTexture(path string) Texture {
 	if texture, ok := textures[path]; ok {
 		return texture
 	}
-	if texture, err := LoadTexture(path, gamma); err == nil {
+	if texture, err := LoadTexture(path); err == nil {
 		textures[path] = texture
 		return texture
 	}
 	return nil
 }
 
-func LoadTexture(p string, gamma float64) (Texture, error) {
-	ext := strings.ToLower(path.Ext(p))
-	switch ext {
-	case ".png":
-		return PNGTexture(p, gamma)
-	case ".jpg":
-		return JPGTexture(p, gamma)
-	case ".jpeg":
-		return JPGTexture(p, gamma)
-	}
-	err := errors.New(fmt.Sprintf("Unrecognized texture extension: %s", p))
-	return nil, err
-}
-
-func PNGTexture(path string, gamma float64) (Texture, error) {
-	fmt.Printf("Loading PNG: %s\n", path)
-	im, err := LoadPNG(path)
+func LoadTexture(path string) (Texture, error) {
+	fmt.Printf("Loading: %s\n", path)
+	im, err := LoadImage(path)
 	if err != nil {
 		return nil, err
 	}
-	return NewTexture(im, gamma), nil
-}
-
-func JPGTexture(path string, gamma float64) (Texture, error) {
-	fmt.Printf("Loading JPG: %s\n", path)
-	im, err := LoadJPG(path)
-	if err != nil {
-		return nil, err
-	}
-	return NewTexture(im, gamma), nil
+	return NewTexture(im), nil
 }
 
 type ColorTexture struct {
-	Width, Height int
-	Data          []Color
+	Width  int
+	Height int
+	Data   []Color
 }
 
-func NewTexture(im image.Image, gamma float64) Texture {
+func NewTexture(im image.Image) Texture {
 	size := im.Bounds().Max
 	data := make([]Color, size.X*size.Y)
 	for y := 0; y < size.Y; y++ {
 		for x := 0; x < size.X; x++ {
 			index := y*size.X + x
-			data[index] = NewColor(im.At(x, y)).Pow(gamma)
+			data[index] = NewColor(im.At(x, y)).Pow(2.2)
 		}
 	}
 	return &ColorTexture{size.X, size.Y, data}
+}
+
+func (t *ColorTexture) Pow(a float64) Texture {
+	for i := range t.Data {
+		t.Data[i] = t.Data[i].Pow(a)
+	}
+	return t
+}
+
+func (t *ColorTexture) MulScalar(a float64) Texture {
+	for i := range t.Data {
+		t.Data[i] = t.Data[i].MulScalar(a)
+	}
+	return t
 }
 
 func (t *ColorTexture) bilinearSample(u, v float64) Color {

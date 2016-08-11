@@ -40,7 +40,7 @@ func (s *DefaultSampler) sample(scene *Scene, ray Ray, emission bool, samples, d
 	if !hit.Ok() {
 		if scene.Texture != nil {
 			d := ray.Direction
-			u := math.Atan2(d.Z, d.X)
+			u := math.Atan2(d.Z, d.X) + scene.TextureAngle
 			v := math.Atan2(d.Y, Vector{d.X, 0, d.Z}.Length())
 			u = (u + math.Pi) / (2 * math.Pi)
 			v = (v + math.Pi/2) / math.Pi
