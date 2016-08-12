@@ -4,9 +4,9 @@ type Shape interface {
 	Compile()
 	BoundingBox() Box
 	Intersect(Ray) Hit
-	ColorAt(Vector) Color
-	MaterialAt(Vector) Material
+	UV(Vector) Vector
 	NormalAt(Vector) Vector
+	MaterialAt(Vector) Material
 }
 
 type TransformedShape struct {
@@ -34,15 +34,14 @@ func (s *TransformedShape) Intersect(r Ray) Hit {
 	shapeNormal := shape.NormalAt(shapePosition)
 	position := s.Matrix.MulPosition(shapePosition)
 	normal := s.Inverse.Transpose().MulDirection(shapeNormal)
-	color := shape.ColorAt(shapePosition)
-	material := shape.MaterialAt(shapePosition)
+	material := MaterialAt(shape, shapePosition)
 	inside := false
 	if shapeNormal.Dot(shapeRay.Direction) > 0 {
 		normal = normal.MulScalar(-1)
 		inside = true
 	}
 	ray := Ray{position, normal}
-	info := HitInfo{shape, position, normal, ray, color, material, inside}
+	info := HitInfo{shape, position, normal, ray, material, inside}
 	hit.T = position.Sub(r.Origin).Length()
 	hit.HitInfo = &info
 	return hit

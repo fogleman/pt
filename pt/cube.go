@@ -33,12 +33,9 @@ func (c *Cube) Intersect(r Ray) Hit {
 	return NoHit
 }
 
-func (c *Cube) ColorAt(p Vector) Color {
-	if c.Material.Texture == nil {
-		return c.Material.Color
-	}
+func (c *Cube) UV(p Vector) Vector {
 	p = p.Sub(c.Min).Div(c.Max.Sub(c.Min))
-	return c.Material.Texture.Sample(p.X, p.Z)
+	return Vector{p.X, p.Z, 0}
 }
 
 func (c *Cube) MaterialAt(p Vector) Material {

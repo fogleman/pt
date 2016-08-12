@@ -35,15 +35,12 @@ func (f *Function) Intersect(ray Ray) Hit {
 	return NoHit
 }
 
-func (f *Function) ColorAt(p Vector) Color {
-	if f.Material.Texture == nil {
-		return f.Material.Color
-	}
+func (f *Function) UV(p Vector) Vector {
 	x1, x2 := f.Box.Min.X, f.Box.Max.X
 	y1, y2 := f.Box.Min.Y, f.Box.Max.Y
 	u := (p.X - x1) / (x2 - x1)
 	v := (p.Y - y1) / (y2 - y1)
-	return f.Material.Texture.Sample(u, v)
+	return Vector{u, v, 0}
 }
 
 func (f *Function) MaterialAt(p Vector) Material {

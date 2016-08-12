@@ -11,7 +11,6 @@ type HitInfo struct {
 	Position Vector
 	Normal   Vector
 	Ray      Ray
-	Color    Color
 	Material Material
 	Inside   bool
 }
@@ -29,8 +28,7 @@ func (hit *Hit) Info(r Ray) HitInfo {
 	shape := hit.Shape
 	position := r.Position(hit.T)
 	normal := shape.NormalAt(position)
-	color := shape.ColorAt(position)
-	material := shape.MaterialAt(position)
+	material := MaterialAt(shape, position)
 	inside := false
 	if normal.Dot(r.Direction) > 0 {
 		normal = normal.MulScalar(-1)
@@ -41,5 +39,5 @@ func (hit *Hit) Info(r Ray) HitInfo {
 		}
 	}
 	ray := Ray{position, normal}
-	return HitInfo{shape, position, normal, ray, color, material, inside}
+	return HitInfo{shape, position, normal, ray, material, inside}
 }

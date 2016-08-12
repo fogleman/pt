@@ -49,13 +49,13 @@ func (s *DefaultSampler) sample(scene *Scene, ray Ray, emission bool, samples, d
 		return scene.Color
 	}
 	info := hit.Info(ray)
+	material := info.Material
 	result := Color{}
-	emittance := info.Material.Emittance
-	if emittance > 0 {
+	if material.Emittance > 0 {
 		if s.DirectLighting && !emission {
 			return Color{}
 		}
-		result = result.Add(info.Color.MulScalar(emittance * float64(samples)))
+		result = result.Add(material.Color.MulScalar(material.Emittance * float64(samples)))
 	}
 	n := int(math.Sqrt(float64(samples)))
 	for u := 0; u < n; u++ {
@@ -65,14 +65,14 @@ func (s *DefaultSampler) sample(scene *Scene, ray Ray, emission bool, samples, d
 			newRay, reflected := ray.Bounce(&info, fu, fv, rnd)
 			indirect := s.sample(scene, newRay, reflected, 1, depth-1, rnd)
 			if reflected {
-				tinted := indirect.Mix(info.Color.Mul(indirect), info.Material.Tint)
+				tinted := indirect.Mix(material.Color.Mul(indirect), material.Tint)
 				result = result.Add(tinted)
 			} else {
 				direct := Color{}
 				if s.DirectLighting {
 					direct = s.directLight(scene, info.Ray, rnd)
 				}
-				result = result.Add(info.Color.Mul(direct.Add(indirect)))
+				result = result.Add(material.Color.Mul(direct.Add(indirect)))
 			}
 		}
 	}
@@ -121,11 +121,6 @@ func (s *DefaultSampler) directLight(scene *Scene, n Ray, rnd *rand.Rand) Color 
 		return Color{}
 	}
 
-	// get material properties from light
-	material := light.MaterialAt(point)
-	color := light.ColorAt(point)
-	emittance := material.Emittance
-
 	// compute solid angle (hemisphere coverage)
 	hyp := center.Sub(n.Origin).Length()
 	opp := radius
@@ -136,6 +131,10 @@ func (s *DefaultSampler) directLight(scene *Scene, n Ray, rnd *rand.Rand) Color 
 	r := math.Sin(theta) * adj
 	coverage := (r * r) / (d * d)
 
-	m := diffuse * emittance * coverage * float64(nLights)
-	return color.MulScalar(m)
+	// get material properties from light
+	material := MaterialAt(light, point)
+
+	// combine factors
+	m := material.Emittance * diffuse * coverage * float64(nLights)
+	return material.Color.MulScalar(m)
 }

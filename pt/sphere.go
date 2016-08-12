@@ -42,16 +42,13 @@ func (s *Sphere) Intersect(r Ray) Hit {
 	return NoHit
 }
 
-func (s *Sphere) ColorAt(p Vector) Color {
-	if s.Material.Texture == nil {
-		return s.Material.Color
-	}
+func (s *Sphere) UV(p Vector) Vector {
 	p = p.Sub(s.Center)
 	u := math.Atan2(p.Z, p.X)
 	v := math.Atan2(p.Y, Vector{p.X, 0, p.Z}.Length())
-	u = (u + math.Pi) / (2 * math.Pi)
+	u = 1 - (u+math.Pi)/(2*math.Pi)
 	v = (v + math.Pi/2) / math.Pi
-	return s.Material.Texture.Sample(1-u, v)
+	return Vector{u, v, 0}
 }
 
 func (s *Sphere) MaterialAt(p Vector) Material {

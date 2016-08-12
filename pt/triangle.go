@@ -69,16 +69,13 @@ func (t *Triangle) Intersect(r Ray) Hit {
 	return Hit{t, d, nil}
 }
 
-func (t *Triangle) ColorAt(p Vector) Color {
-	if t.Material.Texture == nil {
-		return t.Material.Color
-	}
+func (t *Triangle) UV(p Vector) Vector {
 	u, v, w := t.Barycentric(p)
 	n := Vector{}
 	n = n.Add(t.T1.MulScalar(u))
 	n = n.Add(t.T2.MulScalar(v))
 	n = n.Add(t.T3.MulScalar(w))
-	return t.Material.Texture.Sample(n.X, n.Y)
+	return Vector{n.X, n.Y, 0}
 }
 
 func (t *Triangle) MaterialAt(p Vector) Material {

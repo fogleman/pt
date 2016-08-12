@@ -121,8 +121,8 @@ func (v *Volume) Intersect(ray Ray) Hit {
 	return NoHit
 }
 
-func (v *Volume) ColorAt(p Vector) Color {
-	return v.MaterialAt(p).Color
+func (v *Volume) UV(p Vector) Vector {
+	return Vector{} // not implemented
 }
 
 func (v *Volume) MaterialAt(p Vector) Material {
@@ -140,7 +140,6 @@ func (v *Volume) MaterialAt(p Vector) Material {
 		}
 	}
 	return bm
-
 }
 
 func (v *Volume) NormalAt(p Vector) Vector {

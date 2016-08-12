@@ -31,8 +31,8 @@ func (m *Mesh) Intersect(r Ray) Hit {
 	return m.tree.Intersect(r)
 }
 
-func (m *Mesh) ColorAt(p Vector) Color {
-	return Color{} // not implemented
+func (m *Mesh) UV(p Vector) Vector {
+	return Vector{} // not implemented
 }
 
 func (m *Mesh) MaterialAt(p Vector) Material {
