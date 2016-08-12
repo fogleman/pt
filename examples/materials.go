@@ -22,7 +22,7 @@ func main() {
 	material = ClearMaterial(2, 0)
 	scene.Add(NewSphere(V(2, r, 0), r, material))
 
-	material = SpecularMaterial(HexColor(0xFFFFFF), 1000)
+	material = MetallicMaterial(HexColor(0xFFFFFF), 0, 1)
 	scene.Add(NewSphere(V(0, 1.5, -4), 1.5, material))
 
 	scene.Add(NewCube(V(-1000, -1, -1000), V(1000, 0, 1000), GlossyMaterial(HexColor(0xFFFFFF), 1.4, Radians(20))))

@@ -35,8 +35,8 @@ func TransparentMaterial(color Color, index, gloss, tint float64) Material {
 	return Material{color, nil, nil, nil, nil, 1, 0, index, gloss, tint, -1, true}
 }
 
-func MetallicMaterial(color Color, gloss, tint, reflectivity float64) Material {
-	return Material{color, nil, nil, nil, nil, 1, 0, 1, gloss, tint, reflectivity, false}
+func MetallicMaterial(color Color, gloss, tint float64) Material {
+	return Material{color, nil, nil, nil, nil, 1, 0, 1, gloss, tint, 1, false}
 }
 
 func LightMaterial(color Color, emittance float64) Material {
