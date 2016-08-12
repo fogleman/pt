@@ -7,6 +7,7 @@ import (
 	"math/rand"
 	"runtime"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -93,7 +94,8 @@ func pixelsToImage(pixels []Color, w, h int, scale float64) image.Image {
 	return result
 }
 
-func onIteration(pathTemplate string, i, w, h int, pixels []Color, frame []Color) {
+func onIteration(pathTemplate string, i, w, h int, pixels []Color, frame []Color, wg *sync.WaitGroup) {
+	defer wg.Done()
 	for y := 0; y < h; y++ {
 		for x := 0; x < w; x++ {
 			index := y*w + x
@@ -112,11 +114,14 @@ func onIteration(pathTemplate string, i, w, h int, pixels []Color, frame []Color
 }
 
 func IterativeRender(pathTemplate string, iterations int, scene *Scene, camera *Camera, sampler Sampler, w, h, samplesPerPixel int) {
+	var wg sync.WaitGroup
 	scene.Compile()
 	pixels := make([]Color, w*h)
 	for i := 1; i <= iterations; i++ {
 		fmt.Printf("\n[Iteration %d of %d]\n", i, iterations)
 		frame := render(scene, camera, sampler, w, h, samplesPerPixel)
-		go onIteration(pathTemplate, i, w, h, pixels, frame)
+		wg.Add(1)
+		go onIteration(pathTemplate, i, w, h, pixels, frame, &wg)
 	}
+	wg.Wait()
 }
