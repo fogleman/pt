@@ -7,7 +7,7 @@ func main() {
 	material := GlossyMaterial(HexColor(0xF2F2F2), 1.5, Radians(20))
 	scene.Add(NewCube(Vector{-100, -1, -100}, Vector{100, 0, 100}, material))
 	heart := GlossyMaterial(HexColor(0xF60A20), 1.5, Radians(20))
-	mesh, err := LoadBinarySTL("examples/love.stl", heart)
+	mesh, err := LoadSTL("examples/love.stl", heart)
 	if err != nil {
 		panic(err)
 	}

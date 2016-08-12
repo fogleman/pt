@@ -8,9 +8,9 @@ import (
 )
 
 func createMesh(material Material) Shape {
-	mesh, err := LoadBinarySTL("examples/cube.stl", material)
+	mesh, err := LoadSTL("examples/cube.stl", material)
 	if err != nil {
-		log.Fatalln("LoadBinarySTL error:", err)
+		log.Fatalln("LoadSTL error:", err)
 	}
 	mesh.FitInside(Box{Vector{0, 0, 0}, Vector{1, 1, 1}}, Vector{0.5, 0.5, 0.5})
 	return mesh

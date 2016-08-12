@@ -32,7 +32,7 @@ func GetTexture(path string) Texture {
 }
 
 func LoadTexture(path string) (Texture, error) {
-	fmt.Printf("Loading: %s\n", path)
+	fmt.Printf("Loading IMG: %s\n", path)
 	im, err := LoadImage(path)
 	if err != nil {
 		return nil, err

@@ -123,6 +123,6 @@ func (m *Mesh) Transform(matrix Matrix) {
 	m.tree = nil // dirty
 }
 
-func (m *Mesh) SaveBinarySTL(path string) error {
-	return SaveBinarySTL(path, m)
+func (m *Mesh) SaveSTL(path string) error {
+	return SaveSTL(path, m)
 }

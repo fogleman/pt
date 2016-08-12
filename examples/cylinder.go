@@ -7,9 +7,9 @@ import (
 )
 
 func createMesh(material Material) Shape {
-	mesh, err := LoadBinarySTL("examples/cylinder.stl", material)
+	mesh, err := LoadSTL("examples/cylinder.stl", material)
 	if err != nil {
-		log.Fatalln("LoadBinarySTL error:", err)
+		log.Fatalln("LoadSTL error:", err)
 	}
 	mesh.FitInside(Box{Vector{-0.1, -0.1, 0}, Vector{1.1, 1.1, 100}}, Vector{0.5, 0.5, 0})
 	mesh.SmoothNormalsThreshold(Radians(10))

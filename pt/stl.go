@@ -18,13 +18,71 @@ type STLTriangle struct {
 	_             uint16
 }
 
-func LoadBinarySTL(path string, material Material) (*Mesh, error) {
-	fmt.Printf("Loading STL (Binary): %s\n", path)
+func LoadSTL(path string, material Material) (*Mesh, error) {
+	fmt.Printf("Loading STL: %s\n", path)
+
+	// open file
 	file, err := os.Open(path)
 	if err != nil {
 		return nil, err
 	}
 	defer file.Close()
+
+	// get file size
+	info, err := file.Stat()
+	if err != nil {
+		return nil, err
+	}
+	size := info.Size()
+
+	// read header, get expected binary size
+	header := STLHeader{}
+	if err := binary.Read(file, binary.LittleEndian, &header); err != nil {
+		return nil, err
+	}
+	expectedSize := int64(header.Count)*50 + 84
+
+	// rewind to start of file
+	_, err = file.Seek(0, 0)
+	if err != nil {
+		return nil, err
+	}
+
+	// parse ascii or binary stl
+	if size == expectedSize {
+		return loadSTLB(file, material)
+	} else {
+		return loadSTLA(file, material)
+	}
+}
+
+func loadSTLA(file *os.File, material Material) (*Mesh, error) {
+	var vertexes []Vector
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		fields := strings.Fields(line)
+		if len(fields) == 4 && fields[0] == "vertex" {
+			f := ParseFloats(fields[1:])
+			v := Vector{f[0], f[1], f[2]}
+			vertexes = append(vertexes, v)
+		}
+	}
+	var triangles []*Triangle
+	for i := 0; i < len(vertexes); i += 3 {
+		t := Triangle{}
+		t.Material = &material
+		t.V1 = vertexes[i+0]
+		t.V2 = vertexes[i+1]
+		t.V3 = vertexes[i+2]
+		t.UpdateBoundingBox()
+		t.FixNormals()
+		triangles = append(triangles, &t)
+	}
+	return NewMesh(triangles), scanner.Err()
+}
+
+func loadSTLB(file *os.File, material Material) (*Mesh, error) {
 	header := STLHeader{}
 	if err := binary.Read(file, binary.LittleEndian, &header); err != nil {
 		return nil, err
@@ -48,7 +106,7 @@ func LoadBinarySTL(path string, material Material) (*Mesh, error) {
 	return NewMesh(triangles), nil
 }
 
-func SaveBinarySTL(path string, mesh *Mesh) error {
+func SaveSTL(path string, mesh *Mesh) error {
 	file, err := os.Create(path)
 	if err != nil {
 		return err
@@ -75,36 +133,4 @@ func SaveBinarySTL(path string, mesh *Mesh) error {
 		}
 	}
 	return nil
-}
-
-func LoadSTL(path string, material Material) (*Mesh, error) {
-	fmt.Printf("Loading STL (ASCII): %s\n", path)
-	file, err := os.Open(path)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-	var vertexes []Vector
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		line := scanner.Text()
-		fields := strings.Fields(line)
-		if len(fields) == 4 && fields[0] == "vertex" {
-			f := ParseFloats(fields[1:])
-			v := Vector{f[0], f[1], f[2]}
-			vertexes = append(vertexes, v)
-		}
-	}
-	var triangles []*Triangle
-	for i := 0; i < len(vertexes); i += 3 {
-		t := Triangle{}
-		t.Material = &material
-		t.V1 = vertexes[i+0]
-		t.V2 = vertexes[i+1]
-		t.V3 = vertexes[i+2]
-		t.UpdateBoundingBox()
-		t.FixNormals()
-		triangles = append(triangles, &t)
-	}
-	return NewMesh(triangles), scanner.Err()
 }
