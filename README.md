@@ -2,15 +2,24 @@
 
 [![Build Status](https://travis-ci.org/fogleman/pt.png?branch=master)](https://travis-ci.org/fogleman/pt) [![GoDoc](https://godoc.org/github.com/fogleman/pt/pt?status.svg)](https://godoc.org/github.com/fogleman/pt/pt)
 
-This is a CPU-only [path tracing](http://en.wikipedia.org/wiki/Path_tracing) engine written in Go. The Go gopher below was rendered using it, and [here's the code](https://github.com/fogleman/pt/blob/master/examples/gopher.go) that was used to do it. The gopher 3D model was found [here](https://github.com/golang-samples/gopher-3d).
+This is a CPU-only, unidirectional [path tracing](http://en.wikipedia.org/wiki/Path_tracing) engine written in Go. The Go gopher below was rendered using it, and [here's the code](https://github.com/fogleman/pt/blob/master/examples/gopher.go) that was used to do it. The gopher 3D model was found [here](https://github.com/golang-samples/gopher-3d).
 
 ![Go Gopher](http://i.imgur.com/PhUUcTe.png)
 
+### Installation
+
+    go get -u github.com/fogleman/pt/pt
+
+### Examples
+
+The are [lots of examples](https://github.com/fogleman/pt/tree/master/examples) to learn from! To try them, just run, e.g.
+
+    cd go/src/github.com/fogleman/pt
     go run examples/gopher.go
 
 ### Features
 
-* Supports OBJ, Binary STL and ASCII STL
+* Supports OBJ and STL
 * Supports textures, bump maps and normal maps
 * Supports volume rendering from image slices
 * Supports various material properties
