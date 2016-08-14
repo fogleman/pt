@@ -54,7 +54,7 @@ Here are some resources that I have found useful.
 
 ### Samples
 
-![Go](https://www.michaelfogleman.com/static/gallery/500.png)
+![Go](http://i.imgur.com/LMNUoaM.jpg)
 
 ![Sponza](http://i.imgur.com/wjNZJPT.png)
 
