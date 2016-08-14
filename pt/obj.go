@@ -3,6 +3,7 @@ package pt
 import (
 	"bufio"
 	"fmt"
+	"math"
 	"os"
 	"strconv"
 	"strings"
@@ -116,6 +117,13 @@ func LoadMTL(path string, parent Material, materials map[string]*Material) error
 			parentCopy := parent
 			material = &parentCopy
 			materials[args[0]] = material
+		case "Ke":
+			c := ParseFloats(args)
+			max := math.Max(math.Max(c[0], c[1]), c[2])
+			if max > 0 {
+				material.Color = Color{c[0] / max, c[1] / max, c[2] / max}
+				material.Emittance = max
+			}
 		case "Kd":
 			c := ParseFloats(args)
 			material.Color = Color{c[0], c[1], c[2]}

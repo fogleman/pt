@@ -124,12 +124,17 @@ func (s *DefaultSampler) directLight(scene *Scene, n Ray, rnd *rand.Rand) Color 
 	// compute solid angle (hemisphere coverage)
 	hyp := center.Sub(n.Origin).Length()
 	opp := radius
-	// TODO: fix issue where hyp < opp (point inside sphere)
 	theta := math.Asin(opp / hyp)
 	adj := opp / math.Tan(theta)
 	d := math.Cos(theta) * adj
 	r := math.Sin(theta) * adj
 	coverage := (r * r) / (d * d)
+
+	// TODO: fix issue where hyp < opp (point inside sphere)
+	if hyp < opp {
+		coverage = 1
+	}
+	coverage = math.Min(coverage, 1)
 
 	// get material properties from light
 	material := MaterialAt(light, point)
