@@ -102,9 +102,21 @@ func (s *DefaultSampler) directLight(scene *Scene, n Ray, rnd *rand.Rand) Color 
 		center = box.Center()
 	}
 
-	// get random point on sphere surface
-	// TODO: use disk instead, this is biased?
-	point := RandomUnitVector(rnd).MulScalar(radius).Add(center)
+	// get random point in disk
+	var point Vector
+	for {
+		x := rnd.Float64()*2 - 1
+		y := rnd.Float64()*2 - 1
+		if x*x+y*y <= 1 {
+			l := center.Sub(n.Origin).Normalize()
+			u := l.Cross(RandomUnitVector(rnd)).Normalize()
+			v := l.Cross(u)
+			point = point.Add(u.MulScalar(x * radius))
+			point = point.Add(v.MulScalar(y * radius))
+			point = point.Add(center)
+			break
+		}
+	}
 
 	// construct ray toward light point
 	ray := Ray{n.Origin, point.Sub(n.Origin).Normalize()}
