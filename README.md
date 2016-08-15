@@ -58,20 +58,8 @@ Here are some resources that I have found useful.
 
 ![Cornell](https://www.michaelfogleman.com/static/gallery/853.png)
 
-![Sponza](http://i.imgur.com/wjNZJPT.png)
+![Spheres](https://www.michaelfogleman.com/static/gallery/dof.png)
+
+![Suzanne](http://i.imgur.com/iw32US1.png)
 
 ![Dragon](http://i.imgur.com/woBoPFx.png)
-
-![Cubes](http://i.imgur.com/Ypn3WCI.png)
-
-![Suzanne](http://i.imgur.com/eI5yLu7.png)
-
-![HDRI](http://i.imgur.com/z1SUVrr.png)
-
-![Cylinders](http://i.imgur.com/yVeil5G.png)
-
-![Dinosaur](http://i.imgur.com/fx8Cgvy.png)
-
-![Balls](http://i.imgur.com/2PNvTgE.png)
-
-![Pencil](http://i.imgur.com/m6drd9s.png)
