@@ -56,6 +56,8 @@ Here are some resources that I have found useful.
 
 ![Go](http://i.imgur.com/LMNUoaM.jpg)
 
+![Cornell](https://www.michaelfogleman.com/static/gallery/853.png)
+
 ![Sponza](http://i.imgur.com/wjNZJPT.png)
 
 ![Dragon](http://i.imgur.com/woBoPFx.png)
