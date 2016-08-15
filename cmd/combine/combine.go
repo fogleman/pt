@@ -28,7 +28,7 @@ func main() {
 			log.Fatalf("Invalid weight: %s\n", args[i+1])
 		}
 		fmt.Printf("Loading %s...\n", path)
-		im, err := pt.LoadPNG(path)
+		im, err := pt.LoadImage(path)
 		if err != nil {
 			log.Fatalf("Error loading %s: %v", path, err)
 		}
