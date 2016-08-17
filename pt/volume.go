@@ -83,6 +83,10 @@ func (v *Volume) BoundingBox() Box {
 	return v.Box
 }
 
+func (v *Volume) Area() float64 {
+	return 1
+}
+
 func (v *Volume) Sign(a Vector) int {
 	s := v.Sample(a.X, a.Y, a.Z)
 	for i, window := range v.Windows {

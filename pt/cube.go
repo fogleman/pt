@@ -21,6 +21,11 @@ func (c *Cube) BoundingBox() Box {
 	return c.Box
 }
 
+func (c *Cube) Area() float64 {
+	d := c.Max.Sub(c.Min)
+	return 2*d.X*d.Y + 2*d.X*d.Z + 2*d.Y*d.Z
+}
+
 func (c *Cube) Intersect(r Ray) Hit {
 	n := c.Min.Sub(r.Origin).Div(r.Direction)
 	f := c.Max.Sub(r.Origin).Div(r.Direction)

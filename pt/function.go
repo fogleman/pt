@@ -19,6 +19,10 @@ func (f *Function) BoundingBox() Box {
 	return f.Box
 }
 
+func (f *Function) Area() float64 {
+	return 1
+}
+
 func (f *Function) Contains(v Vector) bool {
 	return v.Z < f.Function(v.X, v.Y)
 }

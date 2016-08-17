@@ -27,6 +27,14 @@ func (m *Mesh) BoundingBox() Box {
 	return m.Box
 }
 
+func (m *Mesh) Area() float64 {
+	var area float64
+	for _, t := range m.Triangles {
+		area += t.Area()
+	}
+	return area
+}
+
 func (m *Mesh) Intersect(r Ray) Hit {
 	return m.tree.Intersect(r)
 }

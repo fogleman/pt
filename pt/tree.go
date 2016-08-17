@@ -6,6 +6,11 @@ import (
 	"sort"
 )
 
+const (
+	kI = 1
+	kT = 1
+)
+
 type Tree struct {
 	Box  Box
 	Root *Node
@@ -93,28 +98,27 @@ func (node *Node) IntersectShapes(r Ray) Hit {
 	return hit
 }
 
-func (node *Node) PartitionScore(axis Axis, point float64) int {
-	left, right := 0, 0
+func (node *Node) PartitionScore(axis Axis, point float64) float64 {
+	var left, right int
+	var leftArea, rightArea, totalArea float64
 	for _, shape := range node.Shapes {
 		box := shape.BoundingBox()
 		l, r := box.Partition(axis, point)
+		area := shape.Area()
+		totalArea += area
 		if l {
 			left++
+			leftArea += area
 		}
 		if r {
 			right++
+			rightArea += area
 		}
 	}
-	if left >= right {
-		return left
-	} else {
-		return right
-	}
+	return kT + kI*(float64(left)*leftArea/totalArea+float64(right)*rightArea/totalArea)
 }
 
-func (node *Node) Partition(size int, axis Axis, point float64) (left, right []Shape) {
-	left = make([]Shape, 0, size)
-	right = make([]Shape, 0, size)
+func (node *Node) Partition(axis Axis, point float64) (left, right []Shape) {
 	for _, shape := range node.Shapes {
 		box := shape.BoundingBox()
 		l, r := box.Partition(axis, point)
@@ -148,7 +152,8 @@ func (node *Node) Split(depth int) {
 	sort.Float64s(ys)
 	sort.Float64s(zs)
 	mx, my, mz := Median(xs), Median(ys), Median(zs)
-	best := int(float64(len(node.Shapes)) * 0.85)
+	// best := int(float64(len(node.Shapes)) * 0.85)
+	best := kI * float64(len(node.Shapes))
 	bestAxis := AxisNone
 	bestPoint := 0.0
 	sx := node.PartitionScore(AxisX, mx)
@@ -172,7 +177,7 @@ func (node *Node) Split(depth int) {
 	if bestAxis == AxisNone {
 		return
 	}
-	l, r := node.Partition(best, bestAxis, bestPoint)
+	l, r := node.Partition(bestAxis, bestPoint)
 	node.Axis = bestAxis
 	node.Point = bestPoint
 	node.Left = NewNode(l)

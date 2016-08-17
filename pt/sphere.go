@@ -23,6 +23,10 @@ func (s *Sphere) BoundingBox() Box {
 	return s.Box
 }
 
+func (s *Sphere) Area() float64 {
+	return 4 * math.Pi * s.Radius * s.Radius
+}
+
 func (s *Sphere) Intersect(r Ray) Hit {
 	to := r.Origin.Sub(s.Center)
 	b := to.Dot(r.Direction)

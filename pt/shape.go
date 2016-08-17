@@ -3,6 +3,7 @@ package pt
 type Shape interface {
 	Compile()
 	BoundingBox() Box
+	Area() float64
 	Intersect(Ray) Hit
 	UV(Vector) Vector
 	NormalAt(Vector) Vector
