@@ -6,11 +6,12 @@ type Mesh struct {
 	Box       Box
 	Triangles []*Triangle
 	tree      *Tree
+	area      float64
 }
 
 func NewMesh(triangles []*Triangle) *Mesh {
 	box := BoxForTriangles(triangles)
-	return &Mesh{box, triangles, nil}
+	return &Mesh{box, triangles, nil, -1}
 }
 
 func (m *Mesh) Compile() {
@@ -28,11 +29,14 @@ func (m *Mesh) BoundingBox() Box {
 }
 
 func (m *Mesh) Area() float64 {
-	var area float64
-	for _, t := range m.Triangles {
-		area += t.Area()
+	if m.area < 0 {
+		var area float64
+		for _, t := range m.Triangles {
+			area += t.Area()
+		}
+		m.area = area
 	}
-	return area
+	return m.area
 }
 
 func (m *Mesh) Intersect(r Ray) Hit {
