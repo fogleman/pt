@@ -151,28 +151,33 @@ func (node *Node) Split(depth int) {
 	sort.Float64s(xs)
 	sort.Float64s(ys)
 	sort.Float64s(zs)
-	mx, my, mz := Median(xs), Median(ys), Median(zs)
-	// best := int(float64(len(node.Shapes)) * 0.85)
 	best := kI * float64(len(node.Shapes))
 	bestAxis := AxisNone
 	bestPoint := 0.0
-	sx := node.PartitionScore(AxisX, mx)
-	if sx < best {
-		best = sx
-		bestAxis = AxisX
-		bestPoint = mx
-	}
-	sy := node.PartitionScore(AxisY, my)
-	if sy < best {
-		best = sy
-		bestAxis = AxisY
-		bestPoint = my
-	}
-	sz := node.PartitionScore(AxisZ, mz)
-	if sz < best {
-		best = sz
-		bestAxis = AxisZ
-		bestPoint = mz
+	const N = 32
+	for i := 0; i < N; i++ {
+		p := float64(i+1) / float64(N+1)
+		mx := xs[0] + (xs[len(xs)-1]-xs[0])*p
+		sx := node.PartitionScore(AxisX, mx)
+		if sx < best {
+			best = sx
+			bestAxis = AxisX
+			bestPoint = mx
+		}
+		my := ys[0] + (ys[len(ys)-1]-ys[0])*p
+		sy := node.PartitionScore(AxisY, my)
+		if sy < best {
+			best = sy
+			bestAxis = AxisY
+			bestPoint = my
+		}
+		mz := zs[0] + (zs[len(zs)-1]-zs[0])*p
+		sz := node.PartitionScore(AxisZ, mz)
+		if sz < best {
+			best = sz
+			bestAxis = AxisZ
+			bestPoint = mz
+		}
 	}
 	if bestAxis == AxisNone {
 		return
