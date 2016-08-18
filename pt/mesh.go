@@ -42,7 +42,7 @@ func (m *Mesh) Intersect(r Ray) Hit {
 	}
 	hit := m.mesh.Intersect(ray)
 	if hit.Index >= 0 {
-		return Hit{m.Triangles[hit.Index], hit.T - 1e-4, nil}
+		return Hit{m.Triangles[hit.Index], hit.T - 1e-5, nil}
 	} else {
 		return NoHit
 	}
