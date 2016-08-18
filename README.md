@@ -56,10 +56,11 @@ Here are some resources that I have found useful.
 
 ![Go](http://i.imgur.com/LMNUoaM.jpg)
 
+![Dragon](https://www.michaelfogleman.com/static/gallery/out1000c.png)
+
 ![Cornell](https://www.michaelfogleman.com/static/gallery/853.png)
 
 ![Spheres](https://www.michaelfogleman.com/static/gallery/dof.png)
 
 ![Suzanne](http://i.imgur.com/iw32US1.png)
 
-![Dragon](http://i.imgur.com/woBoPFx.png)
