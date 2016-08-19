@@ -1,11 +1,15 @@
 package pt
 
-import "math"
+import (
+	"math"
+
+	embree "github.com/fogleman/go-embree"
+)
 
 type Mesh struct {
 	Box       Box
 	Triangles []*Triangle
-	tree      *Tree
+	mesh      *embree.Mesh
 }
 
 func NewMesh(triangles []*Triangle) *Mesh {
@@ -14,12 +18,16 @@ func NewMesh(triangles []*Triangle) *Mesh {
 }
 
 func (m *Mesh) Compile() {
-	if m.tree == nil {
-		shapes := make([]Shape, len(m.Triangles))
-		for i, triangle := range m.Triangles {
-			shapes[i] = triangle
+	if m.mesh == nil {
+		triangles := make([]embree.Triangle, len(m.Triangles))
+		for i, t := range m.Triangles {
+			triangles[i] = embree.Triangle{
+				embree.Vector{t.V1.X, t.V1.Y, t.V1.Z},
+				embree.Vector{t.V2.X, t.V2.Y, t.V2.Z},
+				embree.Vector{t.V3.X, t.V3.Y, t.V3.Z},
+			}
 		}
-		m.tree = NewTree(shapes)
+		m.mesh = embree.NewMesh(triangles)
 	}
 }
 
@@ -28,7 +36,16 @@ func (m *Mesh) BoundingBox() Box {
 }
 
 func (m *Mesh) Intersect(r Ray) Hit {
-	return m.tree.Intersect(r)
+	ray := embree.Ray{
+		embree.Vector{r.Origin.X, r.Origin.Y, r.Origin.Z},
+		embree.Vector{r.Direction.X, r.Direction.Y, r.Direction.Z},
+	}
+	hit := m.mesh.Intersect(ray)
+	if hit.Index >= 0 {
+		return Hit{m.Triangles[hit.Index], hit.T - 1e-5, nil}
+	} else {
+		return NoHit
+	}
 }
 
 func (m *Mesh) UV(p Vector) Vector {
@@ -120,7 +137,7 @@ func (m *Mesh) Transform(matrix Matrix) {
 		t.UpdateBoundingBox()
 	}
 	m.UpdateBoundingBox()
-	m.tree = nil // dirty
+	m.mesh = nil // dirty
 }
 
 func (m *Mesh) SaveSTL(path string) error {

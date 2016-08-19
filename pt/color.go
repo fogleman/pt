@@ -28,6 +28,13 @@ func (a Color) RGBA() color.RGBA {
 	return color.RGBA{r, g, b, 255}
 }
 
+func (a Color) RGBA64() color.RGBA64 {
+	r := uint16(math.Max(0, math.Min(65535, a.R*65535)))
+	g := uint16(math.Max(0, math.Min(65535, a.G*65535)))
+	b := uint16(math.Max(0, math.Min(65535, a.B*65535)))
+	return color.RGBA64{r, g, b, 65535}
+}
+
 func (a Color) Add(b Color) Color {
 	return Color{a.R + b.R, a.G + b.G, a.B + b.B}
 }

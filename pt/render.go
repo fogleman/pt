@@ -85,10 +85,10 @@ func Render(scene *Scene, camera *Camera, sampler Sampler, w, h, samplesPerPixel
 }
 
 func pixelsToImage(pixels []Color, w, h int, scale float64) image.Image {
-	result := image.NewRGBA(image.Rect(0, 0, w, h))
+	result := image.NewRGBA64(image.Rect(0, 0, w, h))
 	for y := 0; y < h; y++ {
 		for x := 0; x < w; x++ {
-			result.SetRGBA(x, y, pixels[y*w+x].MulScalar(scale).Pow(1/2.2).RGBA())
+			result.SetRGBA64(x, y, pixels[y*w+x].MulScalar(scale).Pow(1/2.2).RGBA64())
 		}
 	}
 	return result
