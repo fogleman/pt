@@ -166,3 +166,13 @@ func (t *Triangle) FixNormals() {
 		t.N3 = n
 	}
 }
+
+func (t *Triangle) SwapAxes(x, y, z int) {
+	t.V1 = t.V1.SwapAxes(x, y, z)
+	t.V2 = t.V2.SwapAxes(x, y, z)
+	t.V3 = t.V3.SwapAxes(x, y, z)
+	t.N1 = t.N1.SwapAxes(x, y, z)
+	t.N2 = t.N2.SwapAxes(x, y, z)
+	t.N3 = t.N3.SwapAxes(x, y, z)
+	t.UpdateBoundingBox()
+}

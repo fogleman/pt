@@ -153,3 +153,11 @@ func (m *Mesh) SetMaterial(material Material) {
 func (m *Mesh) SaveSTL(path string) error {
 	return SaveSTL(path, m)
 }
+
+func (m *Mesh) SwapAxes(x, y, z int) {
+	for _, t := range m.Triangles {
+		t.SwapAxes(x, y, z)
+	}
+	m.UpdateBoundingBox()
+	m.mesh = nil // dirty
+}

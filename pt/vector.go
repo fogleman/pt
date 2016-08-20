@@ -135,6 +135,11 @@ func (a Vector) MaxComponent() float64 {
 	return math.Max(math.Max(a.X, a.Y), a.Z)
 }
 
+func (a Vector) SwapAxes(x, y, z int) Vector {
+	f := [3]float64{a.X, a.Y, a.Z}
+	return Vector{f[x], f[y], f[z]}
+}
+
 func (n Vector) Reflect(i Vector) Vector {
 	return i.Sub(n.MulScalar(2 * n.Dot(i)))
 }
