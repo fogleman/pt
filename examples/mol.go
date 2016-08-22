@@ -33,7 +33,12 @@ func GetColor(name string) Color {
 }
 
 func GetMaterial(name string) Material {
-	return GlossyMaterial(GetColor(name), 1.5, Radians(30))
+	switch name {
+	case "1", "2":
+		return GlossyMaterial(GetColor(name), 1.5, Radians(10))
+	default:
+		return GlossyMaterial(GetColor(name), 1.3, Radians(30))
+	}
 }
 
 func main() {
@@ -61,22 +66,21 @@ func main() {
 		scene.Add(NewTransformedCylinder(v0, v1, radius, material))
 	}
 
+	// camera
 	cam := molecule.Camera()
-
 	eye := V(cam.Eye.X, cam.Eye.Y, cam.Eye.Z)
 	center := V(cam.Center.X, cam.Center.Y, cam.Center.Z)
 	up := V(cam.Up.X, cam.Up.Y, cam.Up.Z)
-	fovy := cam.Fovy
+	camera := LookAt(eye, center, up, cam.Fovy)
 
 	// light coordinate system
 	m := LookAtMatrix(eye, center, up)
 	d := center.Sub(eye).Length()
-	scene.Add(NewSphere(m.MulPosition(V(-d/2, d/2, -d)), 2, LightMaterial(Color{1, 1, 1}, 2000)))
-	scene.Add(NewSphere(m.MulPosition(V(d/2, -d/2, -d)), 1, LightMaterial(Color{1, 1, 1}, 2000)))
-	scene.Add(NewSphere(m.MulPosition(V(d, 0, d)), 1, LightMaterial(Color{1, 1, 1}, 2000)))
+	light := LightMaterial(Color{1, 1, 1}, 2000)
+	scene.Add(NewSphere(m.MulPosition(V(-d/2, d/2, -d)), 2, light))
+	scene.Add(NewSphere(m.MulPosition(V(d/2, -d/2, -d)), 1, light))
+	scene.Add(NewSphere(m.MulPosition(V(d, 0, d)), 1, light))
 
-	// scene.Color = Color{1, 1, 1}
-	camera := LookAt(eye, center, up, fovy)
-	sampler := NewSampler(16, 8)
-	IterativeRender("out%03d.png", 1000, &scene, &camera, sampler, 1024, 1024, -1)
+	sampler := NewSampler(64, 8)
+	IterativeRender("out%03d.png", 1000, &scene, &camera, sampler, 1024/1, 1024/1, -1)
 }
