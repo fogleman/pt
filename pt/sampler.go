@@ -53,17 +53,18 @@ func (s *DefaultSampler) sample(scene *Scene, ray Ray, emission bool, samples, d
 		for v := 0; v < n; v++ {
 			fu := (float64(u) + rnd.Float64()) / float64(n)
 			fv := (float64(v) + rnd.Float64()) / float64(n)
-			newRay, reflected := ray.Bounce(&info, fu, fv, rnd)
+			reflect := rnd.Float64() < 0.5
+			newRay, reflected, p := ray.Bounce(&info, fu, fv, reflect, rnd)
 			indirect := s.sample(scene, newRay, reflected, 1, depth-1, rnd)
 			if reflected {
 				tinted := indirect.Mix(material.Color.Mul(indirect), material.Tint)
-				result = result.Add(tinted)
+				result = result.Add(tinted.MulScalar(2 * p))
 			} else {
 				direct := Color{}
 				if s.DirectLighting {
 					direct = s.directLight(scene, info.Ray, rnd)
 				}
-				result = result.Add(material.Color.Mul(direct.Add(indirect)))
+				result = result.Add(material.Color.Mul(direct.Add(indirect)).MulScalar(2 * p))
 			}
 		}
 	}

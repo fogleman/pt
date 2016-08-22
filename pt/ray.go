@@ -41,26 +41,26 @@ func (r Ray) ConeBounce(theta, u, v float64, rnd *rand.Rand) Ray {
 	return Ray{r.Origin, Cone(r.Direction, theta, u, v, rnd)}
 }
 
-func (i Ray) Bounce(info *HitInfo, u, v float64, rnd *rand.Rand) (Ray, bool) {
+func (i Ray) Bounce(info *HitInfo, u, v float64, reflect bool, rnd *rand.Rand) (Ray, bool, float64) {
 	n := info.Ray
 	material := info.Material
 	n1, n2 := 1.0, material.Index
 	if info.Inside {
 		n1, n2 = n2, n1
 	}
-	var reflect bool
+	var p float64
 	if material.Reflectivity >= 0 {
-		reflect = rnd.Float64() < material.Reflectivity
+		p = material.Reflectivity
 	} else {
-		reflect = rnd.Float64() < n.Reflectance(i, n1, n2)
+		p = n.Reflectance(i, n1, n2)
 	}
-	if reflect {
+	if reflect { //rnd.Float64() < p
 		reflected := n.Reflect(i)
-		return reflected.ConeBounce(material.Gloss, u, v, rnd), true
+		return reflected.ConeBounce(material.Gloss, u, v, rnd), true, p
 	} else if material.Transparent {
 		refracted := n.Refract(i, n1, n2)
-		return refracted.ConeBounce(material.Gloss, u, v, rnd), true
+		return refracted.ConeBounce(material.Gloss, u, v, rnd), true, 1 - p
 	} else {
-		return n.WeightedBounce(u, v, rnd), false
+		return n.WeightedBounce(u, v, rnd), false, 1 - p
 	}
 }
