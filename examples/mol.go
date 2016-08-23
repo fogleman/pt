@@ -23,6 +23,8 @@ func GetColor(name string) Color {
 		return HexColor(0xE74C3C)
 	case "P":
 		return HexColor(0xFF9800)
+	case "S":
+		return HexColor(0xFFD34E)
 	case "Co":
 		return HexColor(0xD0D0D0)
 	default:
@@ -34,7 +36,7 @@ func GetColor(name string) Color {
 func GetMaterial(name string) Material {
 	switch name {
 	case "1", "2", "3":
-		return GlossyMaterial(GetColor(name), 1.5, Radians(10))
+		return GlossyMaterial(GetColor(name), 1.1, Radians(30))
 	default:
 		return GlossyMaterial(GetColor(name), 1.3, Radians(30))
 	}
@@ -70,20 +72,28 @@ func main() {
 	eye := V(cam.Eye.X, cam.Eye.Y, cam.Eye.Z)
 	center := V(cam.Center.X, cam.Center.Y, cam.Center.Z)
 	up := V(cam.Up.X, cam.Up.Y, cam.Up.Z)
-	camera := LookAt(eye, center, up, cam.Fovy)
+
+	center.Z -= 4
+	fmt.Println(eye)
+	fmt.Println(center)
+	fmt.Println(up)
 
 	// light coordinate system
 	m := LookAtMatrix(eye, center, up).Translate(center.Sub(eye))
 	d := 50.0
-	a := V(-1, 0.5, -1).Normalize().MulScalar(d)
-	b := V(1, 0, -1).Normalize().MulScalar(d)
-	c := V(-1, -0.25, 1).Normalize().MulScalar(d)
-	light := LightMaterial(Color{1, 1, 1}, 2000)
-	scene.Add(NewSphere(m.MulPosition(a), 2, light))
-	scene.Add(NewSphere(m.MulPosition(b), 1, light))
-	scene.Add(NewSphere(m.MulPosition(c), 1, light))
+	a := V(-1, 0.5, -1)
+	b := V(1, -0.25, -1)
+	c := V(-1, -0.25, 1)
+	a = m.MulPosition(a.Normalize().MulScalar(d))
+	b = m.MulPosition(b.Normalize().MulScalar(d))
+	c = m.MulPosition(c.Normalize().MulScalar(d))
+	light := LightMaterial(Color{1, 1, 1}, 1000)
+	scene.Add(NewSphere(a, 2, light))
+	scene.Add(NewSphere(b, 1, light))
+	scene.Add(NewSphere(c, 1, light))
 
-	sampler := NewSampler(4, 8)
+	camera := LookAt(eye, center, up, cam.Fovy/1.7)
+	sampler := NewSampler(16, 8)
 	sampler.SpecularMode = SpecularModeAll
-	IterativeRender("out%03d.png", 1000, &scene, &camera, sampler, 1024/1, 1024/1, -1)
+	IterativeRender("out%03d.png", 10000, &scene, &camera, sampler, 2560, 1440, -1)
 }

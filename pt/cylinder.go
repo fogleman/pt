@@ -42,7 +42,7 @@ func (shape *Cylinder) Intersect(ray Ray) Hit {
 	b := 2*o.X*d.X + 2*o.Y*d.Y
 	c := o.X*o.X + o.Y*o.Y - r*r
 	q := b*b - 4*a*c
-	if q < 0 {
+	if q < EPS {
 		return NoHit
 	}
 	s := math.Sqrt(q)
