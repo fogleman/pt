@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"strconv"
 
 	"github.com/fogleman/mol/mol"
@@ -10,9 +11,7 @@ import (
 
 func GetColor(name string) Color {
 	switch name {
-	case "1":
-		return Color{0.1, 0.1, 0.1}
-	case "2":
+	case "1", "2", "3":
 		return Color{0.1, 0.1, 0.1}
 	case "H":
 		return HexColor(0xECF0F1)
@@ -34,7 +33,7 @@ func GetColor(name string) Color {
 
 func GetMaterial(name string) Material {
 	switch name {
-	case "1", "2":
+	case "1", "2", "3":
 		return GlossyMaterial(GetColor(name), 1.5, Radians(10))
 	default:
 		return GlossyMaterial(GetColor(name), 1.3, Radians(30))
@@ -44,7 +43,7 @@ func GetMaterial(name string) Material {
 func main() {
 	scene := Scene{}
 
-	molecule, err := mol.ParseFile("../mol/examples/caffeine.txt")
+	molecule, err := mol.ParseFile(os.Args[1])
 	if err != nil {
 		panic(err)
 	}
@@ -74,13 +73,17 @@ func main() {
 	camera := LookAt(eye, center, up, cam.Fovy)
 
 	// light coordinate system
-	m := LookAtMatrix(eye, center, up)
-	d := center.Sub(eye).Length()
+	m := LookAtMatrix(eye, center, up).Translate(center.Sub(eye))
+	d := 50.0
+	a := V(-1, 0.5, -1).Normalize().MulScalar(d)
+	b := V(1, 0, -1).Normalize().MulScalar(d)
+	c := V(-1, -0.25, 1).Normalize().MulScalar(d)
 	light := LightMaterial(Color{1, 1, 1}, 2000)
-	scene.Add(NewSphere(m.MulPosition(V(-d/2, d/2, -d)), 2, light))
-	scene.Add(NewSphere(m.MulPosition(V(d/2, -d/2, -d)), 1, light))
-	scene.Add(NewSphere(m.MulPosition(V(d, 0, d)), 1, light))
+	scene.Add(NewSphere(m.MulPosition(a), 2, light))
+	scene.Add(NewSphere(m.MulPosition(b), 1, light))
+	scene.Add(NewSphere(m.MulPosition(c), 1, light))
 
-	sampler := NewSampler(64, 8)
+	sampler := NewSampler(4, 8)
+	sampler.SpecularMode = SpecularModeAll
 	IterativeRender("out%03d.png", 1000, &scene, &camera, sampler, 1024/1, 1024/1, -1)
 }
