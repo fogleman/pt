@@ -5,18 +5,35 @@ import (
 	"math/rand"
 )
 
+type SpecularMode int
+
+const (
+	SpecularModeNaive = iota
+	SpecularModeFirst
+	SpecularModeAll
+)
+
+type BounceMode int
+
+const (
+	BounceModeAny = iota
+	BounceModeDiffuse
+	BounceModeSpecular
+)
+
 type Sampler interface {
 	Sample(scene *Scene, ray Ray, rnd *rand.Rand) Color
 }
 
-func NewSampler(firstHitSamples, maxBounces int) Sampler {
-	return &DefaultSampler{firstHitSamples, maxBounces, true}
+func NewSampler(firstHitSamples, maxBounces int) *DefaultSampler {
+	return &DefaultSampler{firstHitSamples, maxBounces, true, SpecularModeNaive}
 }
 
 type DefaultSampler struct {
 	FirstHitSamples int
 	MaxBounces      int
 	DirectLighting  bool
+	SpecularMode    SpecularMode
 }
 
 func (s *DefaultSampler) Sample(scene *Scene, ray Ray, rnd *rand.Rand) Color {
@@ -49,10 +66,13 @@ func (s *DefaultSampler) sample(scene *Scene, ray Ray, emission bool, samples, d
 		result = result.Add(material.Color.MulScalar(material.Emittance * float64(samples)))
 	}
 	n := int(math.Sqrt(float64(samples)))
-	ma, mb := -1, -1
-	if n > 1 {
-		ma = 0
-		mb = 1
+	var ma, mb BounceMode
+	if s.SpecularMode == SpecularModeAll || (s.SpecularMode == SpecularModeFirst && n > 1) {
+		ma = BounceModeDiffuse
+		mb = BounceModeSpecular
+	} else {
+		ma = BounceModeAny
+		mb = BounceModeAny
 	}
 	for u := 0; u < n; u++ {
 		for v := 0; v < n; v++ {
@@ -60,7 +80,7 @@ func (s *DefaultSampler) sample(scene *Scene, ray Ray, emission bool, samples, d
 				fu := (float64(u) + rnd.Float64()) / float64(n)
 				fv := (float64(v) + rnd.Float64()) / float64(n)
 				newRay, reflected, p := ray.Bounce(&info, fu, fv, mode, rnd)
-				if mode == -1 {
+				if mode == BounceModeAny {
 					p = 1
 				}
 				if p > 0 && reflected {
