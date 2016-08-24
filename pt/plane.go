@@ -27,7 +27,7 @@ func (p *Plane) Intersect(ray Ray) Hit {
 	}
 	a := p.Point.Sub(ray.Origin)
 	t := a.Dot(p.Normal) / d
-	if t <= 0 {
+	if t < EPS {
 		return NoHit
 	}
 	return Hit{p, t, nil}

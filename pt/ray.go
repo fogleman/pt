@@ -68,6 +68,7 @@ func (i Ray) Bounce(info *HitInfo, u, v float64, mode BounceMode, rnd *rand.Rand
 		return reflected.ConeBounce(material.Gloss, u, v, rnd), true, p
 	} else if material.Transparent {
 		refracted := n.Refract(i, n1, n2)
+		refracted.Origin = refracted.Origin.Add(refracted.Direction.MulScalar(1e-4))
 		return refracted.ConeBounce(material.Gloss, u, v, rnd), true, 1 - p
 	} else {
 		return n.WeightedBounce(u, v, rnd), false, 1 - p
