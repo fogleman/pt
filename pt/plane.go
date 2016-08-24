@@ -1,5 +1,7 @@
 package pt
 
+import "math"
+
 type Plane struct {
 	Point    Vector
 	Normal   Vector
@@ -20,12 +22,12 @@ func (p *Plane) BoundingBox() Box {
 
 func (p *Plane) Intersect(ray Ray) Hit {
 	d := p.Normal.Dot(ray.Direction)
-	if d < EPS {
+	if math.Abs(d) < EPS {
 		return NoHit
 	}
 	a := p.Point.Sub(ray.Origin)
 	t := a.Dot(p.Normal) / d
-	if t < EPS {
+	if t <= 0 {
 		return NoHit
 	}
 	return Hit{p, t, nil}
