@@ -52,6 +52,10 @@ func (a Vector) Normalize() Vector {
 	return Vector{a.X / d, a.Y / d, a.Z / d}
 }
 
+func (a Vector) Abs() Vector {
+	return Vector{math.Abs(a.X), math.Abs(a.Y), math.Abs(a.Z)}
+}
+
 func (a Vector) Add(b Vector) Vector {
 	return Vector{a.X + b.X, a.Y + b.Y, a.Z + b.Z}
 }
