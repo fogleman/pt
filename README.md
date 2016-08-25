@@ -4,6 +4,10 @@
 
 This is a CPU-only, unidirectional [path tracing](http://en.wikipedia.org/wiki/Path_tracing) engine written in Go. It has lots of features and a simple API.
 
+![Examples](http://i.imgur.com/BTaDLC3.png)
+
+---
+
 ### Features
 
 * Supports OBJ and STL
