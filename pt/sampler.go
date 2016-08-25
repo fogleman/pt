@@ -8,8 +8,8 @@ import (
 type LightMode int
 
 const (
-	LightModeRandom = iota
-	LightModeAll
+	LightModeRandom = iota // direct sample one random light
+	LightModeAll           // direct sample all lights
 )
 
 type SpecularMode int
@@ -20,12 +20,12 @@ const (
 	SpecularModeAll
 )
 
-type BounceMode int
+type BounceType int
 
 const (
-	BounceModeAny = iota
-	BounceModeDiffuse
-	BounceModeSpecular
+	BounceTypeAny = iota
+	BounceTypeDiffuse
+	BounceTypeSpecular
 )
 
 type Sampler interface {
@@ -33,15 +33,15 @@ type Sampler interface {
 }
 
 func NewSampler(firstHitSamples, maxBounces int) *DefaultSampler {
-	return &DefaultSampler{firstHitSamples, maxBounces, true, SpecularModeNaive, LightModeRandom}
+	return &DefaultSampler{firstHitSamples, maxBounces, true, LightModeRandom, SpecularModeNaive}
 }
 
 type DefaultSampler struct {
 	FirstHitSamples int
 	MaxBounces      int
 	DirectLighting  bool
-	SpecularMode    SpecularMode
 	LightMode       LightMode
+	SpecularMode    SpecularMode
 }
 
 func (s *DefaultSampler) Sample(scene *Scene, ray Ray, rnd *rand.Rand) Color {
@@ -54,15 +54,9 @@ func (s *DefaultSampler) sample(scene *Scene, ray Ray, emission bool, samples, d
 	}
 	hit := scene.Intersect(ray)
 	if !hit.Ok() {
-		if scene.Texture != nil {
-			d := ray.Direction
-			u := math.Atan2(d.Z, d.X) + scene.TextureAngle
-			v := math.Atan2(d.Y, Vector{d.X, 0, d.Z}.Length())
-			u = (u + math.Pi) / (2 * math.Pi)
-			v = (v + math.Pi/2) / math.Pi
-			return scene.Texture.Sample(u, v)
-		}
-		return scene.Color
+		a := s.sampleEnvironment(scene, ray)
+		b := s.sampleDirectionalLights(scene, ray)
+		return a.Add(b)
 	}
 	info := hit.Info(ray)
 	material := info.Material
@@ -74,13 +68,13 @@ func (s *DefaultSampler) sample(scene *Scene, ray Ray, emission bool, samples, d
 		result = result.Add(material.Color.MulScalar(material.Emittance * float64(samples)))
 	}
 	n := int(math.Sqrt(float64(samples)))
-	var ma, mb BounceMode
+	var ma, mb BounceType
 	if s.SpecularMode == SpecularModeAll || (s.SpecularMode == SpecularModeFirst && n > 1) {
-		ma = BounceModeDiffuse
-		mb = BounceModeSpecular
+		ma = BounceTypeDiffuse
+		mb = BounceTypeSpecular
 	} else {
-		ma = BounceModeAny
-		mb = BounceModeAny
+		ma = BounceTypeAny
+		mb = BounceTypeAny
 	}
 	for u := 0; u < n; u++ {
 		for v := 0; v < n; v++ {
@@ -88,7 +82,7 @@ func (s *DefaultSampler) sample(scene *Scene, ray Ray, emission bool, samples, d
 				fu := (float64(u) + rnd.Float64()) / float64(n)
 				fv := (float64(v) + rnd.Float64()) / float64(n)
 				newRay, reflected, p := ray.Bounce(&info, fu, fv, mode, rnd)
-				if mode == BounceModeAny {
+				if mode == BounceTypeAny {
 					p = 1
 				}
 				if p > 0 && reflected {
@@ -102,7 +96,7 @@ func (s *DefaultSampler) sample(scene *Scene, ray Ray, emission bool, samples, d
 					indirect := s.sample(scene, newRay, reflected, 1, depth-1, rnd)
 					direct := Color{}
 					if s.DirectLighting {
-						direct = s.directLight(scene, info.Ray, rnd)
+						direct = s.sampleLights(scene, info.Ray, rnd)
 					}
 					result = result.Add(material.Color.Mul(direct.Add(indirect)).MulScalar(p))
 				}
@@ -112,7 +106,27 @@ func (s *DefaultSampler) sample(scene *Scene, ray Ray, emission bool, samples, d
 	return result.DivScalar(float64(n * n))
 }
 
-func (s *DefaultSampler) directLight(scene *Scene, n Ray, rnd *rand.Rand) Color {
+func (s *DefaultSampler) sampleEnvironment(scene *Scene, ray Ray) Color {
+	if scene.Texture != nil {
+		d := ray.Direction
+		u := math.Atan2(d.Z, d.X) + scene.TextureAngle
+		v := math.Atan2(d.Y, Vector{d.X, 0, d.Z}.Length())
+		u = (u + math.Pi) / (2 * math.Pi)
+		v = (v + math.Pi/2) / math.Pi
+		return scene.Texture.Sample(u, v)
+	}
+	return scene.Color
+}
+
+func (s *DefaultSampler) sampleDirectionalLights(scene *Scene, ray Ray) Color {
+	var result Color
+	for _, light := range scene.DirectionalLights {
+		result = result.Add(light.ColorForRay(ray))
+	}
+	return result
+}
+
+func (s *DefaultSampler) sampleLights(scene *Scene, n Ray, rnd *rand.Rand) Color {
 	nLights := len(scene.Lights)
 	if nLights == 0 {
 		return Color{}

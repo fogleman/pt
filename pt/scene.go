@@ -3,13 +3,14 @@ package pt
 import "sync/atomic"
 
 type Scene struct {
-	Color        Color
-	Texture      Texture
-	TextureAngle float64
-	Shapes       []Shape
-	Lights       []Shape
-	tree         *Tree
-	rays         uint64
+	Color             Color
+	Texture           Texture
+	TextureAngle      float64
+	Shapes            []Shape
+	Lights            []Shape
+	DirectionalLights []*DirectionalLight
+	tree              *Tree
+	rays              uint64
 }
 
 func (s *Scene) Compile() {
@@ -26,6 +27,10 @@ func (s *Scene) Add(shape Shape) {
 	if shape.MaterialAt(Vector{}).Emittance > 0 {
 		s.Lights = append(s.Lights, shape)
 	}
+}
+
+func (s *Scene) AddDirectionalLight(light *DirectionalLight) {
+	s.DirectionalLights = append(s.DirectionalLights, light)
 }
 
 func (s *Scene) RayCount() uint64 {
