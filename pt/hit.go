@@ -34,7 +34,7 @@ func (hit *Hit) Info(r Ray) HitInfo {
 		normal = normal.MulScalar(-1)
 		inside = true
 		switch shape.(type) {
-		case *Volume:
+		case *Volume, *SDFShape:
 			inside = false
 		}
 	}
