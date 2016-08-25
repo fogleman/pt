@@ -2,9 +2,20 @@
 
 [![Build Status](https://travis-ci.org/fogleman/pt.png?branch=master)](https://travis-ci.org/fogleman/pt) [![GoDoc](https://godoc.org/github.com/fogleman/pt/pt?status.svg)](https://godoc.org/github.com/fogleman/pt/pt)
 
-This is a CPU-only, unidirectional [path tracing](http://en.wikipedia.org/wiki/Path_tracing) engine written in Go. The Go gopher below was rendered using it, and [here's the code](https://github.com/fogleman/pt/blob/master/examples/gopher.go) that was used to do it. The gopher 3D model was found [here](https://github.com/golang-samples/gopher-3d).
+This is a CPU-only, unidirectional [path tracing](http://en.wikipedia.org/wiki/Path_tracing) engine written in Go. It has lots of features and a simple API.
 
-![Go Gopher](http://i.imgur.com/PhUUcTe.png)
+### Features
+
+* Supports OBJ and STL
+* Supports textures, bump maps and normal maps
+* Supports raymarching of signed distance fields
+* Supports volume rendering from image slices
+* Supports various material properties
+* Supports configurable depth of field
+* Supports iterative rendering
+* Uses k-d trees to accelerate ray intersection tests
+* Uses all CPU cores in parallel
+* 100% pure Go with no dependencies besides the standard library
 
 ### Installation
 
@@ -17,27 +28,12 @@ The are [lots of examples](https://github.com/fogleman/pt/tree/master/examples) 
     cd go/src/github.com/fogleman/pt
     go run examples/gopher.go
 
-### Features
+### Optional Embree Acceleration
 
-* Supports OBJ and STL
-* Supports textures, bump maps and normal maps
-* Supports volume rendering from image slices
-* Supports various material properties
-* Supports configurable depth of field
-* Supports iterative rendering
-* Uses k-d trees to accelerate ray intersection tests
-* Uses all CPU cores in parallel
-* 100% pure Go with no dependencies besides the standard library
+You can optionally utilize Intel's Embree ray tracing kernels to accelerate triangle mesh intersections. First, install embree on your system: http://embree.github.io/ Then get the `go-embree` wrapper and checkout the `embree` branch of `pt`.
 
-### TODO
-
-Here are things that I'm hoping to add.
-
-* bidirectional path tracing
-* true BRDFs
-* subsurface scattering
-* atmosphere
-* constructive solid geometry
+    git checkout embree
+    go get -u github.com/fogleman/go-embree
 
 ### Links
 
@@ -60,7 +56,12 @@ Here are some resources that I have found useful.
 
 ![Cornell](https://www.michaelfogleman.com/static/gallery/853.png)
 
+![Lucy](https://www.michaelfogleman.com/static/gallery/756b.png)
+
+![SDF](https://www.michaelfogleman.com/static/gallery/470d.png)
+
 ![Spheres](https://www.michaelfogleman.com/static/gallery/dof.png)
 
 ![Suzanne](http://i.imgur.com/iw32US1.png)
 
+![Molecule](https://www.michaelfogleman.com/static/gallery/600d.png)
