@@ -5,12 +5,12 @@ import . "github.com/fogleman/pt/pt"
 func main() {
 	scene := Scene{}
 
-	light := LightMaterial(Color{1, 1, 1}, 100)
+	light := LightMaterial(Color{1, 1, 1}, 180)
 
-	d := 3.0
-	scene.Add(NewSphere(V(-1, -1, 0.5).Normalize().MulScalar(d), 0.33, light))
-	scene.Add(NewSphere(V(0, -1, -0.25).Normalize().MulScalar(d), 0.33, light))
-	scene.Add(NewSphere(V(-1, 1, -0.25).Normalize().MulScalar(d), 0.33, light))
+	d := 4.0
+	scene.Add(NewSphere(V(-1, -1, 0.5).Normalize().MulScalar(d), 0.25, light))
+	scene.Add(NewSphere(V(0, -1, 0.25).Normalize().MulScalar(d), 0.25, light))
+	scene.Add(NewSphere(V(-1, 1, 0).Normalize().MulScalar(d), 0.25, light))
 
 	material := GlossyMaterial(HexColor(0x468966), 1.2, Radians(20))
 	sphere := NewSphereSDF(0.65)
@@ -28,6 +28,6 @@ func main() {
 
 	camera := LookAt(V(-3, 0, 1), V(0, 0, 0), V(0, 0, 1), 35)
 	sampler := NewSampler(4, 4)
-	sampler.SpecularMode = SpecularModeFirst
-	IterativeRender("out%03d.png", 1000, &scene, &camera, sampler, 1024, 1024, -1)
+	sampler.SpecularMode = SpecularModeAll
+	IterativeRender("out%03d.png", 10000, &scene, &camera, sampler, 1024, 1024, -1)
 }

@@ -18,17 +18,27 @@ func (s *SDFShape) Compile() {
 
 func (s *SDFShape) Intersect(ray Ray) Hit {
 	const epsilon = 0.00001
-	const start = 0.001
+	const start = 0.0001
+	const jumpSize = 0.001
 	box := s.BoundingBox()
 	t1, t2 := box.Intersect(ray)
 	if t2 < t1 || t2 < 0 {
 		return NoHit
 	}
 	t := math.Max(start, t1)
+	jump := true
 	for i := 0; i < 1000; i++ {
 		d := s.Evaluate(ray.Position(t))
+		if jump && d < 0 {
+			t -= jumpSize
+			jump = false
+			continue
+		}
 		if d < epsilon {
 			return Hit{s, t, nil}
+		}
+		if jump && d < jumpSize {
+			d = jumpSize
 		}
 		t += d
 		if t > t2 {
@@ -75,7 +85,7 @@ func NewSphereSDF(radius float64) SDF {
 }
 
 func (s *SphereSDF) Evaluate(p Vector) float64 {
-	return p.Length() - s.Radius
+	return math.Sqrt(p.X*p.X+p.Y*p.Y+p.Z*p.Z) - s.Radius
 }
 
 func (s *SphereSDF) BoundingBox() Box {
@@ -94,8 +104,42 @@ func NewCubeSDF(size Vector) SDF {
 }
 
 func (s *CubeSDF) Evaluate(p Vector) float64 {
-	d := p.Abs().Sub(s.Size.DivScalar(2))
-	return math.Min(math.Max(d.X, math.Max(d.Y, d.Z)), 0) + d.Max(Vector{}).Length()
+	x := p.X
+	y := p.Y
+	z := p.Z
+	if x < 0 {
+		x = -x
+	}
+	if y < 0 {
+		y = -y
+	}
+	if z < 0 {
+		z = -z
+	}
+	x -= s.Size.X / 2
+	y -= s.Size.Y / 2
+	z -= s.Size.Z / 2
+	a := x
+	if y > a {
+		a = y
+	}
+	if z > a {
+		a = z
+	}
+	if a > 0 {
+		a = 0
+	}
+	if x < 0 {
+		x = 0
+	}
+	if y < 0 {
+		y = 0
+	}
+	if z < 0 {
+		z = 0
+	}
+	b := math.Sqrt(x*x + y*y + z*z)
+	return a + b
 }
 
 func (s *CubeSDF) BoundingBox() Box {
@@ -115,9 +159,31 @@ func NewCylinderSDF(radius, height float64) SDF {
 }
 
 func (s *CylinderSDF) Evaluate(p Vector) float64 {
-	h := Vector{s.Radius, s.Height / 2, 0}
-	d := Vector{Vector{p.X, p.Z, 0}.Length(), p.Y, 0}.Abs().Sub(h)
-	return math.Min(math.Max(d.X, d.Y), 0) + d.Max(Vector{}).Length()
+	x := math.Sqrt(p.X*p.X + p.Z*p.Z)
+	y := p.Y
+	if x < 0 {
+		x = -x
+	}
+	if y < 0 {
+		y = -y
+	}
+	x -= s.Radius
+	y -= s.Height / 2
+	a := x
+	if y > a {
+		a = y
+	}
+	if a > 0 {
+		a = 0
+	}
+	if x < 0 {
+		x = 0
+	}
+	if y < 0 {
+		y = 0
+	}
+	b := math.Sqrt(x*x + y*y)
+	return a + b
 }
 
 func (s *CylinderSDF) BoundingBox() Box {
@@ -249,17 +315,7 @@ func (s *DifferenceSDF) Evaluate(p Vector) float64 {
 }
 
 func (s *DifferenceSDF) BoundingBox() Box {
-	// TODO: intersect boxes
-	var result Box
-	for i, item := range s.Items {
-		box := item.BoundingBox()
-		if i == 0 {
-			result = box
-		} else {
-			result = result.Extend(box)
-		}
-	}
-	return result
+	return s.Items[0].BoundingBox()
 }
 
 // IntersectionSDF
