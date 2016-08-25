@@ -5,6 +5,13 @@ import (
 	"math/rand"
 )
 
+type LightMode int
+
+const (
+	LightModeRandom = iota
+	LightModeAll
+)
+
 type SpecularMode int
 
 const (
@@ -26,7 +33,7 @@ type Sampler interface {
 }
 
 func NewSampler(firstHitSamples, maxBounces int) *DefaultSampler {
-	return &DefaultSampler{firstHitSamples, maxBounces, true, SpecularModeNaive}
+	return &DefaultSampler{firstHitSamples, maxBounces, true, SpecularModeNaive, LightModeRandom}
 }
 
 type DefaultSampler struct {
@@ -34,6 +41,7 @@ type DefaultSampler struct {
 	MaxBounces      int
 	DirectLighting  bool
 	SpecularMode    SpecularMode
+	LightMode       LightMode
 }
 
 func (s *DefaultSampler) Sample(scene *Scene, ray Ray, rnd *rand.Rand) Color {
@@ -110,9 +118,20 @@ func (s *DefaultSampler) directLight(scene *Scene, n Ray, rnd *rand.Rand) Color 
 		return Color{}
 	}
 
-	// pick a random light
-	light := scene.Lights[rand.Intn(nLights)]
+	if s.LightMode == LightModeAll {
+		var result Color
+		for _, light := range scene.Lights {
+			result = result.Add(s.sampleLight(scene, n, rnd, light))
+		}
+		return result
+	} else {
+		// pick a random light
+		light := scene.Lights[rand.Intn(nLights)]
+		return s.sampleLight(scene, n, rnd, light).MulScalar(float64(nLights))
+	}
+}
 
+func (s *DefaultSampler) sampleLight(scene *Scene, n Ray, rnd *rand.Rand, light Shape) Color {
 	// get bounding sphere center and radius
 	var center Vector
 	var radius float64
@@ -177,6 +196,6 @@ func (s *DefaultSampler) directLight(scene *Scene, n Ray, rnd *rand.Rand) Color 
 	material := MaterialAt(light, point)
 
 	// combine factors
-	m := material.Emittance * diffuse * coverage * float64(nLights)
+	m := material.Emittance * diffuse * coverage
 	return material.Color.MulScalar(m)
 }
