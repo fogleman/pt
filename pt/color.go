@@ -5,6 +5,11 @@ import (
 	"math"
 )
 
+var (
+	Black = Color{}
+	White = Color{1, 1, 1}
+)
+
 type Color struct {
 	R, G, B float64
 }
