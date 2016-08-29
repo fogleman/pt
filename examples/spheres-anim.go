@@ -82,7 +82,7 @@ func sphere(scene *Scene, direction, anchor Vector, radius float64, depth, heigh
 					continue
 				}
 				d := Vector{float64(dx), float64(dy), float64(dz)}
-				if d == direction.MulScalar(-1) {
+				if d == direction.Negate() {
 					continue
 				}
 				c2 := center.Add(d.MulScalar(r))

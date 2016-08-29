@@ -37,7 +37,7 @@ func (s *TransformedShape) Intersect(r Ray) Hit {
 	material := MaterialAt(shape, shapePosition)
 	inside := false
 	if shapeNormal.Dot(shapeRay.Direction) > 0 {
-		normal = normal.MulScalar(-1)
+		normal = normal.Negate()
 		inside = true
 	}
 	ray := Ray{position, normal}

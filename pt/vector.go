@@ -59,6 +59,10 @@ func (a Vector) Normalize() Vector {
 	return Vector{a.X / d, a.Y / d, a.Z / d}
 }
 
+func (a Vector) Negate() Vector {
+	return Vector{-a.X, -a.Y, -a.Z}
+}
+
 func (a Vector) Abs() Vector {
 	return Vector{math.Abs(a.X), math.Abs(a.Y), math.Abs(a.Z)}
 }

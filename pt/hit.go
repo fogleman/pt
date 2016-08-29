@@ -31,7 +31,7 @@ func (hit *Hit) Info(r Ray) HitInfo {
 	material := MaterialAt(shape, position)
 	inside := false
 	if normal.Dot(r.Direction) > 0 {
-		normal = normal.MulScalar(-1)
+		normal = normal.Negate()
 		inside = true
 		switch shape.(type) {
 		case *Volume, *SDFShape:

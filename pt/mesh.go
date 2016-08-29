@@ -103,7 +103,7 @@ func (m *Mesh) FitInside(box Box, anchor Vector) {
 	scale := box.Size().Div(m.BoundingBox().Size()).MinComponent()
 	extra := box.Size().Sub(m.BoundingBox().Size().MulScalar(scale))
 	matrix := Identity()
-	matrix = matrix.Translate(m.BoundingBox().Min.MulScalar(-1))
+	matrix = matrix.Translate(m.BoundingBox().Min.Negate())
 	matrix = matrix.Scale(Vector{scale, scale, scale})
 	matrix = matrix.Translate(box.Min.Add(extra.Mul(anchor)))
 	m.Transform(matrix)

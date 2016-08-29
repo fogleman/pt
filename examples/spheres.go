@@ -35,7 +35,7 @@ func sphere(scene *Scene, previous, center Vector, radius float64, depth int) {
 					continue
 				}
 				d := Vector{float64(dx), float64(dy), float64(dz)}
-				if d == previous.MulScalar(-1) {
+				if d == previous.Negate() {
 					continue
 				}
 				c2 := center.Add(d.MulScalar(offset))
