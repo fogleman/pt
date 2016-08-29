@@ -77,15 +77,16 @@ type SDF interface {
 // SphereSDF
 
 type SphereSDF struct {
-	Radius float64
+	Radius   float64
+	Exponent float64
 }
 
 func NewSphereSDF(radius float64) SDF {
-	return &SphereSDF{radius}
+	return &SphereSDF{radius, 2}
 }
 
 func (s *SphereSDF) Evaluate(p Vector) float64 {
-	return math.Sqrt(p.X*p.X+p.Y*p.Y+p.Z*p.Z) - s.Radius
+	return p.LengthN(s.Exponent) - s.Radius
 }
 
 func (s *SphereSDF) BoundingBox() Box {
@@ -195,24 +196,49 @@ func (s *CylinderSDF) BoundingBox() Box {
 // CapsuleSDF
 
 type CapsuleSDF struct {
-	A, B   Vector
-	Radius float64
+	A, B     Vector
+	Radius   float64
+	Exponent float64
 }
 
 func NewCapsuleSDF(a, b Vector, radius float64) SDF {
-	return &CapsuleSDF{a, b, radius}
+	return &CapsuleSDF{a, b, radius, 2}
 }
 
 func (s *CapsuleSDF) Evaluate(p Vector) float64 {
 	pa := p.Sub(s.A)
 	ba := s.B.Sub(s.A)
 	h := math.Max(0, math.Min(1, pa.Dot(ba)/ba.Dot(ba)))
-	return pa.Sub(ba.MulScalar(h)).Length() - s.Radius
+	return pa.Sub(ba.MulScalar(h)).LengthN(s.Exponent) - s.Radius
 }
 
 func (s *CapsuleSDF) BoundingBox() Box {
 	a, b := s.A.Min(s.B), s.A.Max(s.B)
 	return Box{a.SubScalar(s.Radius), b.AddScalar(s.Radius)}
+}
+
+// TorusSDF
+
+type TorusSDF struct {
+	MajorRadius   float64
+	MinorRadius   float64
+	MajorExponent float64
+	MinorExponent float64
+}
+
+func NewTorusSDF(major, minor float64) SDF {
+	return &TorusSDF{major, minor, 2, 2}
+}
+
+func (s *TorusSDF) Evaluate(p Vector) float64 {
+	q := Vector{Vector{p.X, p.Y, 0}.LengthN(s.MajorExponent) - s.MajorRadius, p.Z, 0}
+	return q.LengthN(s.MinorExponent) - s.MinorRadius
+}
+
+func (s *TorusSDF) BoundingBox() Box {
+	a := s.MinorRadius
+	b := s.MinorRadius + s.MajorRadius
+	return Box{Vector{-b, -b, -a}, Vector{b, b, a}}
 }
 
 // TransformSDF

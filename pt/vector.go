@@ -36,6 +36,13 @@ func (a Vector) Length() float64 {
 	return math.Sqrt(a.X*a.X + a.Y*a.Y + a.Z*a.Z)
 }
 
+func (a Vector) LengthN(n float64) float64 {
+	if n == 2 {
+		return a.Length()
+	}
+	return math.Pow(math.Pow(a.X, n)+math.Pow(a.Y, n)+math.Pow(a.Z, n), 1/n)
+}
+
 func (a Vector) Dot(b Vector) float64 {
 	return a.X*b.X + a.Y*b.Y + a.Z*b.Z
 }
@@ -70,6 +77,14 @@ func (a Vector) Mul(b Vector) Vector {
 
 func (a Vector) Div(b Vector) Vector {
 	return Vector{a.X / b.X, a.Y / b.Y, a.Z / b.Z}
+}
+
+func (a Vector) Mod(b Vector) Vector {
+	// as implemented in GLSL
+	x := a.X - b.X*math.Floor(a.X/b.X)
+	y := a.Y - b.Y*math.Floor(a.Y/b.Y)
+	z := a.Z - b.Z*math.Floor(a.Z/b.Z)
+	return Vector{x, y, z}
 }
 
 func (a Vector) AddScalar(b float64) Vector {
