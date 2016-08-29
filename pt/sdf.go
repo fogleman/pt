@@ -378,3 +378,24 @@ func (s *IntersectionSDF) BoundingBox() Box {
 	}
 	return result
 }
+
+// RepeatSDF
+
+type RepeatSDF struct {
+	SDF
+	Step Vector
+}
+
+func NewRepeatSDF(sdf SDF, step Vector) SDF {
+	return &RepeatSDF{sdf, step}
+}
+
+func (s *RepeatSDF) Evaluate(p Vector) float64 {
+	q := p.Mod(s.Step).Sub(s.Step.DivScalar(2))
+	return s.SDF.Evaluate(q)
+}
+
+func (s *RepeatSDF) BoundingBox() Box {
+	// TODO: fix this
+	return Box{}
+}
