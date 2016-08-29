@@ -125,3 +125,24 @@ func IterativeRender(pathTemplate string, iterations int, scene *Scene, camera *
 	}
 	wg.Wait()
 }
+
+func CallbackRender(scene *Scene, camera *Camera, sampler Sampler, w, h, samplesPerPixel int) <-chan image.Image {
+	ch := make(chan image.Image)
+	go func() {
+		scene.Compile()
+		pixels := make([]Color, w*h)
+		for i := 1; ; i++ {
+			frame := render(scene, camera, sampler, w, h, samplesPerPixel)
+			for y := 0; y < h; y++ {
+				for x := 0; x < w; x++ {
+					index := y*w + x
+					pixels[index] = pixels[index].Add(frame[index])
+				}
+			}
+			scale := 1 / float64(i)
+			result := pixelsToImage(pixels, w, h, scale)
+			ch <- result
+		}
+	}()
+	return ch
+}
