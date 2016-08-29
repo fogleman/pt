@@ -21,6 +21,52 @@ func HexColor(x int) Color {
 	return Color{r, g, b}.Pow(2.2)
 }
 
+func Kelvin(K float64) Color {
+	var red, green, blue float64
+	// red
+	if K >= 6600 {
+		a := 351.97690566805693
+		b := 0.114206453784165
+		c := -40.25366309332127
+		x := K/100 - 55
+		red = a + b*x + c*math.Log(x)
+	} else {
+		red = 255
+	}
+	// green
+	if K >= 6600 {
+		a := 325.4494125711974
+		b := 0.07943456536662342
+		c := -28.0852963507957
+		x := K/100 - 50
+		green = a + b*x + c*math.Log(x)
+	} else if K >= 1000 {
+		a := -155.25485562709179
+		b := -0.44596950469579133
+		c := 104.49216199393888
+		x := K/100 - 2
+		green = a + b*x + c*math.Log(x)
+	} else {
+		green = 0
+	}
+	// blue
+	if K >= 6600 {
+		blue = 255
+	} else if K >= 2000 {
+		a := -254.76935184120902
+		b := 0.8274096064007395
+		c := 115.67994401066147
+		x := K/100 - 10
+		blue = a + b*x + c*math.Log(x)
+	} else {
+		blue = 0
+	}
+	red = math.Min(1, red/255)
+	green = math.Min(1, green/255)
+	blue = math.Min(1, blue/255)
+	return Color{red, green, blue}
+}
+
 func NewColor(c color.Color) Color {
 	r, g, b, _ := c.RGBA()
 	return Color{float64(r) / 65535, float64(g) / 65535, float64(b) / 65535}
