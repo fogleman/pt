@@ -27,7 +27,7 @@ func intersects(scene *Scene, shape Shape) bool {
 
 func main() {
 	scene := Scene{}
-	scene.Color = Color{1, 1, 1}
+	scene.Color = White
 	black := GlossyMaterial(HexColor(0x111111), 1.5, Radians(45))
 	white := GlossyMaterial(HexColor(0xFFFFFF), 1.6, Radians(20))
 	for _, p := range blackPositions {

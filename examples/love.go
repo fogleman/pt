@@ -13,9 +13,9 @@ func main() {
 	}
 	mesh.FitInside(Box{Vector{-0.5, 0, -0.5}, Vector{0.5, 1, 0.5}}, Vector{0.5, 0, 0.5})
 	scene.Add(mesh)
-	scene.Add(NewSphere(Vector{-2, 10, 2}, 1, LightMaterial(Color{1, 1, 1}, 30)))
-	scene.Add(NewSphere(Vector{0, 10, 2}, 1, LightMaterial(Color{1, 1, 1}, 30)))
-	scene.Add(NewSphere(Vector{2, 10, 2}, 1, LightMaterial(Color{1, 1, 1}, 30)))
+	scene.Add(NewSphere(Vector{-2, 10, 2}, 1, LightMaterial(White, 30)))
+	scene.Add(NewSphere(Vector{0, 10, 2}, 1, LightMaterial(White, 30)))
+	scene.Add(NewSphere(Vector{2, 10, 2}, 1, LightMaterial(White, 30)))
 	camera := LookAt(Vector{0, 1.5, 2}, Vector{0, 0.5, 0}, Vector{0, 1, 0}, 35)
 	sampler := NewSampler(4, 4)
 	IterativeRender("out%03d.png", 1000, &scene, &camera, sampler, 1920/2, 1080/2, -1)

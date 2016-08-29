@@ -29,7 +29,7 @@ func GetColor(name string) Color {
 		return HexColor(0xD0D0D0)
 	default:
 		fmt.Println(name)
-		return Color{1, 1, 1}
+		return White
 	}
 }
 
@@ -87,7 +87,7 @@ func main() {
 	a = m.MulPosition(a.Normalize().MulScalar(d))
 	b = m.MulPosition(b.Normalize().MulScalar(d))
 	c = m.MulPosition(c.Normalize().MulScalar(d))
-	light := LightMaterial(Color{1, 1, 1}, 1000)
+	light := LightMaterial(White, 1000)
 	scene.Add(NewSphere(a, 2, light))
 	scene.Add(NewSphere(b, 1, light))
 	scene.Add(NewSphere(c, 1, light))

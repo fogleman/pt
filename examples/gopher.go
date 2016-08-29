@@ -6,9 +6,9 @@ func main() {
 	scene := Scene{}
 
 	// create materials
-	gopher := GlossyMaterial(Color{}, 1.2, Radians(30))
+	gopher := GlossyMaterial(Black, 1.2, Radians(30))
 	wall := GlossyMaterial(HexColor(0xFCFAE1), 1.5, Radians(10))
-	light := LightMaterial(Color{1, 1, 1}, 80)
+	light := LightMaterial(White, 80)
 
 	// add walls and lights
 	scene.Add(NewCube(V(-10, -1, -10), V(-2, 10, 10), wall))

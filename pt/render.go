@@ -41,7 +41,7 @@ func render(scene *Scene, camera *Camera, sampler Sampler, w, h, samplesPerPixel
 			rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
 			for y := i; y < h; y += ncpu {
 				for x := 0; x < w; x++ {
-					c := Color{}
+					c := Black
 					if samplesPerPixel <= 0 {
 						// random subsampling
 						for i := 0; i < absSamples; i++ {

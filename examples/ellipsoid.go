@@ -5,7 +5,7 @@ import . "github.com/fogleman/pt/pt"
 func main() {
 	scene := Scene{}
 	wall := GlossyMaterial(HexColor(0xFCFAE1), 1.333, Radians(30))
-	scene.Add(NewSphere(Vector{10, 10, 10}, 2, LightMaterial(Color{1, 1, 1}, 50)))
+	scene.Add(NewSphere(Vector{10, 10, 10}, 2, LightMaterial(White, 50)))
 	scene.Add(NewCube(Vector{-100, -100, -100}, Vector{-12, 100, 100}, wall))
 	scene.Add(NewCube(Vector{-100, -100, -100}, Vector{100, -1, 100}, wall))
 	material := GlossyMaterial(HexColor(0x167F39), 1.333, Radians(30))

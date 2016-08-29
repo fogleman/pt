@@ -5,7 +5,7 @@ import . "github.com/fogleman/pt/pt"
 func main() {
 	scene := Scene{}
 
-	light := LightMaterial(Color{1, 1, 1}, 180)
+	light := LightMaterial(White, 180)
 
 	d := 4.0
 	scene.Add(NewSphere(V(-1, -1, 0.5).Normalize().MulScalar(d), 0.25, light))

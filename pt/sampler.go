@@ -50,7 +50,7 @@ func (s *DefaultSampler) Sample(scene *Scene, ray Ray, rnd *rand.Rand) Color {
 
 func (s *DefaultSampler) sample(scene *Scene, ray Ray, emission bool, samples, depth int, rnd *rand.Rand) Color {
 	if depth < 0 {
-		return Color{}
+		return Black
 	}
 	hit := scene.Intersect(ray)
 	if !hit.Ok() {
@@ -66,10 +66,10 @@ func (s *DefaultSampler) sample(scene *Scene, ray Ray, emission bool, samples, d
 	}
 	info := hit.Info(ray)
 	material := info.Material
-	result := Color{}
+	result := Black
 	if material.Emittance > 0 {
 		if s.DirectLighting && !emission {
-			return Color{}
+			return Black
 		}
 		result = result.Add(material.Color.MulScalar(material.Emittance * float64(samples)))
 	}
@@ -100,7 +100,7 @@ func (s *DefaultSampler) sample(scene *Scene, ray Ray, emission bool, samples, d
 				if p > 0 && !reflected {
 					// diffuse
 					indirect := s.sample(scene, newRay, reflected, 1, depth-1, rnd)
-					direct := Color{}
+					direct := Black
 					if s.DirectLighting {
 						direct = s.directLight(scene, info.Ray, rnd)
 					}
@@ -115,7 +115,7 @@ func (s *DefaultSampler) sample(scene *Scene, ray Ray, emission bool, samples, d
 func (s *DefaultSampler) directLight(scene *Scene, n Ray, rnd *rand.Rand) Color {
 	nLights := len(scene.Lights)
 	if nLights == 0 {
-		return Color{}
+		return Black
 	}
 
 	if s.LightMode == LightModeAll {
@@ -168,13 +168,13 @@ func (s *DefaultSampler) sampleLight(scene *Scene, n Ray, rnd *rand.Rand, light 
 	// get cosine term
 	diffuse := ray.Direction.Dot(n.Direction)
 	if diffuse <= 0 {
-		return Color{}
+		return Black
 	}
 
 	// check for light visibility
 	hit := scene.Intersect(ray)
 	if !hit.Ok() || hit.Shape != light {
-		return Color{}
+		return Black
 	}
 
 	// compute solid angle (hemisphere coverage)

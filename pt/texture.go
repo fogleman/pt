@@ -85,7 +85,7 @@ func (t *ColorTexture) bilinearSample(u, v float64) Color {
 	c01 := t.Data[y1*t.Width+x0]
 	c10 := t.Data[y0*t.Width+x1]
 	c11 := t.Data[y1*t.Width+x1]
-	c := Color{}
+	c := Black
 	c = c.Add(c00.MulScalar((1 - x) * (1 - y)))
 	c = c.Add(c10.MulScalar(x * (1 - y)))
 	c = c.Add(c01.MulScalar((1 - x) * y))

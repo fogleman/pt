@@ -63,7 +63,7 @@ func Block(p Vector, material Material, tiles []int) []*Triangle {
 
 func main() {
 	scene := Scene{}
-	scene.Color = Color{1, 1, 1}
+	scene.Color = White
 	texture, err := LoadTexture("examples/texture.png")
 	if err != nil {
 		panic(err)

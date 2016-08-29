@@ -18,7 +18,7 @@ func main() {
 	floor := GlossyMaterial(HexColor(0xD8CAA8), 1.2, Radians(5))
 	scene.Add(NewCube(Vector{-50, -50, -50}, Vector{50, 0, 50}, floor))
 
-	light := LightMaterial(Color{1, 1, 1}, 75)
+	light := LightMaterial(White, 75)
 	scene.Add(NewSphere(Vector{-1, 10, 0}, 1, light))
 
 	mouth := LightMaterial(HexColor(0xFFFAD5), 500)

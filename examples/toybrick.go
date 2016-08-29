@@ -21,7 +21,7 @@ func CreateBrick(color int) *Mesh {
 
 func main() {
 	scene := Scene{}
-	scene.Color = Color{1, 1, 1}
+	scene.Color = White
 	meshes := []*Mesh{
 		CreateBrick(1),  // white
 		CreateBrick(21), // bright red

@@ -21,10 +21,10 @@ func main() {
 	scene.Add(mesh)
 
 	// add the floor
-	scene.Add(NewPlane(V(0, 0, -1), V(0, 0, 1), DiffuseMaterial(Color{1, 1, 1})))
+	scene.Add(NewPlane(V(0, 0, -1), V(0, 0, 1), DiffuseMaterial(White)))
 
 	// add the light
-	scene.Add(NewSphere(V(0, 0, 5), 1, LightMaterial(Color{1, 1, 1}, 30)))
+	scene.Add(NewSphere(V(0, 0, 5), 1, LightMaterial(White, 30)))
 
 	camera := LookAt(V(0, -5, 5), V(0, 0, 0), V(0, 0, 1), 50)
 	sampler := NewSampler(16, 8)

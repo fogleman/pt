@@ -33,7 +33,7 @@ func main() {
 	}
 
 	scene := Scene{}
-	scene.Color = Color{1, 1, 1}
+	scene.Color = White
 
 	colors := []Color{
 		// HexColor(0xFFF8E3),
@@ -49,15 +49,15 @@ func main() {
 		// HexColor(0x1F8A70),
 		// HexColor(0x004358),
 
-		// Color{1, 1, 1},
-		// Color{1, 1, 1},
-		// Color{1, 1, 1},
-		// Color{1, 1, 1},
-		// Color{1, 1, 1},
-		// Color{1, 1, 1},
-		// Color{1, 1, 1},
-		// Color{1, 1, 1},
-		// Color{1, 1, 1},
+		// White,
+		// White,
+		// White,
+		// White,
+		// White,
+		// White,
+		// White,
+		// White,
+		// White,
 	}
 	const (
 		start = 0.2
@@ -76,10 +76,10 @@ func main() {
 	volume := NewVolume(box, images, 3.4/0.9765625, windows)
 	scene.Add(volume)
 
-	// wall := GlossyMaterial(Color{1, 1, 1}, 1.1, Radians(20))
+	// wall := GlossyMaterial(White, 1.1, Radians(20))
 	// scene.Add(NewCube(V(-10, 0.65, -10), V(10, 10, 10), wall))
 
-	// light := LightMaterial(Color{1, 1, 1}, 20)
+	// light := LightMaterial(White, 20)
 	// scene.Add(NewSphere(V(1, -5, -1), 1, light))
 
 	fmt.Println(volume.W, volume.H, volume.D)

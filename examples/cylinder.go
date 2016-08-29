@@ -34,7 +34,7 @@ func main() {
 			scene.Add(NewTransformedShape(mesh, Translate(Vector{fx, fy, fz})))
 		}
 	}
-	scene.Add(NewSphere(Vector{1, 0, 10}, 3, LightMaterial(Color{1, 1, 1}, 20)))
+	scene.Add(NewSphere(Vector{1, 0, 10}, 3, LightMaterial(White, 20)))
 	camera := LookAt(Vector{-5, 0, 5}, Vector{1, 0, 0}, Vector{0, 0, 1}, 45)
 	sampler := NewSampler(4, 4)
 	IterativeRender("out%03d.png", 1000, &scene, &camera, sampler, 1920/2, 1080/2, -1)

@@ -22,7 +22,7 @@ func main() {
 			}
 		}
 	}
-	scene.Add(NewSphere(V(0, 0, 2.25), 0.25, LightMaterial(Color{1, 1, 1}, 500)))
+	scene.Add(NewSphere(V(0, 0, 2.25), 0.25, LightMaterial(White, 500)))
 	camera := LookAt(V(1, 0, 30), V(0, 0, 0), V(0, 0, 1), 35)
 	sampler := NewSampler(4, 4)
 	IterativeRender("out%03d.png", 1000, &scene, &camera, sampler, 1920/2, 1080/2, -1)

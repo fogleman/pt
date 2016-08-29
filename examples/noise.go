@@ -1,13 +1,10 @@
 package main
 
-import (
-	. "github.com/fogleman/pt/pt"
-	"github.com/ojrac/opensimplex-go"
-)
+import . "github.com/fogleman/pt/pt"
 
 func main() {
 	scene := Scene{}
-	material := GlossyMaterial(Color{1, 1, 1}, 1.2, Radians(20))
+	material := GlossyMaterial(White, 1.2, Radians(20))
 	noise := opensimplex.New()
 	n := 80
 	for i := 0; i < n; i++ {
@@ -26,7 +23,7 @@ func main() {
 			}
 		}
 	}
-	light := NewSphere(V(100, 0, 50), 5, LightMaterial(Color{1, 1, 1}, 300))
+	light := NewSphere(V(100, 0, 50), 5, LightMaterial(White, 300))
 	scene.Add(light)
 	camera := LookAt(V(0, 0, -20), V(0, 0, 0), V(0, 1, 0), 30)
 	sampler := NewSampler(4, 4)

@@ -4,7 +4,7 @@ import . "github.com/fogleman/pt/pt"
 
 func main() {
 	scene := Scene{}
-	material := DiffuseMaterial(Color{})
+	material := DiffuseMaterial(Black)
 	mesh, err := LoadOBJ("examples/CornellBox-Original.obj", material)
 	if err != nil {
 		panic(err)

@@ -28,7 +28,7 @@ func GlossyMaterial(color Color, index, gloss float64) Material {
 }
 
 func ClearMaterial(index, gloss float64) Material {
-	return Material{Color{}, nil, nil, nil, nil, 1, 0, index, gloss, 0, -1, true}
+	return Material{Black, nil, nil, nil, nil, 1, 0, index, gloss, 0, -1, true}
 }
 
 func TransparentMaterial(color Color, index, gloss, tint float64) Material {

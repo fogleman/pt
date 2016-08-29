@@ -5,7 +5,7 @@ import . "github.com/fogleman/pt/pt"
 func main() {
 	scene := Scene{}
 	material := DiffuseMaterial(Color{0.95, 0.95, 1})
-	light := LightMaterial(Color{1, 1, 1}, 300)
+	light := LightMaterial(White, 300)
 	scene.Add(NewSphere(Vector{-0.75, -0.75, 5}, 0.25, light))
 	scene.Add(NewCube(Vector{-1000, -1000, -1000}, Vector{1000, 1000, 0}, material))
 	mesh, err := LoadSTL("examples/hits.stl", material)
