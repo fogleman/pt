@@ -40,6 +40,7 @@ func (a Vector) LengthN(n float64) float64 {
 	if n == 2 {
 		return a.Length()
 	}
+	a = a.Abs()
 	return math.Pow(math.Pow(a.X, n)+math.Pow(a.Y, n)+math.Pow(a.Z, n), 1/n)
 }
 
