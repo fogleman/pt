@@ -45,11 +45,11 @@ type DefaultSampler struct {
 }
 
 func (s *DefaultSampler) Sample(scene *Scene, ray Ray, rnd *rand.Rand) Color {
-	return s.sample(scene, ray, true, s.FirstHitSamples, s.MaxBounces, rnd)
+	return s.sample(scene, ray, true, s.FirstHitSamples, 0, rnd)
 }
 
 func (s *DefaultSampler) sample(scene *Scene, ray Ray, emission bool, samples, depth int, rnd *rand.Rand) Color {
-	if depth < 0 {
+	if depth > s.MaxBounces {
 		return Black
 	}
 	hit := scene.Intersect(ray)
@@ -67,7 +67,7 @@ func (s *DefaultSampler) sample(scene *Scene, ray Ray, emission bool, samples, d
 	}
 	n := int(math.Sqrt(float64(samples)))
 	var ma, mb BounceType
-	if s.SpecularMode == SpecularModeAll || (s.SpecularMode == SpecularModeFirst && n > 1) {
+	if s.SpecularMode == SpecularModeAll || (depth == 0 && s.SpecularMode == SpecularModeFirst) {
 		ma = BounceTypeDiffuse
 		mb = BounceTypeSpecular
 	} else {
@@ -85,13 +85,13 @@ func (s *DefaultSampler) sample(scene *Scene, ray Ray, emission bool, samples, d
 				}
 				if p > 0 && reflected {
 					// specular
-					indirect := s.sample(scene, newRay, reflected, 1, depth-1, rnd)
+					indirect := s.sample(scene, newRay, reflected, 1, depth+1, rnd)
 					tinted := indirect.Mix(material.Color.Mul(indirect), material.Tint)
 					result = result.Add(tinted.MulScalar(p))
 				}
 				if p > 0 && !reflected {
 					// diffuse
-					indirect := s.sample(scene, newRay, reflected, 1, depth-1, rnd)
+					indirect := s.sample(scene, newRay, reflected, 1, depth+1, rnd)
 					direct := Black
 					if s.DirectLighting {
 						direct = s.sampleLights(scene, info.Ray, rnd)
