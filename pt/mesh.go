@@ -23,6 +23,12 @@ func (m *Mesh) Compile() {
 	}
 }
 
+func (a *Mesh) Add(b *Mesh) {
+	a.Triangles = append(a.Triangles, b.Triangles...)
+	a.UpdateBoundingBox()
+	a.tree = nil // dirty
+}
+
 func (m *Mesh) BoundingBox() Box {
 	return m.Box
 }
@@ -121,6 +127,23 @@ func (m *Mesh) Transform(matrix Matrix) {
 	}
 	m.UpdateBoundingBox()
 	m.tree = nil // dirty
+}
+
+func (m *Mesh) Transformed(matrix Matrix) *Mesh {
+	triangles := make([]*Triangle, len(m.Triangles))
+	for i, t := range m.Triangles {
+		a := *t
+		t = &a
+		t.V1 = matrix.MulPosition(t.V1)
+		t.V2 = matrix.MulPosition(t.V2)
+		t.V3 = matrix.MulPosition(t.V3)
+		t.N1 = matrix.MulDirection(t.N1)
+		t.N2 = matrix.MulDirection(t.N2)
+		t.N3 = matrix.MulDirection(t.N3)
+		t.UpdateBoundingBox()
+		triangles[i] = t
+	}
+	return NewMesh(triangles)
 }
 
 func (m *Mesh) SaveSTL(path string) error {
