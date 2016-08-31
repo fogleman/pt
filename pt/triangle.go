@@ -2,7 +2,6 @@ package pt
 
 type Triangle struct {
 	Material   *Material
-	Box        Box
 	V1, V2, V3 Vector
 	N1, N2, N3 Vector
 	T1, T2, T3 Vector
@@ -17,7 +16,6 @@ func NewTriangle(v1, v2, v3, t1, t2, t3 Vector, material Material) *Triangle {
 	t.T2 = t2
 	t.T3 = t3
 	t.Material = &material
-	t.UpdateBoundingBox()
 	t.FixNormals()
 	return &t
 }
@@ -30,7 +28,9 @@ func (t *Triangle) Compile() {
 }
 
 func (t *Triangle) BoundingBox() Box {
-	return t.Box
+	min := t.V1.Min(t.V2).Min(t.V3)
+	max := t.V1.Max(t.V2).Max(t.V3)
+	return Box{min, max}
 }
 
 func (t *Triangle) Intersect(r Ray) Hit {
@@ -149,12 +149,6 @@ func (t *Triangle) Barycentric(p Vector) (u, v, w float64) {
 	w = (d00*d21 - d01*d20) / d
 	u = 1 - v - w
 	return
-}
-
-func (t *Triangle) UpdateBoundingBox() {
-	min := t.V1.Min(t.V2).Min(t.V3)
-	max := t.V1.Max(t.V2).Max(t.V3)
-	t.Box = Box{min, max}
 }
 
 func (t *Triangle) FixNormals() {

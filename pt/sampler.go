@@ -33,13 +33,18 @@ type Sampler interface {
 }
 
 func NewSampler(firstHitSamples, maxBounces int) *DefaultSampler {
-	return &DefaultSampler{firstHitSamples, maxBounces, true, LightModeRandom, SpecularModeNaive}
+	return &DefaultSampler{firstHitSamples, maxBounces, true, true, LightModeRandom, SpecularModeNaive}
+}
+
+func NewDirectSampler() *DefaultSampler {
+	return &DefaultSampler{1, 0, true, false, LightModeAll, SpecularModeAll}
 }
 
 type DefaultSampler struct {
 	FirstHitSamples int
 	MaxBounces      int
 	DirectLighting  bool
+	SoftShadows     bool
 	LightMode       LightMode
 	SpecularMode    SpecularMode
 }
@@ -151,18 +156,21 @@ func (s *DefaultSampler) sampleLight(scene *Scene, n Ray, rnd *rand.Rand, light 
 	}
 
 	// get random point in disk
-	var point Vector
-	for {
-		x := rnd.Float64()*2 - 1
-		y := rnd.Float64()*2 - 1
-		if x*x+y*y <= 1 {
-			l := center.Sub(n.Origin).Normalize()
-			u := l.Cross(RandomUnitVector(rnd)).Normalize()
-			v := l.Cross(u)
-			point = point.Add(u.MulScalar(x * radius))
-			point = point.Add(v.MulScalar(y * radius))
-			point = point.Add(center)
-			break
+	point := center
+	if s.SoftShadows {
+		for {
+			x := rnd.Float64()*2 - 1
+			y := rnd.Float64()*2 - 1
+			if x*x+y*y <= 1 {
+				l := center.Sub(n.Origin).Normalize()
+				u := l.Cross(RandomUnitVector(rnd)).Normalize()
+				v := l.Cross(u)
+				point = Vector{}
+				point = point.Add(u.MulScalar(x * radius))
+				point = point.Add(v.MulScalar(y * radius))
+				point = point.Add(center)
+				break
+			}
 		}
 	}
 

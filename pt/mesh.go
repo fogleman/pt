@@ -3,14 +3,27 @@ package pt
 import "math"
 
 type Mesh struct {
-	Box       Box
 	Triangles []*Triangle
+	box       *Box
 	tree      *Tree
 }
 
 func NewMesh(triangles []*Triangle) *Mesh {
-	box := BoxForTriangles(triangles)
-	return &Mesh{box, triangles, nil}
+	return &Mesh{triangles, nil, nil}
+}
+
+func (m *Mesh) dirty() {
+	m.box = nil
+	m.tree = nil
+}
+
+func (m *Mesh) Copy() *Mesh {
+	triangles := make([]*Triangle, len(m.Triangles))
+	for i, t := range m.Triangles {
+		a := *t
+		triangles[i] = &a
+	}
+	return NewMesh(triangles)
 }
 
 func (m *Mesh) Compile() {
@@ -25,12 +38,20 @@ func (m *Mesh) Compile() {
 
 func (a *Mesh) Add(b *Mesh) {
 	a.Triangles = append(a.Triangles, b.Triangles...)
-	a.UpdateBoundingBox()
-	a.tree = nil // dirty
+	a.dirty()
 }
 
 func (m *Mesh) BoundingBox() Box {
-	return m.Box
+	if m.box == nil {
+		min := m.Triangles[0].V1
+		max := m.Triangles[0].V1
+		for _, t := range m.Triangles {
+			min = min.Min(t.V1).Min(t.V2).Min(t.V3)
+			max = max.Max(t.V1).Max(t.V2).Max(t.V3)
+		}
+		m.box = &Box{min, max}
+	}
+	return *m.box
 }
 
 func (m *Mesh) Intersect(r Ray) Hit {
@@ -47,10 +68,6 @@ func (m *Mesh) MaterialAt(p Vector) Material {
 
 func (m *Mesh) NormalAt(p Vector) Vector {
 	return Vector{} // not implemented
-}
-
-func (m *Mesh) UpdateBoundingBox() {
-	m.Box = BoxForTriangles(m.Triangles)
 }
 
 func smoothNormalsThreshold(normal Vector, normals []Vector, threshold float64) Vector {
@@ -101,7 +118,7 @@ func (m *Mesh) UnitCube() {
 }
 
 func (m *Mesh) MoveTo(position, anchor Vector) {
-	matrix := Translate(position.Sub(m.Box.Anchor(anchor)))
+	matrix := Translate(position.Sub(m.BoundingBox().Anchor(anchor)))
 	m.Transform(matrix)
 }
 
@@ -123,27 +140,14 @@ func (m *Mesh) Transform(matrix Matrix) {
 		t.N1 = matrix.MulDirection(t.N1)
 		t.N2 = matrix.MulDirection(t.N2)
 		t.N3 = matrix.MulDirection(t.N3)
-		t.UpdateBoundingBox()
 	}
-	m.UpdateBoundingBox()
-	m.tree = nil // dirty
+	m.dirty()
 }
 
-func (m *Mesh) Transformed(matrix Matrix) *Mesh {
-	triangles := make([]*Triangle, len(m.Triangles))
-	for i, t := range m.Triangles {
-		a := *t
-		t = &a
-		t.V1 = matrix.MulPosition(t.V1)
-		t.V2 = matrix.MulPosition(t.V2)
-		t.V3 = matrix.MulPosition(t.V3)
-		t.N1 = matrix.MulDirection(t.N1)
-		t.N2 = matrix.MulDirection(t.N2)
-		t.N3 = matrix.MulDirection(t.N3)
-		t.UpdateBoundingBox()
-		triangles[i] = t
+func (m *Mesh) SetMaterial(material Material) {
+	for _, t := range m.Triangles {
+		t.Material = &material
 	}
-	return NewMesh(triangles)
 }
 
 func (m *Mesh) SaveSTL(path string) error {

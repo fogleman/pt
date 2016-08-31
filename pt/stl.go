@@ -75,7 +75,6 @@ func loadSTLA(file *os.File, material Material) (*Mesh, error) {
 		t.V1 = vertexes[i+0]
 		t.V2 = vertexes[i+1]
 		t.V3 = vertexes[i+2]
-		t.UpdateBoundingBox()
 		t.FixNormals()
 		triangles = append(triangles, &t)
 	}
@@ -99,7 +98,6 @@ func loadSTLB(file *os.File, material Material) (*Mesh, error) {
 		t.V1 = Vector{float64(d.V1[0]), float64(d.V1[1]), float64(d.V1[2])}
 		t.V2 = Vector{float64(d.V2[0]), float64(d.V2[1]), float64(d.V2[2])}
 		t.V3 = Vector{float64(d.V3[0]), float64(d.V3[1]), float64(d.V3[2])}
-		t.UpdateBoundingBox()
 		t.FixNormals()
 		triangles[i] = &t
 	}
