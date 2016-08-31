@@ -97,6 +97,9 @@ func LoadMTL(path string, parent Material, materials map[string]*Material) error
 	fmt.Printf("Loading MTL: %s\n", path)
 	file, err := os.Open(path)
 	if err != nil {
+		if os.IsNotExist(err) {
+			return nil
+		}
 		return err
 	}
 	defer file.Close()
