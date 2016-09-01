@@ -11,6 +11,30 @@ import (
 	"time"
 )
 
+type Pixel struct {
+	Samples int
+	M, V    Color
+}
+
+func (p *Pixel) Color() Color {
+	return p.M.DivScalar(p.Samples)
+}
+
+func (p *Pixel) Variance() Color {
+	return math.Sqrt(p.V.DivScalar(p.Samples - 1))
+}
+
+func (p *Pixel) AddSample(sample Color) {
+	p.Samples++
+	if p.Samples == 1 {
+		p.M = sample
+		return
+	}
+	oldMean := p.M
+	p.M = p.M.Add(sample.Sub(p.M).DivScalar(float64(p.Samples)))
+	p.V = p.V.Add(sample.Sub(oldMean).Mul(sample.Sub(p.M)))
+}
+
 func showProgress(start time.Time, rays uint64, i, h int) {
 	pct := int(100 * float64(i) / float64(h))
 	elapsed := time.Since(start)
