@@ -11,30 +11,6 @@ import (
 	"time"
 )
 
-type Pixel struct {
-	Samples int
-	M, V    Color
-}
-
-func (p *Pixel) Color() Color {
-	return p.M.DivScalar(p.Samples)
-}
-
-func (p *Pixel) Variance() Color {
-	return math.Sqrt(p.V.DivScalar(p.Samples - 1))
-}
-
-func (p *Pixel) AddSample(sample Color) {
-	p.Samples++
-	if p.Samples == 1 {
-		p.M = sample
-		return
-	}
-	oldMean := p.M
-	p.M = p.M.Add(sample.Sub(p.M).DivScalar(float64(p.Samples)))
-	p.V = p.V.Add(sample.Sub(oldMean).Mul(sample.Sub(p.M)))
-}
-
 func showProgress(start time.Time, rays uint64, i, h int) {
 	pct := int(100 * float64(i) / float64(h))
 	elapsed := time.Since(start)
@@ -50,11 +26,11 @@ func showProgress(start time.Time, rays uint64, i, h int) {
 	fmt.Printf("] %s %s ", DurationString(elapsed), NumberString(rps))
 }
 
-func render(scene *Scene, camera *Camera, sampler Sampler, w, h, samplesPerPixel int) []Color {
+func render(scene *Scene, camera *Camera, sampler Sampler, samplesPerPixel int, buf *Buffer) {
+	w, h := buf.W, buf.H
 	ncpu := runtime.NumCPU()
 	runtime.GOMAXPROCS(ncpu)
 	scene.Compile()
-	pixels := make([]Color, w*h)
 	ch := make(chan int, h)
 	absSamples := int(math.Abs(float64(samplesPerPixel)))
 	fmt.Printf("%d x %d pixels, %d spp, %d cores\n", w, h, absSamples, ncpu)
@@ -65,16 +41,15 @@ func render(scene *Scene, camera *Camera, sampler Sampler, w, h, samplesPerPixel
 			rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
 			for y := i; y < h; y += ncpu {
 				for x := 0; x < w; x++ {
-					c := Black
 					if samplesPerPixel <= 0 {
 						// random subsampling
 						for i := 0; i < absSamples; i++ {
 							fu := rnd.Float64()
 							fv := rnd.Float64()
 							ray := camera.CastRay(x, y, w, h, fu, fv, rnd)
-							c = c.Add(sampler.Sample(scene, ray, rnd))
+							sample := sampler.Sample(scene, ray, rnd)
+							buf.AddSample(x, y, sample)
 						}
-						c = c.DivScalar(float64(absSamples))
 					} else {
 						// stratified subsampling
 						n := int(math.Sqrt(float64(samplesPerPixel)))
@@ -83,12 +58,11 @@ func render(scene *Scene, camera *Camera, sampler Sampler, w, h, samplesPerPixel
 								fu := (float64(u) + 0.5) / float64(n)
 								fv := (float64(v) + 0.5) / float64(n)
 								ray := camera.CastRay(x, y, w, h, fu, fv, rnd)
-								c = c.Add(sampler.Sample(scene, ray, rnd))
+								sample := sampler.Sample(scene, ray, rnd)
+								buf.AddSample(x, y, sample)
 							}
 						}
-						c = c.DivScalar(float64(n * n))
 					}
-					pixels[y*w+x] = c
 				}
 				ch <- 1
 			}
@@ -100,39 +74,26 @@ func render(scene *Scene, camera *Camera, sampler Sampler, w, h, samplesPerPixel
 		showProgress(start, scene.RayCount(), i+1, h)
 	}
 	fmt.Println()
-	return pixels
 }
 
-func Render(scene *Scene, camera *Camera, sampler Sampler, w, h, samplesPerPixel int) image.Image {
-	pixels := render(scene, camera, sampler, w, h, samplesPerPixel)
-	return pixelsToImage(pixels, w, h, 1)
-}
+// func Render(scene *Scene, camera *Camera, sampler Sampler, w, h, samplesPerPixel int) image.Image {
+// 	pixels := render(scene, camera, sampler, w, h, samplesPerPixel)
+// 	return pixelsToImage(pixels, w, h, 1)
+// }
 
-func pixelsToImage(pixels []Color, w, h int, scale float64) image.Image {
-	result := image.NewRGBA64(image.Rect(0, 0, w, h))
-	for y := 0; y < h; y++ {
-		for x := 0; x < w; x++ {
-			result.SetRGBA64(x, y, pixels[y*w+x].MulScalar(scale).Pow(1/2.2).RGBA64())
-		}
-	}
-	return result
-}
+// func pixelsToImage(pixels []Color, w, h int, scale float64) image.Image {
+// 	result := image.NewRGBA64(image.Rect(0, 0, w, h))
+// 	for y := 0; y < h; y++ {
+// 		for x := 0; x < w; x++ {
+// 			result.SetRGBA64(x, y, pixels[y*w+x].MulScalar(scale).Pow(1/2.2).RGBA64())
+// 		}
+// 	}
+// 	return result
+// }
 
-func onIteration(pathTemplate string, i, w, h int, pixels []Color, frame []Color, wg *sync.WaitGroup) {
+func onIteration(path string, im image.Image, wg *sync.WaitGroup) {
 	defer wg.Done()
-	for y := 0; y < h; y++ {
-		for x := 0; x < w; x++ {
-			index := y*w + x
-			pixels[index] = pixels[index].Add(frame[index])
-		}
-	}
-	scale := 1 / float64(i)
-	result := pixelsToImage(pixels, w, h, scale)
-	path := pathTemplate
-	if strings.Contains(path, "%") {
-		path = fmt.Sprintf(pathTemplate, i)
-	}
-	if err := SavePNG(path, result); err != nil {
+	if err := SavePNG(path, im); err != nil {
 		panic(err)
 	}
 }
@@ -140,33 +101,38 @@ func onIteration(pathTemplate string, i, w, h int, pixels []Color, frame []Color
 func IterativeRender(pathTemplate string, iterations int, scene *Scene, camera *Camera, sampler Sampler, w, h, samplesPerPixel int) {
 	var wg sync.WaitGroup
 	scene.Compile()
-	pixels := make([]Color, w*h)
+	buf := NewBuffer(w, h)
 	for i := 1; i <= iterations; i++ {
 		fmt.Printf("\n[Iteration %d of %d]\n", i, iterations)
-		frame := render(scene, camera, sampler, w, h, samplesPerPixel)
+		render(scene, camera, sampler, samplesPerPixel, buf)
+		im := buf.Image()
+		path := pathTemplate
+		if strings.Contains(path, "%") {
+			path = fmt.Sprintf(pathTemplate, i)
+		}
 		wg.Add(1)
-		go onIteration(pathTemplate, i, w, h, pixels, frame, &wg)
+		go onIteration(path, im, &wg)
 	}
 	wg.Wait()
 }
 
-func CallbackRender(scene *Scene, camera *Camera, sampler Sampler, w, h, samplesPerPixel int) <-chan image.Image {
-	ch := make(chan image.Image)
-	go func() {
-		scene.Compile()
-		pixels := make([]Color, w*h)
-		for i := 1; ; i++ {
-			frame := render(scene, camera, sampler, w, h, samplesPerPixel)
-			for y := 0; y < h; y++ {
-				for x := 0; x < w; x++ {
-					index := y*w + x
-					pixels[index] = pixels[index].Add(frame[index])
-				}
-			}
-			scale := 1 / float64(i)
-			result := pixelsToImage(pixels, w, h, scale)
-			ch <- result
-		}
-	}()
-	return ch
-}
+// func CallbackRender(scene *Scene, camera *Camera, sampler Sampler, w, h, samplesPerPixel int) <-chan image.Image {
+// 	ch := make(chan image.Image)
+// 	go func() {
+// 		scene.Compile()
+// 		pixels := make([]Color, w*h)
+// 		for i := 1; ; i++ {
+// 			frame := render(scene, camera, sampler, w, h, samplesPerPixel)
+// 			for y := 0; y < h; y++ {
+// 				for x := 0; x < w; x++ {
+// 					index := y*w + x
+// 					pixels[index] = pixels[index].Add(frame[index])
+// 				}
+// 			}
+// 			scale := 1 / float64(i)
+// 			result := pixelsToImage(pixels, w, h, scale)
+// 			ch <- result
+// 		}
+// 	}()
+// 	return ch
+// }
