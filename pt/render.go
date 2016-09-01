@@ -43,7 +43,12 @@ func render(scene *Scene, camera *Camera, sampler Sampler, samplesPerPixel int, 
 				for x := 0; x < w; x++ {
 					if samplesPerPixel <= 0 {
 						// random subsampling
-						for i := 0; i < absSamples; i++ {
+						samples := absSamples
+						v := buf.Variance(x, y)
+						if v.R > 0.5 || v.G > 0.5 || v.B > 0.5 {
+							samples *= 64
+						}
+						for i := 0; i < samples; i++ {
 							fu := rnd.Float64()
 							fv := rnd.Float64()
 							ray := camera.CastRay(x, y, w, h, fu, fv, rnd)
@@ -81,17 +86,7 @@ func render(scene *Scene, camera *Camera, sampler Sampler, samplesPerPixel int, 
 // 	return pixelsToImage(pixels, w, h, 1)
 // }
 
-// func pixelsToImage(pixels []Color, w, h int, scale float64) image.Image {
-// 	result := image.NewRGBA64(image.Rect(0, 0, w, h))
-// 	for y := 0; y < h; y++ {
-// 		for x := 0; x < w; x++ {
-// 			result.SetRGBA64(x, y, pixels[y*w+x].MulScalar(scale).Pow(1/2.2).RGBA64())
-// 		}
-// 	}
-// 	return result
-// }
-
-func onIteration(path string, im image.Image, wg *sync.WaitGroup) {
+func writeImage(path string, im image.Image, wg *sync.WaitGroup) {
 	defer wg.Done()
 	if err := SavePNG(path, im); err != nil {
 		panic(err)
@@ -111,7 +106,7 @@ func IterativeRender(pathTemplate string, iterations int, scene *Scene, camera *
 			path = fmt.Sprintf(pathTemplate, i)
 		}
 		wg.Add(1)
-		go onIteration(path, im, &wg)
+		go writeImage(path, im, &wg)
 	}
 	wg.Wait()
 }

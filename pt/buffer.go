@@ -4,11 +4,11 @@ import "image"
 
 type Pixel struct {
 	Samples int
-	M, V    Color
+	A, M, V Color
 }
 
 func (p *Pixel) Color() Color {
-	return p.M.DivScalar(float64(p.Samples))
+	return p.A.DivScalar(float64(p.Samples))
 }
 
 func (p *Pixel) Variance() Color {
@@ -20,13 +20,14 @@ func (p *Pixel) Variance() Color {
 
 func (p *Pixel) AddSample(sample Color) {
 	p.Samples++
+	p.A = p.A.Add(sample)
 	if p.Samples == 1 {
 		p.M = sample
 		return
 	}
-	oldMean := p.M
+	m := p.M
 	p.M = p.M.Add(sample.Sub(p.M).DivScalar(float64(p.Samples)))
-	p.V = p.V.Add(sample.Sub(oldMean).Mul(sample.Sub(p.M)))
+	p.V = p.V.Add(sample.Sub(m).Mul(sample.Sub(p.M)))
 }
 
 type Buffer struct {
@@ -44,11 +45,15 @@ func (b *Buffer) Image() image.Image {
 	result := image.NewRGBA64(image.Rect(0, 0, b.W, b.H))
 	for y := 0; y < b.H; y++ {
 		for x := 0; x < b.W; x++ {
-			c := b.Pixels[y*b.W+x].Color()
-			result.SetRGBA64(x, y, c.Pow(1/2.2).RGBA64())
+			c := b.Pixels[y*b.W+x].Color().Pow(1 / 2.2)
+			result.SetRGBA64(x, y, c.RGBA64())
 		}
 	}
 	return result
+}
+
+func (b *Buffer) Variance(x, y int) Color {
+	return b.Pixels[y*b.W+x].Variance()
 }
 
 func (b *Buffer) AddSample(x, y int, sample Color) {
