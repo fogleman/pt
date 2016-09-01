@@ -43,12 +43,7 @@ func render(scene *Scene, camera *Camera, sampler Sampler, samplesPerPixel int, 
 				for x := 0; x < w; x++ {
 					if samplesPerPixel <= 0 {
 						// random subsampling
-						samples := absSamples
-						v := buf.Variance(x, y)
-						if v.R > 0.5 || v.G > 0.5 || v.B > 0.5 {
-							samples *= 64
-						}
-						for i := 0; i < samples; i++ {
+						for i := 0; i < absSamples; i++ {
 							fu := rnd.Float64()
 							fv := rnd.Float64()
 							ray := camera.CastRay(x, y, w, h, fu, fv, rnd)
@@ -67,6 +62,17 @@ func render(scene *Scene, camera *Camera, sampler Sampler, samplesPerPixel int, 
 								buf.AddSample(x, y, sample)
 							}
 						}
+					}
+					v := buf.Variance(x, y)
+					if v.R < 0.3 && v.G < 0.3 && v.B < 0.3 {
+						continue
+					}
+					for i := 0; i < 128; i++ {
+						fu := rnd.Float64()
+						fv := rnd.Float64()
+						ray := camera.CastRay(x, y, w, h, fu, fv, rnd)
+						sample := sampler.Sample(scene, ray, rnd)
+						buf.AddSample(x, y, sample)
 					}
 				}
 				ch <- 1
