@@ -64,7 +64,8 @@ func render(scene *Scene, camera *Camera, sampler Sampler, samplesPerPixel int, 
 						}
 					}
 					v := Clamp(buf.Variance(x, y).MaxComponent(), 0, 1)
-					extraSamples := int(128 * v)
+					v = math.Pow(v, 2)
+					extraSamples := int(64 * v)
 					for i := 0; i < extraSamples; i++ {
 						fu := rnd.Float64()
 						fv := rnd.Float64()
@@ -85,16 +86,17 @@ func render(scene *Scene, camera *Camera, sampler Sampler, samplesPerPixel int, 
 	fmt.Println()
 }
 
-// func Render(scene *Scene, camera *Camera, sampler Sampler, w, h, samplesPerPixel int) image.Image {
-// 	pixels := render(scene, camera, sampler, w, h, samplesPerPixel)
-// 	return pixelsToImage(pixels, w, h, 1)
-// }
-
 func writeImage(path string, im image.Image, wg *sync.WaitGroup) {
 	defer wg.Done()
 	if err := SavePNG(path, im); err != nil {
 		panic(err)
 	}
+}
+
+func Render(scene *Scene, camera *Camera, sampler Sampler, w, h, samplesPerPixel int) image.Image {
+	buf := NewBuffer(w, h)
+	render(scene, camera, sampler, samplesPerPixel, buf)
+	return buf.Image()
 }
 
 func IterativeRender(pathTemplate string, iterations int, scene *Scene, camera *Camera, sampler Sampler, w, h, samplesPerPixel int) {
@@ -110,29 +112,19 @@ func IterativeRender(pathTemplate string, iterations int, scene *Scene, camera *
 		}
 		wg.Add(1)
 		go writeImage(path, buf.Image(), &wg)
-		wg.Add(1)
-		go writeImage(path+".png", buf.VarianceImage(), &wg)
 	}
 	wg.Wait()
 }
 
-// func CallbackRender(scene *Scene, camera *Camera, sampler Sampler, w, h, samplesPerPixel int) <-chan image.Image {
-// 	ch := make(chan image.Image)
-// 	go func() {
-// 		scene.Compile()
-// 		pixels := make([]Color, w*h)
-// 		for i := 1; ; i++ {
-// 			frame := render(scene, camera, sampler, w, h, samplesPerPixel)
-// 			for y := 0; y < h; y++ {
-// 				for x := 0; x < w; x++ {
-// 					index := y*w + x
-// 					pixels[index] = pixels[index].Add(frame[index])
-// 				}
-// 			}
-// 			scale := 1 / float64(i)
-// 			result := pixelsToImage(pixels, w, h, scale)
-// 			ch <- result
-// 		}
-// 	}()
-// 	return ch
-// }
+func CallbackRender(scene *Scene, camera *Camera, sampler Sampler, w, h, samplesPerPixel int) <-chan image.Image {
+	ch := make(chan image.Image)
+	go func() {
+		scene.Compile()
+		buf := NewBuffer(w, h)
+		for i := 1; ; i++ {
+			render(scene, camera, sampler, samplesPerPixel, buf)
+			ch <- buf.Image()
+		}
+	}()
+	return ch
+}
