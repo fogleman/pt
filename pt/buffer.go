@@ -41,8 +41,18 @@ func NewBuffer(w, h int) *Buffer {
 	return &Buffer{w, h, pixels}
 }
 
+func (b *Buffer) Copy() *Buffer {
+	pixels := make([]Pixel, b.W*b.H)
+	copy(pixels, b.Pixels)
+	return &Buffer{b.W, b.H, pixels}
+}
+
 func (b *Buffer) AddSample(x, y int, sample Color) {
 	b.Pixels[y*b.W+x].AddSample(sample)
+}
+
+func (b *Buffer) Samples(x, y int) int {
+	return b.Pixels[y*b.W+x].Samples
 }
 
 func (b *Buffer) Color(x, y int) Color {

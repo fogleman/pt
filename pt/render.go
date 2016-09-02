@@ -86,8 +86,14 @@ func render(scene *Scene, camera *Camera, sampler Sampler, samplesPerPixel int, 
 	fmt.Println()
 }
 
-func writeImage(path string, im image.Image, wg *sync.WaitGroup) {
+func writeImage(path string, buf *Buffer, wg *sync.WaitGroup, variance bool) {
 	defer wg.Done()
+	var im image.Image
+	if variance {
+		im = buf.VarianceImage()
+	} else {
+		im = buf.Image()
+	}
 	if err := SavePNG(path, im); err != nil {
 		panic(err)
 	}
@@ -99,7 +105,7 @@ func Render(scene *Scene, camera *Camera, sampler Sampler, w, h, samplesPerPixel
 	return buf.Image()
 }
 
-func IterativeRender(pathTemplate string, iterations int, scene *Scene, camera *Camera, sampler Sampler, w, h, samplesPerPixel int) {
+func IterativeRender(pathTemplate string, iterations int, scene *Scene, camera *Camera, sampler Sampler, w, h, samplesPerPixel int) image.Image {
 	var wg sync.WaitGroup
 	scene.Compile()
 	buf := NewBuffer(w, h)
@@ -110,10 +116,14 @@ func IterativeRender(pathTemplate string, iterations int, scene *Scene, camera *
 		if strings.Contains(path, "%") {
 			path = fmt.Sprintf(pathTemplate, i)
 		}
+		bufCopy := buf.Copy()
 		wg.Add(1)
-		go writeImage(path, buf.Image(), &wg)
+		go writeImage(path, bufCopy, &wg, false)
+		wg.Add(1)
+		go writeImage("variance.png", bufCopy, &wg, true)
 	}
 	wg.Wait()
+	return buf.Image()
 }
 
 func CallbackRender(scene *Scene, camera *Camera, sampler Sampler, w, h, samplesPerPixel int) <-chan image.Image {
