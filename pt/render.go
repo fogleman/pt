@@ -63,11 +63,9 @@ func render(scene *Scene, camera *Camera, sampler Sampler, samplesPerPixel int, 
 							}
 						}
 					}
-					v := buf.Variance(x, y)
-					if v.R < 0.3 && v.G < 0.3 && v.B < 0.3 {
-						continue
-					}
-					for i := 0; i < 128; i++ {
+					v := Clamp(buf.Variance(x, y).MaxComponent(), 0, 1)
+					extraSamples := int(128 * v)
+					for i := 0; i < extraSamples; i++ {
 						fu := rnd.Float64()
 						fv := rnd.Float64()
 						ray := camera.CastRay(x, y, w, h, fu, fv, rnd)
@@ -106,13 +104,14 @@ func IterativeRender(pathTemplate string, iterations int, scene *Scene, camera *
 	for i := 1; i <= iterations; i++ {
 		fmt.Printf("\n[Iteration %d of %d]\n", i, iterations)
 		render(scene, camera, sampler, samplesPerPixel, buf)
-		im := buf.Image()
 		path := pathTemplate
 		if strings.Contains(path, "%") {
 			path = fmt.Sprintf(pathTemplate, i)
 		}
 		wg.Add(1)
-		go writeImage(path, im, &wg)
+		go writeImage(path, buf.Image(), &wg)
+		wg.Add(1)
+		go writeImage(path+".png", buf.VarianceImage(), &wg)
 	}
 	wg.Wait()
 }

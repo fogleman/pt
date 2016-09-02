@@ -114,6 +114,14 @@ func (a Color) Max(b Color) Color {
 	return Color{math.Max(a.R, b.R), math.Max(a.G, b.G), math.Max(a.B, b.B)}
 }
 
+func (a Color) MinComponent() float64 {
+	return math.Min(math.Min(a.R, a.G), a.B)
+}
+
+func (a Color) MaxComponent() float64 {
+	return math.Max(math.Max(a.R, a.G), a.B)
+}
+
 func (a Color) Pow(b float64) Color {
 	return Color{math.Pow(a.R, b), math.Pow(a.G, b), math.Pow(a.B, b)}
 }

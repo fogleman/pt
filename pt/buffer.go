@@ -4,11 +4,11 @@ import "image"
 
 type Pixel struct {
 	Samples int
-	A, M, V Color
+	C, M, V Color
 }
 
 func (p *Pixel) Color() Color {
-	return p.A.DivScalar(float64(p.Samples))
+	return p.C.DivScalar(float64(p.Samples))
 }
 
 func (p *Pixel) Variance() Color {
@@ -20,7 +20,7 @@ func (p *Pixel) Variance() Color {
 
 func (p *Pixel) AddSample(sample Color) {
 	p.Samples++
-	p.A = p.A.Add(sample)
+	p.C = p.C.Add(sample)
 	if p.Samples == 1 {
 		p.M = sample
 		return
@@ -41,11 +41,26 @@ func NewBuffer(w, h int) *Buffer {
 	return &Buffer{w, h, pixels}
 }
 
+func (b *Buffer) Pixel(x, y int) *Pixel {
+	return &b.Pixels[y*b.W+x]
+}
+
 func (b *Buffer) Image() image.Image {
 	result := image.NewRGBA64(image.Rect(0, 0, b.W, b.H))
 	for y := 0; y < b.H; y++ {
 		for x := 0; x < b.W; x++ {
 			c := b.Pixels[y*b.W+x].Color().Pow(1 / 2.2)
+			result.SetRGBA64(x, y, c.RGBA64())
+		}
+	}
+	return result
+}
+
+func (b *Buffer) VarianceImage() image.Image {
+	result := image.NewRGBA64(image.Rect(0, 0, b.W, b.H))
+	for y := 0; y < b.H; y++ {
+		for x := 0; x < b.W; x++ {
+			c := b.Pixels[y*b.W+x].Variance()
 			result.SetRGBA64(x, y, c.RGBA64())
 		}
 	}
