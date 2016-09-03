@@ -63,7 +63,7 @@ func render(scene *Scene, camera *Camera, sampler Sampler, samplesPerPixel int, 
 							}
 						}
 					}
-					v := Clamp(buf.Variance(x, y).MaxComponent(), 0, 1)
+					v := Clamp(buf.StandardDeviation(x, y).MaxComponent(), 0, 1)
 					v = math.Pow(v, 2)
 					extraSamples := int(64 * v)
 					for i := 0; i < extraSamples; i++ {
@@ -86,14 +86,9 @@ func render(scene *Scene, camera *Camera, sampler Sampler, samplesPerPixel int, 
 	fmt.Println()
 }
 
-func writeImage(path string, buf *Buffer, wg *sync.WaitGroup, variance bool) {
+func writeImage(path string, buf *Buffer, channel Channel, wg *sync.WaitGroup) {
 	defer wg.Done()
-	var im image.Image
-	if variance {
-		im = buf.VarianceImage()
-	} else {
-		im = buf.Image()
-	}
+	im := buf.Image(channel)
 	if err := SavePNG(path, im); err != nil {
 		panic(err)
 	}
@@ -102,7 +97,7 @@ func writeImage(path string, buf *Buffer, wg *sync.WaitGroup, variance bool) {
 func Render(scene *Scene, camera *Camera, sampler Sampler, w, h, samplesPerPixel int) image.Image {
 	buf := NewBuffer(w, h)
 	render(scene, camera, sampler, samplesPerPixel, buf)
-	return buf.Image()
+	return buf.Image(ColorChannel)
 }
 
 func IterativeRender(pathTemplate string, iterations int, scene *Scene, camera *Camera, sampler Sampler, w, h, samplesPerPixel int) image.Image {
@@ -118,22 +113,22 @@ func IterativeRender(pathTemplate string, iterations int, scene *Scene, camera *
 		}
 		bufCopy := buf.Copy()
 		wg.Add(1)
-		go writeImage(path, bufCopy, &wg, false)
+		go writeImage(path, bufCopy, ColorChannel, &wg)
 		wg.Add(1)
-		go writeImage("variance.png", bufCopy, &wg, true)
+		go writeImage("deviation.png", bufCopy, StandardDeviationChannel, &wg)
 	}
 	wg.Wait()
-	return buf.Image()
+	return buf.Image(ColorChannel)
 }
 
-func CallbackRender(scene *Scene, camera *Camera, sampler Sampler, w, h, samplesPerPixel int) <-chan image.Image {
+func ChannelRender(scene *Scene, camera *Camera, sampler Sampler, w, h, samplesPerPixel int) <-chan image.Image {
 	ch := make(chan image.Image)
 	go func() {
 		scene.Compile()
 		buf := NewBuffer(w, h)
 		for i := 1; ; i++ {
 			render(scene, camera, sampler, samplesPerPixel, buf)
-			ch <- buf.Image()
+			ch <- buf.Image(ColorChannel)
 		}
 	}()
 	return ch
