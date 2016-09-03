@@ -133,3 +133,12 @@ func ChannelRender(scene *Scene, camera *Camera, sampler Sampler, w, h, samplesP
 	}()
 	return ch
 }
+
+func FrameRender(path string, iterations int, scene *Scene, camera *Camera, sampler Sampler, w, h, samplesPerPixel int, wg *sync.WaitGroup) {
+	buf := NewBuffer(w, h)
+	for i := 1; i <= iterations; i++ {
+		render(scene, camera, sampler, samplesPerPixel, buf)
+	}
+	wg.Add(1)
+	go writeImage(path, buf.Copy(), ColorChannel, wg)
+}
