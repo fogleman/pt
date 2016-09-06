@@ -26,5 +26,7 @@ func main() {
 
 	// render the scene with progressive refinement
 	sampler := NewSampler(4, 4)
-	IterativeRender("out%03d.png", 1000, &scene, &camera, sampler, 960, 540, -1)
+	renderer := NewRenderer(&scene, &camera, sampler, 960, 540)
+	renderer.AdaptiveSamples = 128
+	renderer.IterativeRender("out%03d.png", 1000)
 }

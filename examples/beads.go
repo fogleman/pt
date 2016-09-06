@@ -44,7 +44,9 @@ func frame(path string, t float64) {
 	fovy := 40.0
 	camera := LookAt(eye, center, up, fovy)
 	sampler := NewSampler(4, 4)
-	IterativeRender("out%03d.png", 1000, &scene, &camera, sampler, 1920/2, 1080/2, -1)
+	sampler.SpecularMode = SpecularModeFirst
+	renderer := NewRenderer(&scene, &camera, sampler, 960, 540)
+	renderer.IterativeRender("out%03d.png", 1000)
 }
 
 func main() {
