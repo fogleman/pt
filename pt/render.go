@@ -65,7 +65,7 @@ func render(scene *Scene, camera *Camera, sampler Sampler, samplesPerPixel int, 
 					}
 					v := Clamp(buf.StandardDeviation(x, y).MaxComponent(), 0, 1)
 					v = math.Pow(v, 2)
-					extraSamples := int(64 * v)
+					extraSamples := int(32 * v)
 					for i := 0; i < extraSamples; i++ {
 						fu := rnd.Float64()
 						fv := rnd.Float64()

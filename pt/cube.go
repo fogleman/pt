@@ -9,7 +9,7 @@ type Cube struct {
 	Box      Box
 }
 
-func NewCube(min, max Vector, material Material) Shape {
+func NewCube(min, max Vector, material Material) *Cube {
 	box := Box{min, max}
 	return &Cube{min, max, material, box}
 }
@@ -58,4 +58,34 @@ func (c *Cube) NormalAt(p Vector) Vector {
 		return Vector{0, 0, 1}
 	}
 	return Vector{0, 1, 0}
+}
+
+func (c *Cube) Mesh() *Mesh {
+	a := c.Min
+	b := c.Max
+	z := Vector{}
+	m := c.Material
+	v000 := Vector{a.X, a.Y, a.Z}
+	v001 := Vector{a.X, a.Y, b.Z}
+	v010 := Vector{a.X, b.Y, a.Z}
+	v011 := Vector{a.X, b.Y, b.Z}
+	v100 := Vector{b.X, a.Y, a.Z}
+	v101 := Vector{b.X, a.Y, b.Z}
+	v110 := Vector{b.X, b.Y, a.Z}
+	v111 := Vector{b.X, b.Y, b.Z}
+	triangles := []*Triangle{
+		NewTriangle(v000, v100, v110, z, z, z, m),
+		NewTriangle(v000, v110, v010, z, z, z, m),
+		NewTriangle(v001, v101, v111, z, z, z, m),
+		NewTriangle(v001, v111, v011, z, z, z, m),
+		NewTriangle(v000, v100, v101, z, z, z, m),
+		NewTriangle(v000, v101, v001, z, z, z, m),
+		NewTriangle(v010, v110, v111, z, z, z, m),
+		NewTriangle(v010, v111, v011, z, z, z, m),
+		NewTriangle(v000, v010, v011, z, z, z, m),
+		NewTriangle(v000, v011, v001, z, z, z, m),
+		NewTriangle(v100, v110, v111, z, z, z, m),
+		NewTriangle(v100, v111, v101, z, z, z, m),
+	}
+	return NewMesh(triangles)
 }
