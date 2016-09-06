@@ -26,6 +26,7 @@ func main() {
 
 	camera := LookAt(Vector{-3, 2, -1}, Vector{0, 0.6, -0.1}, Vector{0, 1, 0}, 35)
 	camera.SetFocus(Vector{0, 1, -0.5}, 0.03)
-	sampler := NewSampler(16, 8)
-	IterativeRender("out%03d.png", 1000, &scene, &camera, sampler, 1920, 1080, -1)
+	sampler := NewSampler(4, 8)
+	renderer := NewRenderer(&scene, &camera, sampler, 1920, 1080)
+	renderer.IterativeRender("out%03d.png", 1000)
 }

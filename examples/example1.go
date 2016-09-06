@@ -14,5 +14,8 @@ func main() {
 	camera.SetFocus(V(-0.75, 1, -1), 0.1)
 	sampler := NewSampler(4, 8)
 	sampler.SpecularMode = SpecularModeFirst
-	IterativeRender("out%03d.png", 1000, &scene, &camera, sampler, 1920/2, 1080/2, -1)
+	renderer := NewRenderer(&scene, &camera, sampler, 1920/2, 1080/2)
+	renderer.AdaptiveSamples = 32
+	renderer.FireflySamples = 256
+	renderer.IterativeRender("out%03d.png", 1000)
 }

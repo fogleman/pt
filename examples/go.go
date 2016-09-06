@@ -66,7 +66,8 @@ func main() {
 	scene.Texture = GetTexture("examples/courtyard_ccby/courtyard_8k.png")
 	camera := LookAt(Vector{-0.5, 5, 5}, Vector{-0.5, 0, 0.5}, Vector{0, 1, 0}, 50)
 	sampler := NewSampler(4, 4)
-	IterativeRender("out%03d.png", 1000, &scene, &camera, sampler, 2560/2, 1440/2, -1)
+	renderer := NewRenderer(&scene, &camera, sampler, 2560/2, 1440/2)
+	renderer.IterativeRender("out%03d.png", 1000)
 }
 
 var blackPositions = [][]float64{

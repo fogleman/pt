@@ -17,5 +17,6 @@ func main() {
 	scene.Add(mesh)
 	camera := LookAt(Vector{1.6, -3, 2}, Vector{-0.25, 0.5, 0.5}, Vector{0, 0, 1}, 50)
 	sampler := NewSampler(4, 4)
-	IterativeRender("out%03d.png", 1000, &scene, &camera, sampler, 1500, 1500, -1)
+	renderer := NewRenderer(&scene, &camera, sampler, 1500, 1500)
+	renderer.IterativeRender("out%03d.png", 1000)
 }
