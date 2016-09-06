@@ -63,6 +63,7 @@ func render(scene *Scene, camera *Camera, sampler Sampler, samplesPerPixel int, 
 							}
 						}
 					}
+					// adaptive sampling
 					v := Clamp(buf.StandardDeviation(x, y).MaxComponent(), 0, 1)
 					v = math.Pow(v, 2)
 					extraSamples := int(32 * v)
@@ -72,6 +73,16 @@ func render(scene *Scene, camera *Camera, sampler Sampler, samplesPerPixel int, 
 						ray := camera.CastRay(x, y, w, h, fu, fv, rnd)
 						sample := sampler.Sample(scene, ray, rnd)
 						buf.AddSample(x, y, sample)
+					}
+					// firefly reduction
+					if buf.StandardDeviation(x, y).MaxComponent() > 1 {
+						for i := 0; i < 256; i++ {
+							fu := rnd.Float64()
+							fv := rnd.Float64()
+							ray := camera.CastRay(x, y, w, h, fu, fv, rnd)
+							sample := sampler.Sample(scene, ray, rnd)
+							buf.AddSample(x, y, sample)
+						}
 					}
 				}
 				ch <- 1
