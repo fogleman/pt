@@ -5,6 +5,10 @@ go:
   - 1.5.4
   - 1.6.3
 
+branches:
+  except:
+    - embree
+
 install: go get -v -t github.com/fogleman/pt/pt
 
 script:
