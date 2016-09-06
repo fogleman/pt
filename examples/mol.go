@@ -95,5 +95,6 @@ func main() {
 	camera := LookAt(eye, center, up, cam.Fovy/1.7)
 	sampler := NewSampler(16, 8)
 	sampler.SpecularMode = SpecularModeAll
-	IterativeRender("out%03d.png", 10000, &scene, &camera, sampler, 2560, 1440, -1)
+	renderer := NewRenderer(&scene, &camera, sampler, 2560, 1440)
+	renderer.IterativeRender("out%03d.png", 1000)
 }

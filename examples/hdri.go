@@ -17,5 +17,6 @@ func main() {
 	scene.Add(NewCube(V(-100, -100, -100), V(100, -1, 100), material))
 	camera := LookAt(V(2, 3, 4), V(0, 0, 0), V(0, 1, 0), 40)
 	sampler := NewSampler(4, 4)
-	IterativeRender("out%03d.png", 1000, &scene, &camera, sampler, 1920/2, 1080/2, -1)
+	renderer := NewRenderer(&scene, &camera, sampler, 960, 540)
+	renderer.IterativeRender("out%03d.png", 1000)
 }

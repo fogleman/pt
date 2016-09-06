@@ -29,5 +29,6 @@ func main() {
 	camera := LookAt(V(0, -5, 5), V(0, 0, 0), V(0, 0, 1), 50)
 	sampler := NewSampler(16, 8)
 	sampler.SpecularMode = SpecularModeAll
-	IterativeRender("out%03d.png", 1000, &scene, &camera, sampler, 1920/4, 1080/4, -1)
+	renderer := NewRenderer(&scene, &camera, sampler, 960, 540)
+	renderer.IterativeRender("out%03d.png", 1000)
 }

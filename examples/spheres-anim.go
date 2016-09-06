@@ -107,7 +107,8 @@ func frame(i int) {
 	template := fmt.Sprintf("out%03d.png", i)
 	// IterativeRender(template, 1, &scene, &camera, 1920, 1080, 16, 16, 4)
 	sampler := NewSampler(16, 16)
-	IterativeRender(template, 1, &scene, &camera, sampler, 1920/2, 1080/2, 4)
+	renderer := NewRenderer(&scene, &camera, sampler, 960, 540)
+	renderer.IterativeRender("out%03d.png", 1000)
 }
 
 func easeInOutCubic(t float64) float64 {
