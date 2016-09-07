@@ -19,6 +19,8 @@ type Renderer struct {
 	SamplesPerPixel    int
 	StratifiedSampling bool
 	AdaptiveSamples    int
+	AdaptiveThreshold  float64
+	AdaptiveExponent   float64
 	FireflySamples     int
 	FireflyThreshold   float64
 	NumCPU             int
@@ -34,6 +36,8 @@ func NewRenderer(scene *Scene, camera *Camera, sampler Sampler, w, h int) *Rende
 	r.SamplesPerPixel = 1
 	r.StratifiedSampling = false
 	r.AdaptiveSamples = 0
+	r.AdaptiveThreshold = 1
+	r.AdaptiveExponent = 1
 	r.FireflySamples = 0
 	r.FireflyThreshold = 1
 	r.NumCPU = runtime.NumCPU()
@@ -85,8 +89,9 @@ func (r *Renderer) run() {
 					}
 					// adaptive sampling
 					if r.AdaptiveSamples > 0 {
-						v := Clamp(buf.StandardDeviation(x, y).MaxComponent(), 0, 1)
-						// v = math.Pow(v, 2)
+						v := buf.StandardDeviation(x, y).MaxComponent()
+						v = Clamp(v/r.AdaptiveThreshold, 0, 1)
+						v = math.Pow(v, r.AdaptiveExponent)
 						samples := int(v * float64(r.AdaptiveSamples))
 						for i := 0; i < samples; i++ {
 							fu := rnd.Float64()
