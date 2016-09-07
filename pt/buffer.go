@@ -1,6 +1,9 @@
 package pt
 
-import "image"
+import (
+	"image"
+	"math"
+)
 
 type Channel int
 
@@ -8,6 +11,7 @@ const (
 	ColorChannel = iota
 	VarianceChannel
 	StandardDeviationChannel
+	SamplesChannel
 )
 
 type Pixel struct {
@@ -79,6 +83,12 @@ func (b *Buffer) StandardDeviation(x, y int) Color {
 
 func (b *Buffer) Image(channel Channel) image.Image {
 	result := image.NewRGBA64(image.Rect(0, 0, b.W, b.H))
+	var maxSamples float64
+	if channel == SamplesChannel {
+		for _, pixel := range b.Pixels {
+			maxSamples = math.Max(maxSamples, float64(pixel.Samples))
+		}
+	}
 	for y := 0; y < b.H; y++ {
 		for x := 0; x < b.W; x++ {
 			var c Color
@@ -89,6 +99,9 @@ func (b *Buffer) Image(channel Channel) image.Image {
 				c = b.Pixels[y*b.W+x].Variance()
 			case StandardDeviationChannel:
 				c = b.Pixels[y*b.W+x].StandardDeviation()
+			case SamplesChannel:
+				p := float64(b.Pixels[y*b.W+x].Samples) / maxSamples
+				c = Color{p, p, p}
 			}
 			result.SetRGBA64(x, y, c.RGBA64())
 		}
