@@ -155,7 +155,6 @@ func (r *Renderer) writeImage(path string, buf *Buffer, channel Channel, wg *syn
 }
 
 func (r *Renderer) Render() image.Image {
-	// clear buffer?
 	r.run()
 	return r.Buffer.Image(ColorChannel)
 }
@@ -197,4 +196,15 @@ func (r *Renderer) FrameRender(path string, iterations int, wg *sync.WaitGroup) 
 	buf := r.Buffer.Copy()
 	wg.Add(1)
 	go r.writeImage(path, buf, ColorChannel, wg)
+}
+
+func (r *Renderer) TimedRender(duration time.Duration) image.Image {
+	start := time.Now()
+	for {
+		r.run()
+		if time.Since(start) > duration {
+			break
+		}
+	}
+	return r.Buffer.Image(ColorChannel)
 }
