@@ -17,6 +17,7 @@ This is a CPU-only, unidirectional [path tracing](http://en.wikipedia.org/wiki/P
 * Supports various material properties
 * Supports configurable depth of field
 * Supports iterative rendering
+* Supports adaptive sampling and firefly reduction
 * Uses k-d trees to accelerate ray intersection tests
 * Uses all CPU cores in parallel
 * 100% pure Go with no dependencies besides the standard library
@@ -72,11 +73,29 @@ func main() {
 
 	// render the scene with progressive refinement
 	sampler := NewSampler(4, 4)
-	IterativeRender("out%03d.png", 1000, &scene, &camera, sampler, 960, 540, -1)
+	renderer := NewRenderer(&scene, &camera, sampler, 960, 540)
+	renderer.AdaptiveSamples = 128
+	renderer.IterativeRender("out%03d.png", 1000)
 }
 ```
 
-![Hello World](http://i.imgur.com/0TXY0dX.png)
+![Hello World](http://i.imgur.com/FyAmeMx.png)
+
+### Adaptive Sampling
+
+There are several sampling options that can reduce the amount of time needed to converge to an acceptable noise level. Both images below were rendered in 60 seconds. On the left, no advanced features were enabled. On the right, the features listed below were used.
+
+![Gopher](http://i.imgur.com/nidccRU.png)
+
+Here are some of the options that are utilized to achieve this improvement:
+
+- **stratified sampling** - on first intersection, spawn NxN rays in a stratified pattern to ensure well-distributed coverage
+- **sample all lights** - at each intersection, sample all lights for direct lighting instead of one random light
+- **forced specular reflections** - at each intersection, force both a diffuse and specular bounce and weigh them appropriately
+- **adaptive sampling** - spend more time sampling pixels with high variance
+- **firefly reduction** - very heavily sample pixels with very high variance
+
+Combining these features results in cleaner, faster renders. The specific parameters that should be used depend greatly on the scene being rendered.
 
 ### Links
 
