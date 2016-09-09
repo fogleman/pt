@@ -178,6 +178,8 @@ func (r *Renderer) IterativeRender(pathTemplate string, iterations int) image.Im
 		go r.writeImage(path, buf, ColorChannel, &wg)
 		// wg.Add(1)
 		// go r.writeImage("deviation.png", buf, StandardDeviationChannel, &wg)
+		// wg.Add(1)
+		// go r.writeImage("samples.png", buf, SamplesChannel, &wg)
 	}
 	wg.Wait()
 	return r.Buffer.Image(ColorChannel)
