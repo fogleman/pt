@@ -135,6 +135,12 @@ func (t *Triangle) Area() float64 {
 	return n.Length() / 2
 }
 
+func (t *Triangle) Normal() Vector {
+	e1 := t.V2.Sub(t.V1)
+	e2 := t.V3.Sub(t.V1)
+	return e1.Cross(e2).Normalize()
+}
+
 func (t *Triangle) Barycentric(p Vector) (u, v, w float64) {
 	v0 := t.V2.Sub(t.V1)
 	v1 := t.V3.Sub(t.V1)
@@ -152,9 +158,7 @@ func (t *Triangle) Barycentric(p Vector) (u, v, w float64) {
 }
 
 func (t *Triangle) FixNormals() {
-	e1 := t.V2.Sub(t.V1)
-	e2 := t.V3.Sub(t.V1)
-	n := e1.Cross(e2).Normalize()
+	n := t.Normal()
 	zero := Vector{}
 	if t.N1 == zero {
 		t.N1 = n

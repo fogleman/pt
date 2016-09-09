@@ -14,7 +14,7 @@ type STLHeader struct {
 }
 
 type STLTriangle struct {
-	_, V1, V2, V3 [3]float32
+	N, V1, V2, V3 [3]float32
 	_             uint16
 }
 
@@ -116,7 +116,11 @@ func SaveSTL(path string, mesh *Mesh) error {
 		return err
 	}
 	for _, triangle := range mesh.Triangles {
+		n := triangle.Normal()
 		d := STLTriangle{}
+		d.N[0] = float32(n.X)
+		d.N[1] = float32(n.Y)
+		d.N[2] = float32(n.Z)
 		d.V1[0] = float32(triangle.V1.X)
 		d.V1[1] = float32(triangle.V1.Y)
 		d.V1[2] = float32(triangle.V1.Z)
