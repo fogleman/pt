@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/fogleman/gg"
 	. "github.com/fogleman/pt/pt"
 )
 
@@ -30,16 +31,24 @@ func render(l, m int) {
 	sampler.SpecularMode = SpecularModeFirst
 	renderer := NewRenderer(&scene, &camera, sampler, 1600/2, 1600/2)
 	renderer.AdaptiveSamples = 32
-	// renderer.IterativeRender("out%03d.png", 1000)
 	var wg sync.WaitGroup
 	renderer.FrameRender(fmt.Sprintf("sh.%d.%d.png", l, m), 10, &wg)
 	wg.Wait()
 }
 
 func main() {
-	for l := 0; l <= 4; l++ {
-		for m := -l; m <= l; m++ {
-			render(l, m)
+	const n = 4
+	for l := 0; l <= n; l++ {
+		for m := -n; m <= n; m++ {
+			path := fmt.Sprintf("sh.%d.%d.png", l, m+10)
+			if m < -l || m > l {
+				dc := gg.NewContext(800, 800)
+				dc.SetRGB(0, 0, 0)
+				dc.Clear()
+				dc.SavePNG(path)
+			} else {
+				render(l, m)
+			}
 		}
 	}
 }
