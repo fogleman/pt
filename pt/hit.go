@@ -34,7 +34,7 @@ func (hit *Hit) Info(r Ray) HitInfo {
 		normal = normal.Negate()
 		inside = true
 		switch shape.(type) {
-		case *Volume, *SDFShape:
+		case *Volume, *SDFShape, *SphericalHarmonic:
 			inside = false
 		}
 	}
