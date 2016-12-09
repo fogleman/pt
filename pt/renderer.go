@@ -198,11 +198,16 @@ func (r *Renderer) ChannelRender() <-chan image.Image {
 
 func (r *Renderer) FrameRender(path string, iterations int, wg *sync.WaitGroup) {
 	for i := 1; i <= iterations; i++ {
+		r.printf("\n[Iteration %d of %d]\n", i, iterations)
 		r.run()
 	}
 	buf := r.Buffer.Copy()
 	wg.Add(1)
 	go r.writeImage(path, buf, ColorChannel, wg)
+	// wg.Add(1)
+	// go r.writeImage("deviation.png", buf, StandardDeviationChannel, wg)
+	// wg.Add(1)
+	// go r.writeImage("samples.png", buf, SamplesChannel, wg)
 }
 
 func (r *Renderer) TimedRender(duration time.Duration) image.Image {

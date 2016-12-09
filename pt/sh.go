@@ -37,7 +37,11 @@ func (s *SphericalHarmonic) Intersect(r Ray) Hit {
 }
 
 func (s *SphericalHarmonic) UV(p Vector) Vector {
-	return Vector{}
+	u := math.Atan2(p.Z, p.X)
+	v := math.Atan2(p.Y, Vector{p.X, 0, p.Z}.Length())
+	u = 1 - (u+math.Pi)/(2*math.Pi)
+	v = (v + math.Pi/2) / math.Pi
+	return Vector{u, v, 0}
 }
 
 func (s *SphericalHarmonic) MaterialAt(p Vector) Material {
