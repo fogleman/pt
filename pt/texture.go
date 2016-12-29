@@ -73,6 +73,12 @@ func (t *ColorTexture) MulScalar(a float64) Texture {
 }
 
 func (t *ColorTexture) bilinearSample(u, v float64) Color {
+	if u == 1 {
+		u -= EPS
+	}
+	if v == 1 {
+		v -= EPS
+	}
 	w := float64(t.Width) - 1
 	h := float64(t.Height) - 1
 	X, x := math.Modf(u * w)
