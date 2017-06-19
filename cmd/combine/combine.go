@@ -46,7 +46,7 @@ func main() {
 	fmt.Println("Combining images...")
 	size := images[0].Bounds().Max
 	w, h := size.X, size.Y
-	result := image.NewRGBA(image.Rect(0, 0, w, h))
+	result := image.NewNRGBA64(image.Rect(0, 0, w, h))
 	for y := 0; y < h; y++ {
 		for x := 0; x < w; x++ {
 			fr, fg, fb := 0.0, 0.0, 0.0
@@ -60,10 +60,10 @@ func main() {
 			fr /= float64(totalWeight)
 			fg /= float64(totalWeight)
 			fb /= float64(totalWeight)
-			r := uint8(math.Min(255, fr*255))
-			g := uint8(math.Min(255, fg*255))
-			b := uint8(math.Min(255, fb*255))
-			result.SetRGBA(x, y, color.RGBA{r, g, b, 255})
+			r := uint16(math.Min(65535, fr*65535))
+			g := uint16(math.Min(65535, fg*65535))
+			b := uint16(math.Min(65535, fb*65535))
+			result.SetNRGBA64(x, y, color.NRGBA64{r, g, b, 65535})
 		}
 	}
 	path := args[len(args)-1]
