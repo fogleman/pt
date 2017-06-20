@@ -36,15 +36,21 @@ def upload(path):
 @parallel
 @roles('pt')
 def start(command):
-    command += ' 2>stderr.txt >stdout.txt &'
+    # command += ' 2>stderr.txt >stdout.txt &'
     run(command)
 
 @parallel
 @roles('pt')
 def latest():
-    i = env.hosts.index(env.host)
-    filename = 'latest%d.png' % i
+    filename = 'latest.%s.png' % env.host
     run('cp `ls out* | tail -n 2 | head -n 1` latest.png')
+    get('latest.png', filename)
+
+@parallel
+@roles('pt')
+def fetch(path):
+    filename = 'latest.%s.png' % env.host
+    run('cp %s latest.png' % path)
     get('latest.png', filename)
 
 update_roles_gce(False)

@@ -12,6 +12,7 @@ const (
 	VarianceChannel
 	StandardDeviationChannel
 	SamplesChannel
+	RelativeStandardDeviationChannel
 )
 
 type Pixel struct {
@@ -43,6 +44,10 @@ func (p *Pixel) Variance() Color {
 
 func (p *Pixel) StandardDeviation() Color {
 	return p.Variance().Pow(0.5)
+}
+
+func (p *Pixel) RelativeStandardDeviation() Color {
+	return p.Variance().Pow(0.5).Div(p.M)
 }
 
 type Buffer struct {
@@ -81,6 +86,10 @@ func (b *Buffer) StandardDeviation(x, y int) Color {
 	return b.Pixels[y*b.W+x].StandardDeviation()
 }
 
+func (b *Buffer) RelativeStandardDeviation(x, y int) Color {
+	return b.Pixels[y*b.W+x].RelativeStandardDeviation()
+}
+
 func (b *Buffer) Image(channel Channel) image.Image {
 	result := image.NewRGBA64(image.Rect(0, 0, b.W, b.H))
 	var maxSamples float64
@@ -102,6 +111,8 @@ func (b *Buffer) Image(channel Channel) image.Image {
 			case SamplesChannel:
 				p := float64(b.Pixels[y*b.W+x].Samples) / maxSamples
 				c = Color{p, p, p}
+			case RelativeStandardDeviationChannel:
+				c = b.Pixels[y*b.W+x].RelativeStandardDeviation()
 			}
 			result.SetRGBA64(x, y, c.RGBA64())
 		}

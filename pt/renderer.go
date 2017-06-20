@@ -89,7 +89,7 @@ func (r *Renderer) run() {
 					}
 					// adaptive sampling
 					if r.AdaptiveSamples > 0 {
-						v := buf.StandardDeviation(x, y).MaxComponent()
+						v := buf.RelativeStandardDeviation(x, y).MaxComponent()
 						v = Clamp(v/r.AdaptiveThreshold, 0, 1)
 						v = math.Pow(v, r.AdaptiveExponent)
 						samples := int(v * float64(r.AdaptiveSamples))
@@ -177,7 +177,7 @@ func (r *Renderer) IterativeRender(pathTemplate string, iterations int) image.Im
 		wg.Add(1)
 		go r.writeImage(path, buf, ColorChannel, &wg)
 		// wg.Add(1)
-		// go r.writeImage("deviation.png", buf, StandardDeviationChannel, &wg)
+		// go r.writeImage("cv.png", buf, RelativeStandardDeviationChannel, &wg)
 		// wg.Add(1)
 		// go r.writeImage("samples.png", buf, SamplesChannel, &wg)
 	}
