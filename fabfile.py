@@ -12,7 +12,7 @@ from fabric_gce_tools import *
 def init():
     run('sudo apt-get update')
     # run('sudo apt-get --assume-yes upgrade')
-    run('sudo apt-get --assume-yes install git build-essential')
+    run('sudo apt-get --assume-yes install git build-essential htop')
     run('wget https://github.com/embree/embree/releases/download/v2.16.2/embree-2.16.2.x86_64.linux.tar.gz')
     run('tar xzf embree-2.16.2.x86_64.linux.tar.gz')
     run('rm embree-2.16.2.x86_64.linux.tar.gz')

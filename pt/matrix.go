@@ -5,10 +5,10 @@ import (
 )
 
 type Matrix struct {
-	x00, x01, x02, x03 float64
-	x10, x11, x12, x13 float64
-	x20, x21, x22, x23 float64
-	x30, x31, x32, x33 float64
+	X00, X01, X02, X03 float64
+	X10, X11, X12, X13 float64
+	X20, X21, X22, X23 float64
+	X30, X31, X32, X33 float64
 }
 
 func Identity() Matrix {
@@ -113,36 +113,36 @@ func (m Matrix) Perspective(fovy, aspect, near, far float64) Matrix {
 
 func (a Matrix) Mul(b Matrix) Matrix {
 	m := Matrix{}
-	m.x00 = a.x00*b.x00 + a.x01*b.x10 + a.x02*b.x20 + a.x03*b.x30
-	m.x10 = a.x10*b.x00 + a.x11*b.x10 + a.x12*b.x20 + a.x13*b.x30
-	m.x20 = a.x20*b.x00 + a.x21*b.x10 + a.x22*b.x20 + a.x23*b.x30
-	m.x30 = a.x30*b.x00 + a.x31*b.x10 + a.x32*b.x20 + a.x33*b.x30
-	m.x01 = a.x00*b.x01 + a.x01*b.x11 + a.x02*b.x21 + a.x03*b.x31
-	m.x11 = a.x10*b.x01 + a.x11*b.x11 + a.x12*b.x21 + a.x13*b.x31
-	m.x21 = a.x20*b.x01 + a.x21*b.x11 + a.x22*b.x21 + a.x23*b.x31
-	m.x31 = a.x30*b.x01 + a.x31*b.x11 + a.x32*b.x21 + a.x33*b.x31
-	m.x02 = a.x00*b.x02 + a.x01*b.x12 + a.x02*b.x22 + a.x03*b.x32
-	m.x12 = a.x10*b.x02 + a.x11*b.x12 + a.x12*b.x22 + a.x13*b.x32
-	m.x22 = a.x20*b.x02 + a.x21*b.x12 + a.x22*b.x22 + a.x23*b.x32
-	m.x32 = a.x30*b.x02 + a.x31*b.x12 + a.x32*b.x22 + a.x33*b.x32
-	m.x03 = a.x00*b.x03 + a.x01*b.x13 + a.x02*b.x23 + a.x03*b.x33
-	m.x13 = a.x10*b.x03 + a.x11*b.x13 + a.x12*b.x23 + a.x13*b.x33
-	m.x23 = a.x20*b.x03 + a.x21*b.x13 + a.x22*b.x23 + a.x23*b.x33
-	m.x33 = a.x30*b.x03 + a.x31*b.x13 + a.x32*b.x23 + a.x33*b.x33
+	m.X00 = a.X00*b.X00 + a.X01*b.X10 + a.X02*b.X20 + a.X03*b.X30
+	m.X10 = a.X10*b.X00 + a.X11*b.X10 + a.X12*b.X20 + a.X13*b.X30
+	m.X20 = a.X20*b.X00 + a.X21*b.X10 + a.X22*b.X20 + a.X23*b.X30
+	m.X30 = a.X30*b.X00 + a.X31*b.X10 + a.X32*b.X20 + a.X33*b.X30
+	m.X01 = a.X00*b.X01 + a.X01*b.X11 + a.X02*b.X21 + a.X03*b.X31
+	m.X11 = a.X10*b.X01 + a.X11*b.X11 + a.X12*b.X21 + a.X13*b.X31
+	m.X21 = a.X20*b.X01 + a.X21*b.X11 + a.X22*b.X21 + a.X23*b.X31
+	m.X31 = a.X30*b.X01 + a.X31*b.X11 + a.X32*b.X21 + a.X33*b.X31
+	m.X02 = a.X00*b.X02 + a.X01*b.X12 + a.X02*b.X22 + a.X03*b.X32
+	m.X12 = a.X10*b.X02 + a.X11*b.X12 + a.X12*b.X22 + a.X13*b.X32
+	m.X22 = a.X20*b.X02 + a.X21*b.X12 + a.X22*b.X22 + a.X23*b.X32
+	m.X32 = a.X30*b.X02 + a.X31*b.X12 + a.X32*b.X22 + a.X33*b.X32
+	m.X03 = a.X00*b.X03 + a.X01*b.X13 + a.X02*b.X23 + a.X03*b.X33
+	m.X13 = a.X10*b.X03 + a.X11*b.X13 + a.X12*b.X23 + a.X13*b.X33
+	m.X23 = a.X20*b.X03 + a.X21*b.X13 + a.X22*b.X23 + a.X23*b.X33
+	m.X33 = a.X30*b.X03 + a.X31*b.X13 + a.X32*b.X23 + a.X33*b.X33
 	return m
 }
 
 func (a Matrix) MulPosition(b Vector) Vector {
-	x := a.x00*b.X + a.x01*b.Y + a.x02*b.Z + a.x03
-	y := a.x10*b.X + a.x11*b.Y + a.x12*b.Z + a.x13
-	z := a.x20*b.X + a.x21*b.Y + a.x22*b.Z + a.x23
+	x := a.X00*b.X + a.X01*b.Y + a.X02*b.Z + a.X03
+	y := a.X10*b.X + a.X11*b.Y + a.X12*b.Z + a.X13
+	z := a.X20*b.X + a.X21*b.Y + a.X22*b.Z + a.X23
 	return Vector{x, y, z}
 }
 
 func (a Matrix) MulDirection(b Vector) Vector {
-	x := a.x00*b.X + a.x01*b.Y + a.x02*b.Z
-	y := a.x10*b.X + a.x11*b.Y + a.x12*b.Z
-	z := a.x20*b.X + a.x21*b.Y + a.x22*b.Z
+	x := a.X00*b.X + a.X01*b.Y + a.X02*b.Z
+	y := a.X10*b.X + a.X11*b.Y + a.X12*b.Z
+	z := a.X20*b.X + a.X21*b.Y + a.X22*b.Z
 	return Vector{x, y, z}.Normalize()
 }
 
@@ -152,10 +152,10 @@ func (a Matrix) MulRay(b Ray) Ray {
 
 func (a Matrix) MulBox(box Box) Box {
 	// http://dev.theomader.com/transform-bounding-boxes/
-	r := Vector{a.x00, a.x10, a.x20}
-	u := Vector{a.x01, a.x11, a.x21}
-	b := Vector{a.x02, a.x12, a.x22}
-	t := Vector{a.x03, a.x13, a.x23}
+	r := Vector{a.X00, a.X10, a.X20}
+	u := Vector{a.X01, a.X11, a.X21}
+	b := Vector{a.X02, a.X12, a.X22}
+	t := Vector{a.X03, a.X13, a.X23}
 	xa := r.MulScalar(box.Min.X)
 	xb := r.MulScalar(box.Max.X)
 	ya := u.MulScalar(box.Min.Y)
@@ -172,45 +172,45 @@ func (a Matrix) MulBox(box Box) Box {
 
 func (a Matrix) Transpose() Matrix {
 	return Matrix{
-		a.x00, a.x10, a.x20, a.x30,
-		a.x01, a.x11, a.x21, a.x31,
-		a.x02, a.x12, a.x22, a.x32,
-		a.x03, a.x13, a.x23, a.x33}
+		a.X00, a.X10, a.X20, a.X30,
+		a.X01, a.X11, a.X21, a.X31,
+		a.X02, a.X12, a.X22, a.X32,
+		a.X03, a.X13, a.X23, a.X33}
 }
 
 func (a Matrix) Determinant() float64 {
-	return (a.x00*a.x11*a.x22*a.x33 - a.x00*a.x11*a.x23*a.x32 +
-		a.x00*a.x12*a.x23*a.x31 - a.x00*a.x12*a.x21*a.x33 +
-		a.x00*a.x13*a.x21*a.x32 - a.x00*a.x13*a.x22*a.x31 -
-		a.x01*a.x12*a.x23*a.x30 + a.x01*a.x12*a.x20*a.x33 -
-		a.x01*a.x13*a.x20*a.x32 + a.x01*a.x13*a.x22*a.x30 -
-		a.x01*a.x10*a.x22*a.x33 + a.x01*a.x10*a.x23*a.x32 +
-		a.x02*a.x13*a.x20*a.x31 - a.x02*a.x13*a.x21*a.x30 +
-		a.x02*a.x10*a.x21*a.x33 - a.x02*a.x10*a.x23*a.x31 +
-		a.x02*a.x11*a.x23*a.x30 - a.x02*a.x11*a.x20*a.x33 -
-		a.x03*a.x10*a.x21*a.x32 + a.x03*a.x10*a.x22*a.x31 -
-		a.x03*a.x11*a.x22*a.x30 + a.x03*a.x11*a.x20*a.x32 -
-		a.x03*a.x12*a.x20*a.x31 + a.x03*a.x12*a.x21*a.x30)
+	return (a.X00*a.X11*a.X22*a.X33 - a.X00*a.X11*a.X23*a.X32 +
+		a.X00*a.X12*a.X23*a.X31 - a.X00*a.X12*a.X21*a.X33 +
+		a.X00*a.X13*a.X21*a.X32 - a.X00*a.X13*a.X22*a.X31 -
+		a.X01*a.X12*a.X23*a.X30 + a.X01*a.X12*a.X20*a.X33 -
+		a.X01*a.X13*a.X20*a.X32 + a.X01*a.X13*a.X22*a.X30 -
+		a.X01*a.X10*a.X22*a.X33 + a.X01*a.X10*a.X23*a.X32 +
+		a.X02*a.X13*a.X20*a.X31 - a.X02*a.X13*a.X21*a.X30 +
+		a.X02*a.X10*a.X21*a.X33 - a.X02*a.X10*a.X23*a.X31 +
+		a.X02*a.X11*a.X23*a.X30 - a.X02*a.X11*a.X20*a.X33 -
+		a.X03*a.X10*a.X21*a.X32 + a.X03*a.X10*a.X22*a.X31 -
+		a.X03*a.X11*a.X22*a.X30 + a.X03*a.X11*a.X20*a.X32 -
+		a.X03*a.X12*a.X20*a.X31 + a.X03*a.X12*a.X21*a.X30)
 }
 
 func (a Matrix) Inverse() Matrix {
 	m := Matrix{}
 	d := a.Determinant()
-	m.x00 = (a.x12*a.x23*a.x31 - a.x13*a.x22*a.x31 + a.x13*a.x21*a.x32 - a.x11*a.x23*a.x32 - a.x12*a.x21*a.x33 + a.x11*a.x22*a.x33) / d
-	m.x01 = (a.x03*a.x22*a.x31 - a.x02*a.x23*a.x31 - a.x03*a.x21*a.x32 + a.x01*a.x23*a.x32 + a.x02*a.x21*a.x33 - a.x01*a.x22*a.x33) / d
-	m.x02 = (a.x02*a.x13*a.x31 - a.x03*a.x12*a.x31 + a.x03*a.x11*a.x32 - a.x01*a.x13*a.x32 - a.x02*a.x11*a.x33 + a.x01*a.x12*a.x33) / d
-	m.x03 = (a.x03*a.x12*a.x21 - a.x02*a.x13*a.x21 - a.x03*a.x11*a.x22 + a.x01*a.x13*a.x22 + a.x02*a.x11*a.x23 - a.x01*a.x12*a.x23) / d
-	m.x10 = (a.x13*a.x22*a.x30 - a.x12*a.x23*a.x30 - a.x13*a.x20*a.x32 + a.x10*a.x23*a.x32 + a.x12*a.x20*a.x33 - a.x10*a.x22*a.x33) / d
-	m.x11 = (a.x02*a.x23*a.x30 - a.x03*a.x22*a.x30 + a.x03*a.x20*a.x32 - a.x00*a.x23*a.x32 - a.x02*a.x20*a.x33 + a.x00*a.x22*a.x33) / d
-	m.x12 = (a.x03*a.x12*a.x30 - a.x02*a.x13*a.x30 - a.x03*a.x10*a.x32 + a.x00*a.x13*a.x32 + a.x02*a.x10*a.x33 - a.x00*a.x12*a.x33) / d
-	m.x13 = (a.x02*a.x13*a.x20 - a.x03*a.x12*a.x20 + a.x03*a.x10*a.x22 - a.x00*a.x13*a.x22 - a.x02*a.x10*a.x23 + a.x00*a.x12*a.x23) / d
-	m.x20 = (a.x11*a.x23*a.x30 - a.x13*a.x21*a.x30 + a.x13*a.x20*a.x31 - a.x10*a.x23*a.x31 - a.x11*a.x20*a.x33 + a.x10*a.x21*a.x33) / d
-	m.x21 = (a.x03*a.x21*a.x30 - a.x01*a.x23*a.x30 - a.x03*a.x20*a.x31 + a.x00*a.x23*a.x31 + a.x01*a.x20*a.x33 - a.x00*a.x21*a.x33) / d
-	m.x22 = (a.x01*a.x13*a.x30 - a.x03*a.x11*a.x30 + a.x03*a.x10*a.x31 - a.x00*a.x13*a.x31 - a.x01*a.x10*a.x33 + a.x00*a.x11*a.x33) / d
-	m.x23 = (a.x03*a.x11*a.x20 - a.x01*a.x13*a.x20 - a.x03*a.x10*a.x21 + a.x00*a.x13*a.x21 + a.x01*a.x10*a.x23 - a.x00*a.x11*a.x23) / d
-	m.x30 = (a.x12*a.x21*a.x30 - a.x11*a.x22*a.x30 - a.x12*a.x20*a.x31 + a.x10*a.x22*a.x31 + a.x11*a.x20*a.x32 - a.x10*a.x21*a.x32) / d
-	m.x31 = (a.x01*a.x22*a.x30 - a.x02*a.x21*a.x30 + a.x02*a.x20*a.x31 - a.x00*a.x22*a.x31 - a.x01*a.x20*a.x32 + a.x00*a.x21*a.x32) / d
-	m.x32 = (a.x02*a.x11*a.x30 - a.x01*a.x12*a.x30 - a.x02*a.x10*a.x31 + a.x00*a.x12*a.x31 + a.x01*a.x10*a.x32 - a.x00*a.x11*a.x32) / d
-	m.x33 = (a.x01*a.x12*a.x20 - a.x02*a.x11*a.x20 + a.x02*a.x10*a.x21 - a.x00*a.x12*a.x21 - a.x01*a.x10*a.x22 + a.x00*a.x11*a.x22) / d
+	m.X00 = (a.X12*a.X23*a.X31 - a.X13*a.X22*a.X31 + a.X13*a.X21*a.X32 - a.X11*a.X23*a.X32 - a.X12*a.X21*a.X33 + a.X11*a.X22*a.X33) / d
+	m.X01 = (a.X03*a.X22*a.X31 - a.X02*a.X23*a.X31 - a.X03*a.X21*a.X32 + a.X01*a.X23*a.X32 + a.X02*a.X21*a.X33 - a.X01*a.X22*a.X33) / d
+	m.X02 = (a.X02*a.X13*a.X31 - a.X03*a.X12*a.X31 + a.X03*a.X11*a.X32 - a.X01*a.X13*a.X32 - a.X02*a.X11*a.X33 + a.X01*a.X12*a.X33) / d
+	m.X03 = (a.X03*a.X12*a.X21 - a.X02*a.X13*a.X21 - a.X03*a.X11*a.X22 + a.X01*a.X13*a.X22 + a.X02*a.X11*a.X23 - a.X01*a.X12*a.X23) / d
+	m.X10 = (a.X13*a.X22*a.X30 - a.X12*a.X23*a.X30 - a.X13*a.X20*a.X32 + a.X10*a.X23*a.X32 + a.X12*a.X20*a.X33 - a.X10*a.X22*a.X33) / d
+	m.X11 = (a.X02*a.X23*a.X30 - a.X03*a.X22*a.X30 + a.X03*a.X20*a.X32 - a.X00*a.X23*a.X32 - a.X02*a.X20*a.X33 + a.X00*a.X22*a.X33) / d
+	m.X12 = (a.X03*a.X12*a.X30 - a.X02*a.X13*a.X30 - a.X03*a.X10*a.X32 + a.X00*a.X13*a.X32 + a.X02*a.X10*a.X33 - a.X00*a.X12*a.X33) / d
+	m.X13 = (a.X02*a.X13*a.X20 - a.X03*a.X12*a.X20 + a.X03*a.X10*a.X22 - a.X00*a.X13*a.X22 - a.X02*a.X10*a.X23 + a.X00*a.X12*a.X23) / d
+	m.X20 = (a.X11*a.X23*a.X30 - a.X13*a.X21*a.X30 + a.X13*a.X20*a.X31 - a.X10*a.X23*a.X31 - a.X11*a.X20*a.X33 + a.X10*a.X21*a.X33) / d
+	m.X21 = (a.X03*a.X21*a.X30 - a.X01*a.X23*a.X30 - a.X03*a.X20*a.X31 + a.X00*a.X23*a.X31 + a.X01*a.X20*a.X33 - a.X00*a.X21*a.X33) / d
+	m.X22 = (a.X01*a.X13*a.X30 - a.X03*a.X11*a.X30 + a.X03*a.X10*a.X31 - a.X00*a.X13*a.X31 - a.X01*a.X10*a.X33 + a.X00*a.X11*a.X33) / d
+	m.X23 = (a.X03*a.X11*a.X20 - a.X01*a.X13*a.X20 - a.X03*a.X10*a.X21 + a.X00*a.X13*a.X21 + a.X01*a.X10*a.X23 - a.X00*a.X11*a.X23) / d
+	m.X30 = (a.X12*a.X21*a.X30 - a.X11*a.X22*a.X30 - a.X12*a.X20*a.X31 + a.X10*a.X22*a.X31 + a.X11*a.X20*a.X32 - a.X10*a.X21*a.X32) / d
+	m.X31 = (a.X01*a.X22*a.X30 - a.X02*a.X21*a.X30 + a.X02*a.X20*a.X31 - a.X00*a.X22*a.X31 - a.X01*a.X20*a.X32 + a.X00*a.X21*a.X32) / d
+	m.X32 = (a.X02*a.X11*a.X30 - a.X01*a.X12*a.X30 - a.X02*a.X10*a.X31 + a.X00*a.X12*a.X31 + a.X01*a.X10*a.X32 - a.X00*a.X11*a.X32) / d
+	m.X33 = (a.X01*a.X12*a.X20 - a.X02*a.X11*a.X20 + a.X02*a.X10*a.X21 - a.X00*a.X12*a.X21 - a.X01*a.X10*a.X22 + a.X00*a.X11*a.X22) / d
 	return m
 }
