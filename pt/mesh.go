@@ -1,10 +1,24 @@
 package pt
 
 import (
+	"fmt"
 	"math"
+	"path/filepath"
+	"strings"
 
 	embree "github.com/fogleman/go-embree"
 )
+
+func LoadMesh(path string, material Material) (*Mesh, error) {
+	ext := strings.ToLower(filepath.Ext(path))
+	switch ext {
+	case ".stl":
+		return LoadSTL(path, material)
+	case ".obj":
+		return LoadOBJ(path, material)
+	}
+	return nil, fmt.Errorf("unrecognized mesh extension: %s", ext)
+}
 
 type Mesh struct {
 	Triangles []*Triangle
