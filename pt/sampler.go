@@ -112,8 +112,8 @@ func (s *DefaultSampler) sample(scene *Scene, ray Ray, emission bool, samples, d
 func (s *DefaultSampler) sampleEnvironment(scene *Scene, ray Ray) Color {
 	if scene.Texture != nil {
 		d := ray.Direction
-		u := math.Atan2(d.Z, d.X) + scene.TextureAngle
-		v := math.Atan2(d.Y, Vector{d.X, 0, d.Z}.Length())
+		u := math.Atan2(d.Y, d.X) + scene.TextureAngle
+		v := math.Atan2(d.Z, Vector{d.X, d.Y, 0}.Length())
 		u = (u + math.Pi) / (2 * math.Pi)
 		v = (v + math.Pi/2) / math.Pi
 		return scene.Texture.Sample(u, v)
