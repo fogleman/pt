@@ -30,6 +30,13 @@ func NewMesh(triangles []*Triangle) *Mesh {
 	return &Mesh{triangles, nil, nil}
 }
 
+func (m *Mesh) ReverseWinding() {
+	for _, t := range m.Triangles {
+		t.ReverseWinding()
+	}
+	m.dirty()
+}
+
 func (m *Mesh) dirty() {
 	m.box = nil
 	m.mesh = nil

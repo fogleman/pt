@@ -20,6 +20,12 @@ func NewTriangle(v1, v2, v3, t1, t2, t3 Vector, material Material) *Triangle {
 	return &t
 }
 
+func (t *Triangle) ReverseWinding() {
+	t.V1, t.V2, t.V3 = t.V3, t.V2, t.V1
+	t.N1, t.N2, t.N3 = t.N3.Negate(), t.N2.Negate(), t.N1.Negate()
+	t.T1, t.T2, t.T3 = t.T3, t.T2, t.T1
+}
+
 func (t *Triangle) Vertices() (Vector, Vector, Vector) {
 	return t.V1, t.V2, t.V3
 }
