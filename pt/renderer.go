@@ -11,9 +11,14 @@ import (
 	"time"
 )
 
+// RenderCamera defines the interface for cameras that can be used by the Renderer
+type RenderCamera interface {
+	CastRay(x, y, w, h int, u, v float64, rnd *rand.Rand) Ray
+}
+
 type Renderer struct {
 	Scene              *Scene
-	Camera             *Camera
+	Camera             RenderCamera
 	Sampler            Sampler
 	Buffer             *Buffer
 	SamplesPerPixel    int
@@ -27,7 +32,7 @@ type Renderer struct {
 	Verbose            bool
 }
 
-func NewRenderer(scene *Scene, camera *Camera, sampler Sampler, w, h int) *Renderer {
+func NewRenderer(scene *Scene, camera RenderCamera, sampler Sampler, w, h int) *Renderer {
 	r := Renderer{}
 	r.Scene = scene
 	r.Camera = camera
