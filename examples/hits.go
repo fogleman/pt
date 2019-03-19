@@ -1,6 +1,6 @@
 package main
 
-import . "github.com/fogleman/pt/pt"
+import . "github.com/hborntraeger/pt/pt"
 
 func main() {
 	scene := Scene{}

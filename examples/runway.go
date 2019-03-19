@@ -1,6 +1,6 @@
 package main
 
-import . "github.com/fogleman/pt/pt"
+import . "github.com/hborntraeger/pt/pt"
 
 const radius = 2
 const height = 3

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sync"
 
-	. "github.com/fogleman/pt/pt"
+	. "github.com/hborntraeger/pt/pt"
 )
 
 func render(l, m int) {

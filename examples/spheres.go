@@ -1,6 +1,6 @@
 package main
 
-import . "github.com/fogleman/pt/pt"
+import . "github.com/hborntraeger/pt/pt"
 
 var materials = []Material{
 	GlossyMaterial(HexColor(0x730046), 1.4, Radians(30)),

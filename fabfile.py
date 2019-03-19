@@ -14,12 +14,12 @@ def init():
     run('echo "export PATH=$PATH:/usr/local/go/bin" >> .profile')
     run('echo "export GOPATH=$HOME/go" >> .profile')
     run('source .profile')
-    run('go get github.com/fogleman/pt')
+    run('go get github.com/hborntraeger/pt')
 
 def fetch():
     i = env.hosts.index(env.host)
     filename = 'fetch%d.tar.gz' % i
-    with cd('~/go/src/github.com/fogleman/pt'):
+    with cd('~/go/src/github.com/hborntraeger/pt'):
         run('tar czf ~/fetch.tar.gz *.png')
     get('fetch.tar.gz', filename)
     local('tar xzf ' + filename)
@@ -28,6 +28,6 @@ def fetch():
 def latest():
     i = env.hosts.index(env.host)
     filename = 'latest%d.png' % i
-    with cd('~/go/src/github.com/fogleman/pt'):
+    with cd('~/go/src/github.com/hborntraeger/pt'):
         run('cp `ls out* | tail -n 2 | head -n 1` ~/latest.png')
     get('latest.png', filename)

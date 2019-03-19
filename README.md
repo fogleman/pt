@@ -1,6 +1,6 @@
 # pt: a golang path tracer
 
-[![Build Status](https://travis-ci.org/fogleman/pt.png?branch=master)](https://travis-ci.org/fogleman/pt) [![GoDoc](https://godoc.org/github.com/fogleman/pt/pt?status.svg)](https://godoc.org/github.com/fogleman/pt/pt)
+[![Build Status](https://travis-ci.org/fogleman/pt.png?branch=master)](https://travis-ci.org/fogleman/pt) [![GoDoc](https://godoc.org/github.com/hborntraeger/pt/pt?status.svg)](https://godoc.org/github.com/hborntraeger/pt/pt)
 
 This is a CPU-only, unidirectional [path tracing](http://en.wikipedia.org/wiki/Path_tracing) engine written in Go. It has lots of features and a simple API.
 
@@ -24,13 +24,13 @@ This is a CPU-only, unidirectional [path tracing](http://en.wikipedia.org/wiki/P
 
 ### Installation
 
-    go get -u github.com/fogleman/pt/pt
+    go get -u github.com/hborntraeger/pt/pt
 
 ### Examples
 
-The are [lots of examples](https://github.com/fogleman/pt/tree/master/examples) to learn from! To try them, just run, e.g.
+The are [lots of examples](https://github.com/hborntraeger/pt/tree/master/examples) to learn from! To try them, just run, e.g.
 
-    cd go/src/github.com/fogleman/pt
+    cd go/src/github.com/hborntraeger/pt
     go run examples/gopher.go
 
 ### Optional Embree Acceleration
@@ -47,7 +47,7 @@ The following code demonstrates the basics of the API.
 ```go
 package main
 
-import . "github.com/fogleman/pt/pt"
+import . "github.com/hborntraeger/pt/pt"
 
 func main() {
 	// create a scene

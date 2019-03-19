@@ -1,6 +1,6 @@
 package main
 
-import . "github.com/fogleman/pt/pt"
+import . "github.com/hborntraeger/pt/pt"
 
 // http://graphics.cs.williams.edu/data/meshes/dragon.zip
 

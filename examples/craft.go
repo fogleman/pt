@@ -3,7 +3,7 @@ package main
 import (
 	"math/rand"
 
-	. "github.com/fogleman/pt/pt"
+	. "github.com/hborntraeger/pt/pt"
 )
 
 const N = 16

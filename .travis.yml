@@ -9,7 +9,7 @@ branches:
   except:
     - embree
 
-install: go get -v -t github.com/fogleman/pt/pt
+install: go get -v -t github.com/hborntraeger/pt/pt
 
 script:
   - go test -v ./pt/... && go build ./pt

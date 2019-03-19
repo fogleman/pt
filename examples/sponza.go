@@ -2,7 +2,7 @@ package main
 
 // http://graphics.cs.williams.edu/data/meshes/dabrovic-sponza.zip
 
-import . "github.com/fogleman/pt/pt"
+import . "github.com/hborntraeger/pt/pt"
 
 func main() {
 	scene := Scene{}

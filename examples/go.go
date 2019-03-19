@@ -4,7 +4,7 @@ import (
 	"math"
 	"math/rand"
 
-	. "github.com/fogleman/pt/pt"
+	. "github.com/hborntraeger/pt/pt"
 )
 
 func offset(stdev float64) Vector {

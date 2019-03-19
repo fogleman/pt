@@ -7,7 +7,7 @@ import (
 	"os"
 	"path"
 
-	. "github.com/fogleman/pt/pt"
+	. "github.com/hborntraeger/pt/pt"
 )
 
 func main() {

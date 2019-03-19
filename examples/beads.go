@@ -5,7 +5,7 @@ import (
 	"math"
 	"math/rand"
 
-	. "github.com/fogleman/pt/pt"
+	. "github.com/hborntraeger/pt/pt"
 )
 
 func frame(path string, t float64) {

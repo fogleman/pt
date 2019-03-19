@@ -9,7 +9,7 @@ import (
 	"math"
 	"os"
 
-	"github.com/fogleman/pt/pt"
+	"github.com/hborntraeger/pt/pt"
 )
 
 var Threshold float64

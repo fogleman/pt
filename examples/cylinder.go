@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	. "github.com/fogleman/pt/pt"
+	. "github.com/hborntraeger/pt/pt"
 )
 
 func createMesh(material Material) Shape {
