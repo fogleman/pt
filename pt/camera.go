@@ -1,7 +1,6 @@
 package pt
 
 import (
-	"log"
 	"math"
 	"math/rand"
 )
@@ -57,7 +56,7 @@ type OrthogonalCamera struct {
 
 // OrthoLookAt sets up a new camera with the center of the camera at location
 // its center points at the given target (i.e. the target point is centered in the image)
-// up defines the up direction for the camera, pxsize the size of a single pixel
+// up defines the up direction for the camera, width defines the width of the image
 func OrthoLookAt(location, up, target Vector, width float64) OrthogonalCamera {
 	oc := OrthogonalCamera{
 		up:    up.Normalize(),
@@ -67,8 +66,36 @@ func OrthoLookAt(location, up, target Vector, width float64) OrthogonalCamera {
 	}
 	oc.right = oc.dir.Cross(oc.up).Normalize()
 	oc.up = oc.dir.Cross(oc.right).Normalize()
-	log.Printf("%+v", oc)
 	return oc
+}
+
+// CalculateOrthoSize computes width and height that would be needed by the camera to record an image that covers
+// all given points in front of the camera. points behind the camera are ignored
+// width can either be adjusted to fit the desired aspect ratio or the aspect ratio can be choosen to fit the size
+func CalculateOrthoSize(location, up, target Vector, points ...Vector) (w, h float64) {
+	// create camera to have accurate precomputed values
+	oc := OrthoLookAt(location, up, target, 1.0)
+	// max values
+	dir := oc.dir.MulScalar(-1)
+	for _, p := range points {
+		t := oc.pos.Sub(p).Dot(dir)
+		if t < 0 {
+			// we can not work with points behind the plane
+			continue
+		}
+		// compute point in plane
+		pp := p.Add(dir.MulScalar(t))
+
+		// we are only interested in the absolute since we keep the image symetric
+		u := math.Abs(oc.up.Dot(pp))
+		v := math.Abs(oc.right.Dot(pp))
+		w = math.Max(w, v)
+		h = math.Max(h, u)
+	}
+
+	// since we calculated distance from the center, this is both
+	return w * 2, h * 2
+
 }
 
 // CastRay implements the RenderCamera interface and creates the ray used for rendering
